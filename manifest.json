@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Galaxy Chrome extension",
+  "version": "0.1",
+  "description": "A sample Chrome extension.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "assets/icon16.png"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  }
+}
