@@ -3,7 +3,8 @@
   "name": "Galaxy Chrome extension",
   "version": "0.1",
   "description": "A sample Chrome extension.",
-  "permissions": ["storage"],
+  "permissions": ["alarms", "storage"],
+  "host_permissions": ["https://*.galaxy.corp/*"]
   "background": {
     "service_worker": "background.js"
   },
