@@ -31,6 +31,15 @@ async function getIntercomMessages() {
     if (!Array.isArray(data)) throw "invalid array data";
     if (!data.length) return;
 
+    chrome.windows.create({
+      url: chrome.runtime.getURL("popup/popup.html"),
+      type: "popup",
+      width: 400,
+      height: 200,
+    },
+    (w) => {console.error(w.id); });
+
+    //chrome.action.openPopup();
     console.log(data);
   } catch (e) {
     console.error(e);
