@@ -2,9 +2,10 @@
   "manifest_version": 3,
   "name": "Galaxy Chrome extension",
   "version": "0.1",
-  "description": "A sample Chrome extension.",
+  "description": "Galaxy virtual phone",
+  "homepage_url": "https://github.com/emrahcom/galaxy-chrome-extension",
   "permissions": ["alarms", "storage"],
-  "host_permissions": ["https://*.galaxy.corp/*"]
+  "host_permissions": ["https://*/api/*"],
   "background": {
     "service_worker": "background.js"
   },
