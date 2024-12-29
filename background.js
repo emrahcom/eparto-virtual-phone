@@ -10,10 +10,13 @@ chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "intercomMessages") {
-    const messages = getIntercomMessages();
+    const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
+  } else if (alarm.name.startsWith("cleanup-call-")) {
+    const msgId = alarm.name.substr(13);
+    cleanupCall(msgId);
   }
 });
 
@@ -75,24 +78,63 @@ async function callHandler(msg) {
     const msgId = msg?.id;
     if (!msgId) throw "missing message id";
 
-    const storedItems = await chrome.storage.session.get(`${msgId}`);
+    const storedItems = await chrome.storage.session.get(`call-${msgId}`);
 
     msg["updated_at"] = Date.now();
     const item = {
-      [`${msgId}`]: msg,
+      [`call-${msgId}`]: msg,
     };
     await chrome.storage.session.set(item);
 
-    if (!storedItems[`${msgId}`]) {
-      chrome.windows.create({
-        url: chrome.runtime.getURL(
-          `popup/${msg.message_type}.html?id=${msgId}`,
-        ),
-        type: "popup",
-        width: 400,
-        height: 200,
-      });
-    }
+    // If this is the first message of the call then initialize the call.
+    if (!storedItems[`call-${msgId}`]) initializeCall(msg);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// initializeCall
+// -----------------------------------------------------------------------------
+function initializeCall(msg) {
+  try {
+    // Create popup.
+    chrome.windows.create({
+      url: chrome.runtime.getURL(
+        `popup/${msg.message_type}.html?id=${msg.id}`,
+      ),
+      type: "popup",
+      width: 400,
+      height: 200,
+    });
+
+    // Trigger the cleanup job which will remove call objects after a while.
+    triggerCleanupCall(msg.id);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// triggerCleanupCall
+// -----------------------------------------------------------------------------
+function triggerCleanupCall(msgId) {
+  try {
+    chrome.alarms.create(`cleanup-call-${msgId}`, { delayInMinutes: 1 });
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// cleanupCall
+// -----------------------------------------------------------------------------
+async function cleanupCall(msgId) {
+  try {
+    if (!msgId) throw "missing message id";
+    console.error(msgId);
+
+    await chrome.storage.session.remove(`call-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
