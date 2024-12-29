@@ -10,7 +10,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup/default.html",
     "default_icon": "assets/icon16.png"
   },
   "icons": {

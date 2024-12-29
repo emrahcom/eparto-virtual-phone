@@ -1,13 +1,25 @@
-chrome.alarms.create("getIntercomMessages", {
+// -----------------------------------------------------------------------------
+// Globals
+// -----------------------------------------------------------------------------
+const DEBUG = true;
+
+// -----------------------------------------------------------------------------
+// Alarms
+// -----------------------------------------------------------------------------
+chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "getIntercomMessages") {
-    getIntercomMessages();
+  if (alarm.name === "intercomMessages") {
+    const messages = getIntercomMessages();
+    if (messages) messageHandler(messages);
   }
 });
 
+// -----------------------------------------------------------------------------
+// getIntercomMessages
+// -----------------------------------------------------------------------------
 async function getIntercomMessages() {
   try {
     const url = "https://app.galaxy.corp/api/pub/intercom/list";
@@ -26,22 +38,62 @@ async function getIntercomMessages() {
     });
     if (!res.ok) throw "failed request";
 
-    const data = await res.json();
-    if (!data) throw "invalid json data";
-    if (!Array.isArray(data)) throw "invalid array data";
-    if (!data.length) return;
-
-    chrome.windows.create({
-      url: chrome.runtime.getURL("popup/popup.html"),
-      type: "popup",
-      width: 400,
-      height: 200,
-    },
-    (w) => {console.error(w.id); });
-
-    //chrome.action.openPopup();
-    console.log(data);
+    return await res.json();
   } catch (e) {
-    console.error(e);
+    if (DEBUG) console.error(e);
+
+    return undefined;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// messageHandler
+// -----------------------------------------------------------------------------
+function messageHandler(messages) {
+  try {
+    if (!messages) throw "missing message list";
+    if (!Array.isArray(messages)) throw "invalid structure for message list";
+    if (!messages.length) return;
+
+    for (const msg of messages) {
+      if (msg?.message_type === "call") {
+        callHandler(msg);
+      } else if (msg?.message_type === "phone") {
+        callHandler(msg);
+      }
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// callHandler
+// -----------------------------------------------------------------------------
+async function callHandler(msg) {
+  try {
+    const msgId = msg?.id;
+    if (!msgId) throw "missing message id";
+
+    const storedItems = await chrome.storage.session.get(`${msgId}`);
+
+    msg["updated_at"] = Date.now();
+    const item = {
+      [`${msgId}`]: msg,
+    };
+    await chrome.storage.session.set(item);
+
+    if (!storedItems[`${msgId}`]) {
+      chrome.windows.create({
+        url: chrome.runtime.getURL(
+          `popup/${msg.message_type}.html?id=${msgId}`,
+        ),
+        type: "popup",
+        width: 400,
+        height: 200,
+      });
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
   }
 }
