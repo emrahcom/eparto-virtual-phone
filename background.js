@@ -6,7 +6,7 @@ const DEBUG = true;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-// Poll active intercom messages periodically.
+// Poll intercom messages.
 chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
@@ -79,10 +79,11 @@ async function callMessageHandler(msg) {
     const msgId = msg?.id;
     if (!msgId) throw "missing message id";
 
-    // Is there already a stored item for this call?
+    // Is there already a session object for this call?
+    // Be carefull, the return value is a list, not a single item...
     const storedItems = await chrome.storage.session.get(`call-${msgId}`);
 
-    msg["updated_at"] = Date.now();
+    // Create or update (if already exists) the session object.
     const item = {
       [`call-${msgId}`]: msg,
     };
@@ -105,10 +106,24 @@ async function phoneMessageHandler(msg) {
 
 // -----------------------------------------------------------------------------
 // initializeCall
+//
+// All attributes are expected to be exist at this stage. Fail if they dont.
 // -----------------------------------------------------------------------------
 function initializeCall(msg) {
   try {
-    // Create popup and show it.
+    // Trigger the cleanup job which will remove the call object after a while.
+    triggerCleanupCall(msg.id);
+
+    // Cancel if the status is not "none". This means that the call is already
+    // processed (accepted, rejected, seen, etc.) by another client.
+    if (msg.status !== "none") return;
+
+    // Cancel if the call is already expired.
+    const expiredAt = new Date(msg.expired_at);
+    if (isNaN(expiredAt)) throw "invalid expire time";
+    if (Date.now() > expiredAt.getTime()) return;
+
+    // Create the popup and show it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
         `popup/${msg.message_type}.html?id=${msg.id}`,
@@ -117,9 +132,6 @@ function initializeCall(msg) {
       width: 400,
       height: 200,
     });
-
-    // Trigger the cleanup job which will remove related objects after a while.
-    triggerCleanupCall(msg.id);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
