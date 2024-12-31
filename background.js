@@ -13,6 +13,9 @@ chrome.alarms.create("intercomMessages", {
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "intercomMessages") {
+    // Known issue: if this alarm ends after the next alarm because of some
+    // network issues then the old message will overwrite the new one but dont
+    // fix, skip it.
     const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
   } else if (alarm.name.startsWith("cleanup-call-")) {
@@ -82,8 +85,10 @@ async function callMessageHandler(msg) {
     // Is there already a session object for this call?
     // Be carefull, the return value is a list, not a single item...
     const storedItems = await chrome.storage.session.get(`call-${msgId}`);
+    const storedItem = storedItems[`call-${msgId}`];
 
     // Create or update (if already exists) the session object.
+    // Be carefull, key will not be generated dynamically if it is not in [].
     const item = {
       [`call-${msgId}`]: msg,
     };
@@ -91,7 +96,7 @@ async function callMessageHandler(msg) {
 
     // If this is the first message of the call then initialize the call.
     // Initializing means create its popup, trigger its cleanup job, etc.
-    if (!storedItems[`call-${msgId}`]) initializeCall(msg);
+    if (!storedItem) initializeCall(msg);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
