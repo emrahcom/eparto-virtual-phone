@@ -1,1 +1,1 @@
-setTimeout(window.close, 6000);
+setTimeout(globalThis.close, 6000);
