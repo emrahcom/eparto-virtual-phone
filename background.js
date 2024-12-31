@@ -6,6 +6,7 @@ const DEBUG = true;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
+// Poll active intercom messages periodically.
 chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
@@ -60,9 +61,9 @@ function messageHandler(messages) {
 
     for (const msg of messages) {
       if (msg?.message_type === "call") {
-        callHandler(msg);
+        callMessageHandler(msg);
       } else if (msg?.message_type === "phone") {
-        callHandler(msg);
+        phoneMessageHandler(msg);
       }
     }
   } catch (e) {
@@ -71,13 +72,14 @@ function messageHandler(messages) {
 }
 
 // -----------------------------------------------------------------------------
-// callHandler
+// callMessageHandler
 // -----------------------------------------------------------------------------
-async function callHandler(msg) {
+async function callMessageHandler(msg) {
   try {
     const msgId = msg?.id;
     if (!msgId) throw "missing message id";
 
+    // Is there already a stored item for this call?
     const storedItems = await chrome.storage.session.get(`call-${msgId}`);
 
     msg["updated_at"] = Date.now();
@@ -87,6 +89,7 @@ async function callHandler(msg) {
     await chrome.storage.session.set(item);
 
     // If this is the first message of the call then initialize the call.
+    // Initializing means create its popup, trigger its cleanup job, etc.
     if (!storedItems[`call-${msgId}`]) initializeCall(msg);
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -94,11 +97,18 @@ async function callHandler(msg) {
 }
 
 // -----------------------------------------------------------------------------
+// phoneMessageHandler (alias for callMessageHandler)
+// -----------------------------------------------------------------------------
+async function phoneMessageHandler(msg) {
+  await callMessageHandler(msg);
+}
+
+// -----------------------------------------------------------------------------
 // initializeCall
 // -----------------------------------------------------------------------------
 function initializeCall(msg) {
   try {
-    // Create popup.
+    // Create popup and show it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
         `popup/${msg.message_type}.html?id=${msg.id}`,
@@ -108,7 +118,7 @@ function initializeCall(msg) {
       height: 200,
     });
 
-    // Trigger the cleanup job which will remove call objects after a while.
+    // Trigger the cleanup job which will remove related objects after a while.
     triggerCleanupCall(msg.id);
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -120,6 +130,9 @@ function initializeCall(msg) {
 // -----------------------------------------------------------------------------
 function triggerCleanupCall(msgId) {
   try {
+    // Remove all objects related with this call after 1 min. There is no
+    // problem if the browser is closed before this is done, because there are
+    // only session objects which will be removed anyway after the session ends.
     chrome.alarms.create(`cleanup-call-${msgId}`, { delayInMinutes: 1 });
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -132,7 +145,6 @@ function triggerCleanupCall(msgId) {
 async function cleanupCall(msgId) {
   try {
     if (!msgId) throw "missing message id";
-    console.error(msgId);
 
     await chrome.storage.session.remove(`call-${msgId}`);
   } catch (e) {
