@@ -87,7 +87,7 @@ async function removeOldMessagesFromStorage(messages) {
 
     // Trace stored messages and remove it if it is not in the id list.
     for (const key of await chrome.storage.session.getKeys()) {
-      if (!keys.startsWith("call-")) continue;
+      if (!key.startsWith("call-")) continue;
 
       const msgId = key.substr(5);
 
