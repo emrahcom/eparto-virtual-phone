@@ -60,6 +60,9 @@ function messageHandler(messages) {
   try {
     if (!messages) throw "missing message list";
     if (!Array.isArray(messages)) throw "invalid structure for message list";
+
+    removeOldMessagesFromStorage(messages);
+
     if (!messages.length) return;
 
     for (const msg of messages) {
@@ -67,6 +70,29 @@ function messageHandler(messages) {
         callMessageHandler(msg);
       } else if (msg?.message_type === "phone") {
         phoneMessageHandler(msg);
+      }
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// removeOldMessagesFromStorage
+// -----------------------------------------------------------------------------
+async function removeOldMessagesFromStorage(messages) {
+  try {
+    // List ids of active messages.
+    const ids = messages.map((msg) => msg.id);
+
+    // Trace stored messages and remove it if it is not in the id list.
+    for (const key of await chrome.storage.session.getKeys()) {
+      if (!keys.startsWith("call-")) continue;
+
+      const msgId = key.substr(5);
+
+      if (!ids.includes(msgId)) {
+        await chrome.storage.session.remove(`call-${msgId}`);
       }
     }
   } catch (e) {
