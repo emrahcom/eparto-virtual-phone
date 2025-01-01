@@ -134,6 +134,7 @@ function initializeCall(msg) {
         `popup/${msg.message_type}.html?id=${msg.id}`,
       ),
       type: "popup",
+      focused: true,
       width: 400,
       height: 200,
     });
