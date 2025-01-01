@@ -24,7 +24,7 @@ async function watchCall() {
     if (isNaN(expiredAt)) throw "invalid expire time";
     if (Date.now() > expiredAt.getTime()) throw "expired call";
 
-    setTimeout(watchCall, 1000);
+    setTimeout(watchCall, 500);
   } catch (e) {
     if (DEBUG) console.error(e);
 
