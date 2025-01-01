@@ -11,7 +11,6 @@ const MSGID = qs.get("id") || globalThis.close();
 // -----------------------------------------------------------------------------
 setTimeout(watchCall, 1000);
 
-// -----------------------------------------------------------------------------
 async function watchCall() {
   try {
     const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
@@ -31,3 +30,7 @@ async function watchCall() {
     globalThis.close();
   }
 }
+
+// -----------------------------------------------------------------------------
+// updateUi
+// -----------------------------------------------------------------------------

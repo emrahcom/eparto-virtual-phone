@@ -1,8 +1,52 @@
 <html>
   <head>
     <title>Phone call</title>
+    <style>
+      body {
+        background-color: #fafafa;
+      }
+
+      .info {
+        display: flex;
+        align-items: left;
+        margin: 8px;
+      }
+
+      .action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 32px;
+      }
+
+      button {
+        width: 38px;
+        height: 32px;
+        margin: 8px 18px;
+        padding: 0px;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+      }
+
+      .reject {
+        background-color: #FF4D4D;
+      }
+
+      .accept {
+        background-color: #4CAF50;
+      }
+    </style>
   </head>
   <body>
+    <div class="info">
+      Phone is calling
+    </div>
+
+    <div class="action">
+      <button class="reject">Reject</button>
+      <button class="accept">Accept</button>
+    </div>
     <script src="phone.js"></script>
   </body>
 </html>
