@@ -5,6 +5,7 @@ const DEBUG = true;
 
 const qs = new URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
+let SELECTED_ACTION;
 
 // -----------------------------------------------------------------------------
 // Alarms
@@ -39,6 +40,8 @@ rejectButton.addEventListener("click", reject);
 
 const acceptButton = document.getElementById("accept");
 acceptButton.addEventListener("click", accept);
+
+globalThis.addEventListener("beforeunload", close);
 
 // -----------------------------------------------------------------------------
 // main
@@ -75,6 +78,7 @@ async function reject() {
   try {
     await console.log("rejected");
 
+    SELECTED_ACTION = "reject";
     globalThis.close();
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -88,7 +92,21 @@ async function accept() {
   try {
     await console.log("accepted");
 
+    SELECTED_ACTION = "accept";
     globalThis.close();
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// close
+// -----------------------------------------------------------------------------
+async function close() {
+  try {
+    if (SELECTED_ACTION) return;
+
+    await console.log("close");
   } catch (e) {
     if (DEBUG) console.error(e);
   }
