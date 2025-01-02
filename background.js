@@ -161,8 +161,8 @@ function initializeCall(msg) {
       ),
       type: "popup",
       focused: true,
-      width: 400,
-      height: 200,
+      width: 320,
+      height: 120,
     });
   } catch (e) {
     if (DEBUG) console.error(e);

@@ -8,21 +8,34 @@
 
       .info {
         display: flex;
-        align-items: left;
-        margin: 8px;
+        align-items: center;
+        justify-content: left;
+        color: dimgray;
+        font-size: 16px;
+      }
+
+      .phone {
+        margin-left: 8px;
+        margin-right: 4px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .desc {
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       .action {
         display: flex;
-        align-items: center;
         justify-content: center;
-        margin: 32px;
+        gap: 32px;
       }
 
       button {
         width: 38px;
         height: 32px;
-        margin: 8px 18px;
+        margin-top: 32px;
         padding: 0px;
         border: none;
         border-radius: 16px;
@@ -40,12 +53,19 @@
   </head>
   <body>
     <div class="info">
-      Phone is calling
+      <img src="/assets/phone.svg" alt="phone">
+      <span id="phone" class="phone">Phone</span>
+      <span class="desc">is ringing</span>
     </div>
 
     <div class="action">
-      <button class="reject">Reject</button>
-      <button class="accept">Accept</button>
+      <button class="reject">
+        <img src="/assets/reject.svg" alt="reject">
+      </button>
+
+      <button class="accept">
+        <img src="/assets/accept.svg" alt="accept">
+      </button>
     </div>
     <script src="phone.js"></script>
   </body>
