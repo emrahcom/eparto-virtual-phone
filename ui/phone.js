@@ -32,6 +32,15 @@ async function watchCall() {
 }
 
 // -----------------------------------------------------------------------------
+// Event listeners
+// -----------------------------------------------------------------------------
+const rejectButton = document.getElementById("reject");
+rejectButton.addEventListener("click", reject);
+
+const acceptButton = document.getElementById("accept");
+acceptButton.addEventListener("click", accept);
+
+// -----------------------------------------------------------------------------
 // main
 // -----------------------------------------------------------------------------
 updateUi();
@@ -45,7 +54,13 @@ async function updateUi() {
     const call = storedItems[`call-${MSGID}`];
     if (!call) throw "missing call object";
 
-    await console.log(call);
+    const phoneName = call?.intercom_attr?.phone_name;
+    if (!phoneName) return;
+
+    const el = document.getElementById("phone");
+    if (!el) return;
+
+    el.textContent = phoneName;
   } catch (e) {
     if (DEBUG) console.error(e);
 
@@ -56,7 +71,6 @@ async function updateUi() {
 // -----------------------------------------------------------------------------
 // reject
 // -----------------------------------------------------------------------------
-// deno-lint-ignore no-unused-vars
 async function reject() {
   try {
     await console.log("rejected");
@@ -70,7 +84,6 @@ async function reject() {
 // -----------------------------------------------------------------------------
 // accept
 // -----------------------------------------------------------------------------
-// deno-lint-ignore no-unused-vars
 async function accept() {
   try {
     await console.log("accepted");
