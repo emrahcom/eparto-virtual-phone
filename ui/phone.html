@@ -43,11 +43,11 @@
       }
 
       .reject {
-        background-color: #FF4D4D;
+        background-color: #ff4d4d;
       }
 
       .accept {
-        background-color: #4CAF50;
+        background-color: #4caf50;
       }
     </style>
   </head>
@@ -58,12 +58,12 @@
       <span class="desc">is ringing</span>
     </div>
 
-    <div class="action">
+    <div class="action" onclick="reject()">
       <button class="reject">
         <img src="/assets/reject.svg" alt="reject">
       </button>
 
-      <button class="accept">
+      <button class="accept" onclick="accept()">
         <img src="/assets/accept.svg" alt="accept">
       </button>
     </div>
