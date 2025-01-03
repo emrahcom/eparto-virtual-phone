@@ -82,7 +82,7 @@ async function saveOptions() {
     value = value.trim();
 
     const item = {
-      "base-url": (baseUrl.value || DEFAULT_BASE_URL).replace(/[/\s]+$/, ""),
+      "base-url": value,
     };
     await chrome.storage.local.set(item);
 
