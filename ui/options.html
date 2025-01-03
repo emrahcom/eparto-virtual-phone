@@ -52,6 +52,12 @@
         outline: none;
       }
 
+      .base-url {
+        background-color: #f0f0f0;
+        color: damgray;
+        opacity: 0.6;
+      }
+
       .action {
         display: flex;
         justify-content: flex-end;
@@ -95,7 +101,12 @@
       <input id="private-key" type="text" placeholder="Enter your private key">
 
       <label for="base-url">Server Address</label>
-      <input id="base-url" type="text" placeholder="Enter the server address">
+      <input
+        id="base-url"
+        class="base-url"
+        type="text"
+        placeholder="Enter the server address"
+      >
 
       <div class="action">
         <button id="cancel" class="cancel">Cancel</button>
