@@ -30,6 +30,7 @@ async function initialize() {
     let storedItems = await chrome.storage.local.get("private-key");
     let item = storedItems["private-key"];
     if (item) {
+      // Show only the first and last two characters, not the whole key...
       const privateKey = document.getElementById("private-key");
       privateKey.value = item.slice(0, 2) + "*****" + item.slice(-2);
     }
@@ -59,8 +60,9 @@ function cancelOptions() {
 async function saveOptions() {
   try {
     // The input box shows the shadowed value by default which is shorter than
-    // 20 characters. If the user updates this box, new value is longer than 20
-    // characters. Save it if there is a new value or an empty string.
+    // 20 characters. If the user updates this box, the new value will be longer
+    // than 20 characters. Save it if there is a new value or if it is an empty
+    // string.
     const privateKey = document.getElementById("private-key");
     if (!privateKey) throw "missing input box, private-key";
     if (privateKey.value.length === 0 || privateKey.value.length > 20) {
@@ -75,7 +77,7 @@ async function saveOptions() {
     const baseUrl = document.getElementById("base-url");
     if (!baseUrl) throw "missing input box, base-url";
     const item = {
-      "base-url": (baseUrl.value || DEFAULT_BASE_URL).replace(/\/+$/, ""),
+      "base-url": (baseUrl.value || DEFAULT_BASE_URL).replace(/[/\s]+$/, ""),
     };
     await chrome.storage.local.set(item);
 
