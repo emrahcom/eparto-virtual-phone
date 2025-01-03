@@ -29,9 +29,15 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
   try {
-    const url = "https://app.galaxy.corp/api/pub/intercom/list";
-    const code =
-      "8e078c951e0b944089f986ed8bbba32bc5e783cb1dfc3fabdce860ddad7807bf";
+    const storedPrivateKeys = await chrome.storage.local.get("private-key");
+    const code = storedPrivateKeys["private-key"];
+    if (!code) throw "missing private key";
+
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"];
+    if (!baseUrl) throw "missing base url";
+    const url = `${baseUrl}/api/pub/intercom/list`;
+
     const payload = {
       code: code,
     };
