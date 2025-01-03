@@ -73,6 +73,10 @@ async function initialize() {
     // Update the phone name in UI.
     const el = document.getElementById("phone");
     if (el) el.textContent = phoneName;
+
+    // Start ringing.
+    const ring = document.getElementById("ring");
+    if (ring) ring.play();
   } catch (e) {
     if (DEBUG) console.error(e);
 
