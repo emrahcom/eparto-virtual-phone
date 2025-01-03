@@ -133,7 +133,7 @@ async function setStatus(status) {
     const url = `${baseUrl}/api/pub/intercom/set/${status}`;
     const payload = {
       code: code,
-      intercomId: MSGID,
+      id: MSGID,
     };
 
     const res = await fetch(url, {
