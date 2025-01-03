@@ -8,6 +8,7 @@
   "host_permissions": [
     "https://*/api/pub/intercom/list"
   ],
+  "options_page": "ui/options.html",
   "background": {
     "service_worker": "background.js"
   },

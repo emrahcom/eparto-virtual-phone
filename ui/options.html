@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 20px;
+        background-color: #f9fafc;
+        font-family: "Roboto", sans-serif;
+      }
+
+      .container {
+        padding: 25px;
+        width: 100%;
+        max-width: 400px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        font-size: 1.6em;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 15px;
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input {
+        padding: 10px;
+        margin-top: 5px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 1.0em;
+      }
+
+      input:focus {
+        border-color: #4caf50;
+        outline: none;
+      }
+
+      .buttons {
+        margin-top: 25px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+      }
+
+      button {
+        padding: 10px 16px;
+        width: 80px;
+        font-size: 1.2em;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 6px;
+        border: none;
+      }
+
+      .cancel {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .cancel:hover {
+        background-color: #e53935;
+      }
+
+      .save {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .save:hover {
+        background-color: #43a047;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Options</h2>
+      <label for="private-key">Private Key</label>
+      <input type="text" id="private-key" placeholder="Enter your private key">
+
+      <label for="base-url">Server Address</label>
+      <input type="text" id="base-url" placeholder="Enter the server address">
+
+      <div class="buttons">
+        <button id="cancel" class="cancel">Cancel</button>
+        <button id="save" class="save">Save</button>
+      </div>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>
