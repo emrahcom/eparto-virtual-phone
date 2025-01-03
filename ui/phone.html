@@ -1,9 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phone call</title>
     <style>
       body {
         background-color: #fafafa;
+        font-family: "Roboto", sans-serif;
       }
 
       .info {
@@ -11,12 +15,13 @@
         align-items: center;
         justify-content: left;
         color: dimgray;
-        font-size: 16px;
+        font-size: 1.2em;
       }
 
       .phone {
         margin-left: 8px;
         margin-right: 4px;
+        font-weight: 600;
         overflow: hidden;
         white-space: nowrap;
       }
@@ -29,13 +34,13 @@
       .action {
         display: flex;
         justify-content: center;
+        margin-top: 32px;
         gap: 32px;
       }
 
       button {
         width: 38px;
         height: 32px;
-        margin-top: 32px;
         padding: 0px;
         border: none;
         border-radius: 16px;
@@ -46,8 +51,16 @@
         background-color: #ff4d4d;
       }
 
+      .reject:hover {
+        background-color: #e53935;
+      }
+
       .accept {
         background-color: #4caf50;
+      }
+
+      .accept:hover {
+        background-color: #43a047;
       }
     </style>
   </head>

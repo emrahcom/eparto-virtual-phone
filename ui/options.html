@@ -52,25 +52,25 @@
         outline: none;
       }
 
-      .buttons {
-        margin-top: 25px;
+      .action {
         display: flex;
         justify-content: flex-end;
+        margin-top: 25px;
         gap: 20px;
       }
 
       button {
-        padding: 10px 16px;
         width: 80px;
+        padding: 10px 16px;
         font-size: 1.2em;
         font-weight: 600;
-        cursor: pointer;
-        border-radius: 6px;
         border: none;
+        border-radius: 6px;
+        cursor: pointer;
       }
 
       .cancel {
-        background-color: #f44336;
+        background-color: #ff4d4d;
         color: white;
       }
 
@@ -92,12 +92,12 @@
     <div class="container">
       <h2>Options</h2>
       <label for="private-key">Private Key</label>
-      <input type="text" id="private-key" placeholder="Enter your private key">
+      <input id="private-key" type="text" placeholder="Enter your private key">
 
       <label for="base-url">Server Address</label>
-      <input type="text" id="base-url" placeholder="Enter the server address">
+      <input id="base-url" type="text" placeholder="Enter the server address">
 
-      <div class="buttons">
+      <div class="action">
         <button id="cancel" class="cancel">Cancel</button>
         <button id="save" class="save">Save</button>
       </div>
