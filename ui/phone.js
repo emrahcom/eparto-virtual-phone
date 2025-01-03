@@ -89,7 +89,8 @@ async function initialize() {
 // -----------------------------------------------------------------------------
 async function rejectCall() {
   try {
-    await console.log("rejected");
+    // Set intercom status as accepted.
+    await setStatus("rejected");
 
     // Close the popup.
     globalThis.close();
@@ -103,14 +104,51 @@ async function rejectCall() {
 // -----------------------------------------------------------------------------
 async function acceptCall() {
   try {
-    await console.log("accepted");
+    // Set intercom status as accepted.
+    const res = await setStatus("accepted");
 
     // Open the call in a new tab.
-    globalThis.open(CALL_URL, "_blank");
+    if (res) globalThis.open(CALL_URL, "_blank");
 
     // Close the popup.
     globalThis.close();
   } catch (e) {
     if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// setStatus (inform the caller about your response)
+// -----------------------------------------------------------------------------
+async function setStatus(status) {
+  try {
+    const storedPrivateKeys = await chrome.storage.local.get("private-key");
+    const code = storedPrivateKeys["private-key"];
+    if (!code) throw "missing private key";
+
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"];
+    if (!baseUrl) throw "missing base url";
+
+    const url = `${baseUrl}/api/pub/intercom/set/${status}`;
+    const payload = {
+      code: code,
+      intercomId: MSGID,
+    };
+
+    const res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+      method: "post",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw "failed request";
+
+    return await res.json();
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return undefined;
   }
 }

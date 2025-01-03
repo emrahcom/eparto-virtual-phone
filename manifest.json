@@ -6,7 +6,8 @@
   "homepage_url": "https://github.com/emrahcom/galaxy-chrome-extension",
   "permissions": ["alarms", "storage"],
   "host_permissions": [
-    "https://*/api/pub/intercom/list"
+    "https://*/api/pub/intercom/list",
+    "https://*/api/pub/intercom/set/*"
   ],
   "options_page": "ui/options.html",
   "background": {
