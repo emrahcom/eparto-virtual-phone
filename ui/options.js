@@ -76,6 +76,11 @@ async function saveOptions() {
     // value by using DEFAULT_BASE_URL. Dont save the trailing "/" character.
     const baseUrl = document.getElementById("base-url");
     if (!baseUrl) throw "missing input box, base-url";
+
+    let value = baseUrl.value || DEFAULT_BASE_URL;
+    value = value.replace(/[/\s]+$/, "");
+    value = value.trim();
+
     const item = {
       "base-url": (baseUrl.value || DEFAULT_BASE_URL).replace(/[/\s]+$/, ""),
     };
