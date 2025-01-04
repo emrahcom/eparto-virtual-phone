@@ -38,10 +38,9 @@ async function initialize() {
     // Initialize the base url.
     storedItems = await chrome.storage.local.get("base-url");
     item = storedItems["base-url"] || DEFAULT_BASE_URL;
-    if (item) {
-      const baseUrl = document.getElementById("base-url");
-      baseUrl.value = item;
-    }
+
+    const baseUrl = document.getElementById("base-url");
+    baseUrl.value = item;
   } catch (e) {
     if (DEBUG) console.error(e);
   }
