@@ -15,10 +15,13 @@ let CALL_URL;
 // -----------------------------------------------------------------------------
 setTimeout(watchCall, 1000);
 
+// -----------------------------------------------------------------------------
+// watchCall
+// -----------------------------------------------------------------------------
 async function watchCall() {
   try {
     // Get the call object from the storage. The background script saves and
-    // keep it up-to-date.
+    // keeps it up-to-date.
     const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
     const call = storedItems[`call-${MSGID}`];
 
@@ -62,7 +65,7 @@ async function initialize() {
     // the storage before opening this popup.
     const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
     const call = storedItems[`call-${MSGID}`];
-    if (!call) throw "missing call object";
+    if (!call) throw "missing call object (initizaling)";
 
     // URL of the call with moderator token.
     CALL_URL = call?.intercom_attr?.owner_url;
@@ -70,7 +73,7 @@ async function initialize() {
 
     // Name of ringing public phone.
     const phoneName = call?.intercom_attr?.phone_name;
-    if (!phoneName) return;
+    if (!phoneName) throw "missing phone name";
 
     // Update the phone name in UI.
     const el = document.getElementById("phone");
@@ -91,7 +94,7 @@ async function initialize() {
 // -----------------------------------------------------------------------------
 async function rejectCall() {
   try {
-    // Set intercom status as accepted.
+    // Set intercom status as rejected.
     await setStatus("rejected");
 
     // Close the popup.
