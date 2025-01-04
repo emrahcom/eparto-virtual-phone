@@ -17,7 +17,15 @@ async function initialize() {
   try {
     const contacts = await getContactList();
 
-    console.log(contacts);
+    if (!contacts) {
+      showFailedRequest();
+    } else if (!Array.isArray(contacts)) {
+      showUnexpectedResponse();
+    } else if (contacts.length === 0) {
+      showEmptyContactList();
+    } else {
+      showContactList(contacts);
+    }
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -28,4 +36,53 @@ async function initialize() {
 // -----------------------------------------------------------------------------
 async function getContactList() {
   return await getByCode("api/pub/contact/list");
+}
+
+// -----------------------------------------------------------------------------
+// showFailedRequest
+// -----------------------------------------------------------------------------
+function showFailedRequest() {
+  console.log("failed request");
+}
+
+// -----------------------------------------------------------------------------
+// showUnexpectedResponse (alias for showFailedRequest)
+// -----------------------------------------------------------------------------
+function showUnexpectedResponse() {
+  console.log("unexpected response");
+}
+
+// -----------------------------------------------------------------------------
+// showEmptyContactList
+// -----------------------------------------------------------------------------
+function showEmptyContactList() {
+  console.log("empty list");
+}
+
+// -----------------------------------------------------------------------------
+// showContactList
+// -----------------------------------------------------------------------------
+function showContactList(contacts) {
+  try {
+    const container = document.getElementById("contact-list");
+    if (!container) throw "missing contact list container";
+
+    for (const c of contacts) {
+      const div = document.createElement("div");
+      div.className = "contact";
+      div.innerHTML = `
+        <div class="contact-info">
+          <h3 class="contact-name">${c.name}</h3>
+          <p class="contact-email">${c.profile_email}</p>
+        </div>
+
+        <button class="phone idle">
+          <img src="/assets/accept.svg" alt="accept">
+        </button>
+      `;
+      container.appendChild(div);
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
 }

@@ -46,6 +46,7 @@
       .phone {
         width: 38px;
         height: 32px;
+        margin-left: 10px;
         padding: 0px;
         border: none;
         border-radius: 16px;
@@ -53,15 +54,15 @@
       }
 
       .phone.online {
-        background-color: #16A34A;
+        background-color: #16a34a;
       }
 
       .phone.idle {
-        background-color: #F59E0B;
+        background-color: #f59e0b;
       }
 
       .phone.offline {
-        background-color: #6B7280;
+        background-color: #6b7280;
       }
 
       .phone:hover {
@@ -71,37 +72,8 @@
   </head>
 
   <body>
-    <div class="contact-list">
-      <div class="contact">
-        <div class="contact-info">
-          <h3 class="contact-name">John Doe</h3>
-          <p class="contact-email">john.doe@example.com</p>
-        </div>
-        <button class="phone online">
-          <img src="/assets/accept.svg" alt="accept">
-        </button>
-      </div>
+    <div id="contact-list" class="contact-list"></div>
 
-      <div class="contact">
-        <div class="contact-info">
-          <h3 class="contact-name">Jane Smith</h3>
-          <p class="contact-email">jane.smith@example.com</p>
-        </div>
-        <button class="phone idle">
-          <img src="/assets/accept.svg" alt="accept">
-        </button>
-      </div>
-
-      <div class="contact">
-        <div class="contact-info">
-          <h3 class="contact-name">Jane Smith</h3>
-          <p class="contact-email">jane.smith.jane.smith@example.com</p>
-        </div>
-        <button class="phone offline">
-          <img src="/assets/accept.svg" alt="accept">
-        </button>
-      </div>
-    </div>
     <script type="module" src="popup.js"></script>
   </body>
 </html>
