@@ -5,15 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxy Virtual Phone</title>
     <style>
-      body {
-        background-color: #fafafa;
+      .contact-list {
+        width: 98%;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 4px;
         font-family: "Roboto", sans-serif;
+        overflow-y: auto;
+      }
+
+      .contact {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #fafafa;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        height: 60px;
+      }
+
+      .contact-info {
+        flex-grow: 1;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .contact-name {
+        font-size: 1.3em;
+        color: #333;
+        margin: 0;
+      }
+
+      .contact-email {
+        font-size: 0.9em;
+        color: dimgray;
+      }
+
+      .phone {
+        width: 38px;
+        height: 32px;
+        padding: 0px;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+      }
+
+      .phone.online {
+        background-color: #16A34A;
+      }
+
+      .phone.idle {
+        background-color: #F59E0B;
+      }
+
+      .phone.offline {
+        background-color: #6B7280;
+      }
+
+      .phone:hover {
+        opacity: 0.8;
       }
     </style>
   </head>
 
   <body>
-    Default
+    <div class="contact-list">
+      <div class="contact">
+        <div class="contact-info">
+          <h3 class="contact-name">John Doe</h3>
+          <p class="contact-email">john.doe@example.com</p>
+        </div>
+        <button class="phone online">
+          <img src="/assets/accept.svg" alt="accept">
+        </button>
+      </div>
+
+      <div class="contact">
+        <div class="contact-info">
+          <h3 class="contact-name">Jane Smith</h3>
+          <p class="contact-email">jane.smith@example.com</p>
+        </div>
+        <button class="phone idle">
+          <img src="/assets/accept.svg" alt="accept">
+        </button>
+      </div>
+
+      <div class="contact">
+        <div class="contact-info">
+          <h3 class="contact-name">Jane Smith</h3>
+          <p class="contact-email">jane.smith.jane.smith@example.com</p>
+        </div>
+        <button class="phone offline">
+          <img src="/assets/accept.svg" alt="accept">
+        </button>
+      </div>
+    </div>
     <script type="module" src="popup.js"></script>
   </body>
 </html>
