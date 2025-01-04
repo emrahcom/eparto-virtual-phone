@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Galaxy virtual phone",
-  "version": "0.1",
+  "version": "20250104.1",
   "description": "Use your browser as a virtual phone",
   "homepage_url": "https://github.com/emrahcom/galaxy-chrome-extension",
   "permissions": ["alarms", "storage"],
