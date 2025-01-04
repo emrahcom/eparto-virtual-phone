@@ -1,6 +1,8 @@
 // -----------------------------------------------------------------------------
-// Globals
+// Imports and globals
 // -----------------------------------------------------------------------------
+import { getByCode } from "./lib/common.js";
+
 const DEBUG = true;
 
 // -----------------------------------------------------------------------------
@@ -48,43 +50,6 @@ async function ping() {
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
   return await getByCode("api/pub/intercom/list");
-}
-
-// -----------------------------------------------------------------------------
-// getByCode
-// -----------------------------------------------------------------------------
-async function getByCode(path) {
-  try {
-    if (!path) throw "missing path";
-
-    const storedPrivateKeys = await chrome.storage.local.get("private-key");
-    const code = storedPrivateKeys["private-key"];
-    if (!code) throw "missing private key (code)";
-
-    const storedBaseUrls = await chrome.storage.local.get("base-url");
-    const baseUrl = storedBaseUrls["base-url"];
-    if (!baseUrl) throw "missing base url";
-    const url = `${baseUrl}/${path}`;
-
-    const payload = {
-      code: code,
-    };
-
-    const res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw "failed request";
-
-    return await res.json();
-  } catch (e) {
-    if (DEBUG) console.error(e);
-
-    return undefined;
-  }
 }
 
 // -----------------------------------------------------------------------------
