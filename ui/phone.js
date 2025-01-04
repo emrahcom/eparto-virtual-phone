@@ -1,6 +1,8 @@
 // -----------------------------------------------------------------------------
-// Globals
+// Imports and globals
 // -----------------------------------------------------------------------------
+import { getByCode } from "../lib/common.js";
+
 const DEBUG = true;
 
 const qs = new URLSearchParams(globalThis.location.search);
@@ -121,34 +123,9 @@ async function acceptCall() {
 // setStatus (inform the caller about your response)
 // -----------------------------------------------------------------------------
 async function setStatus(status) {
-  try {
-    const storedPrivateKeys = await chrome.storage.local.get("private-key");
-    const code = storedPrivateKeys["private-key"];
-    if (!code) throw "missing private key (code)";
+  const payload = {
+    id: MSGID,
+  };
 
-    const storedBaseUrls = await chrome.storage.local.get("base-url");
-    const baseUrl = storedBaseUrls["base-url"];
-    if (!baseUrl) throw "missing base url";
-
-    const url = `${baseUrl}/api/pub/intercom/set/${status}`;
-    const payload = {
-      code: code,
-      id: MSGID,
-    };
-
-    const res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw "failed request";
-
-    return await res.json();
-  } catch (e) {
-    if (DEBUG) console.error(e);
-
-    return undefined;
-  }
+  return await getByCode(`api/pub/intercom/set/${status}`, payload);
 }
