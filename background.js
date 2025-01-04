@@ -6,7 +6,7 @@ const DEBUG = true;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-// Ping (update presence)
+// Ping (update presence).
 chrome.alarms.create("ping", {
   periodInMinutes: 1,
 });
@@ -40,48 +40,31 @@ ping();
 // ping
 // -----------------------------------------------------------------------------
 async function ping() {
-  try {
-    const storedPrivateKeys = await chrome.storage.local.get("private-key");
-    const code = storedPrivateKeys["private-key"];
-    if (!code) throw "missing private key";
-
-    const storedBaseUrls = await chrome.storage.local.get("base-url");
-    const baseUrl = storedBaseUrls["base-url"];
-    if (!baseUrl) throw "missing base url";
-    const url = `${baseUrl}/api/pub/identity/ping`;
-
-    const payload = {
-      code: code,
-    };
-
-    const res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw "failed request";
-
-    return await res.json();
-  } catch (e) {
-    if (DEBUG) console.error(e);
-  }
+  return await getByCode("api/pub/identity/ping");
 }
 
 // -----------------------------------------------------------------------------
 // getIntercomMessages
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
+  return await getByCode("api/pub/intercom/list");
+}
+
+// -----------------------------------------------------------------------------
+// getByCode
+// -----------------------------------------------------------------------------
+async function getByCode(path) {
   try {
+    if (!path) throw "missing path";
+
     const storedPrivateKeys = await chrome.storage.local.get("private-key");
     const code = storedPrivateKeys["private-key"];
-    if (!code) throw "missing private key";
+    if (!code) throw "missing private key (code)";
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"];
     if (!baseUrl) throw "missing base url";
-    const url = `${baseUrl}/api/pub/intercom/list`;
+    const url = `${baseUrl}/${path}`;
 
     const payload = {
       code: code,

@@ -124,7 +124,7 @@ async function setStatus(status) {
   try {
     const storedPrivateKeys = await chrome.storage.local.get("private-key");
     const code = storedPrivateKeys["private-key"];
-    if (!code) throw "missing private key";
+    if (!code) throw "missing private key (code)";
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"];
