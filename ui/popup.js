@@ -68,21 +68,41 @@ function showContactList(contacts) {
     if (!container) throw "missing contact list container";
 
     for (const c of contacts) {
+      const status = getStatus(Number(c?.seen_second_ago));
       const div = document.createElement("div");
       div.className = "contact";
       div.innerHTML = `
         <div class="contact-info">
-          <h3 class="contact-name">${c.name}</h3>
-          <p class="contact-email">${c.profile_email}</p>
+          <h3 class="contact-name">${c?.name}</h3>
+          <p class="contact-email">${c?.profile_email}</p>
         </div>
 
-        <button class="phone idle">
-          <img src="/assets/accept.svg" alt="accept">
+        <button class="phone ${status}">
+          <img src="/assets/phone.svg" alt="call ${status}">
         </button>
       `;
       container.appendChild(div);
     }
   } catch (e) {
     if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// getStatus
+// -----------------------------------------------------------------------------
+function getStatus(second) {
+  try {
+    if (second < 100) {
+      return "online";
+    } else if (second < 3600) {
+      return "idle";
+    } else {
+      return "offline";
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return "offline";
   }
 }
