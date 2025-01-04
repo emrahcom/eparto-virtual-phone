@@ -8,7 +8,7 @@ const DEBUG = true;
 // -----------------------------------------------------------------------------
 // Ping (update presence)
 chrome.alarms.create("ping", {
-  periodInMinutes: 0.5,
+  periodInMinutes: 1,
 });
 
 // Poll intercom messages.
