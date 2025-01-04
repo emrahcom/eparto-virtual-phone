@@ -18,6 +18,7 @@ chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
 
+// Alarm listeners.
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "ping") {
     ping();
@@ -89,10 +90,9 @@ async function removeOldMessagesFromStorage(messages) {
       if (!key.startsWith("call-")) continue;
 
       const msgId = key.substr(5);
+      if (ids.includes(msgId)) continue;
 
-      if (!ids.includes(msgId)) {
-        await chrome.storage.session.remove(`call-${msgId}`);
-      }
+      await chrome.storage.session.remove(`call-${msgId}`);
     }
   } catch (e) {
     if (DEBUG) console.error(e);
