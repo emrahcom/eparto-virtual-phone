@@ -6,13 +6,20 @@ const DEBUG = true;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
+// Ping (update presence)
+chrome.alarms.create("ping", {
+  periodInMinutes: 0.5,
+});
+
 // Poll intercom messages.
 chrome.alarms.create("intercomMessages", {
   periodInMinutes: 0.035,
 });
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "intercomMessages") {
+  if (alarm.name === "ping") {
+    ping();
+  } else if (alarm.name === "intercomMessages") {
     // Known issue: if this alarm ends after the next alarm because of some
     // network issues then the old message will overwrite the new one but dont
     // fix, skip it.
@@ -23,6 +30,39 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     cleanupCall(msgId);
   }
 });
+
+// -----------------------------------------------------------------------------
+// ping
+// -----------------------------------------------------------------------------
+async function ping() {
+  try {
+    const storedPrivateKeys = await chrome.storage.local.get("private-key");
+    const code = storedPrivateKeys["private-key"];
+    if (!code) throw "missing private key";
+
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"];
+    if (!baseUrl) throw "missing base url";
+    const url = `${baseUrl}/api/pub/identity/ping`;
+
+    const payload = {
+      code: code,
+    };
+
+    const res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+      method: "post",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw "failed request";
+
+    return await res.json();
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
 
 // -----------------------------------------------------------------------------
 // getIntercomMessages
