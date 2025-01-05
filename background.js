@@ -156,7 +156,7 @@ function initializeCall(msg) {
     // Create the popup and show it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
-        `ui/${msg.message_type}.html?id=${msg.id}`,
+        `ui/incoming-${msg.message_type}.html?id=${msg.id}`,
       ),
       type: "popup",
       focused: true,
