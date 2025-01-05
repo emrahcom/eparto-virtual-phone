@@ -98,6 +98,7 @@ function generateContactDiv(contact) {
     contactInfo.appendChild(contactName);
     contactInfo.appendChild(contactEmail);
 
+    const callSpinner = generateSpinner();
     const phoneIcon = document.createElement("img");
     phoneIcon.src = "/assets/phone.svg";
     phoneIcon.alt = `call ${contactStatus}`;
@@ -105,7 +106,7 @@ function generateContactDiv(contact) {
     const phoneButton = document.createElement("button");
     phoneButton.className = `phone ${contactStatus}`;
     phoneButton.onclick = function () {
-      onPhoneClick(phoneButton, contact);
+      onPhoneClick(phoneButton, callSpinner, contact);
     };
     phoneButton.appendChild(phoneIcon);
 
@@ -113,6 +114,7 @@ function generateContactDiv(contact) {
     contactDiv.className = "contact";
     contactDiv.appendChild(contactInfo);
     contactDiv.appendChild(phoneButton);
+    contactDiv.appendChild(callSpinner);
 
     return contactDiv;
   } catch (e) {
@@ -120,6 +122,22 @@ function generateContactDiv(contact) {
 
     return undefined;
   }
+}
+
+// -----------------------------------------------------------------------------
+// generateSpinner
+// -----------------------------------------------------------------------------
+function generateSpinner() {
+  const spinnerDiv = document.createElement("div");
+  spinnerDiv.className = "spinner";
+  spinnerDiv.style.display = "none";
+  spinnerDiv.innerHTML = `
+    <div class="spinner-circle"></div>
+    <div class="spinner-circle"></div>
+    <div class="spinner-circle"></div>
+  `;
+
+  return spinnerDiv;
 }
 
 // -----------------------------------------------------------------------------
@@ -144,9 +162,12 @@ function getContactStatus(second) {
 // -----------------------------------------------------------------------------
 // onPhoneClick
 // -----------------------------------------------------------------------------
-async function onPhoneClick(button, contact) {
+async function onPhoneClick(button, spinner, contact) {
   try {
+    button.style.display = "none";
+    spinner.style.display = "flex";
     await console.log(button);
+    await console.log(spinner);
     await console.log(contact);
   } catch (e) {
     if (DEBUG) console.error(e);
