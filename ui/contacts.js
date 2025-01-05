@@ -65,23 +65,13 @@ function showEmptyContactList() {
 function showContactList(contacts) {
   try {
     const container = document.getElementById("contact-list");
-    if (!container) throw "missing contact list container";
+    if (!container) throw "missing contact-list container";
 
-    for (const c of contacts) {
-      const status = getStatus(Number(c?.seen_second_ago));
-      const div = document.createElement("div");
-      div.className = "contact";
-      div.innerHTML = `
-        <div class="contact-info">
-          <h3 class="contact-name">${c?.name}</h3>
-          <p class="contact-email">${c?.profile_email}</p>
-        </div>
+    for (const contact of contacts) {
+      const contactDiv = generateContactDiv(contact);
+      if (!contactDiv) continue;
 
-        <button class="phone ${status}">
-          <img src="/assets/phone.svg" alt="call ${status}">
-        </button>
-      `;
-      container.appendChild(div);
+      container.appendChild(contactDiv);
     }
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -89,9 +79,50 @@ function showContactList(contacts) {
 }
 
 // -----------------------------------------------------------------------------
-// getStatus
+// generateContactDiv
 // -----------------------------------------------------------------------------
-function getStatus(second) {
+function generateContactDiv(contact) {
+  try {
+    const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
+
+    const contactName = document.createElement("h3");
+    contactName.className = "contact-name";
+    contactName.textContent = contact?.name || "";
+
+    const contactEmail = document.createElement("p");
+    contactEmail.className = "contact-email";
+    contactEmail.textContent = contact?.profile_email || "";
+
+    const contactInfo = document.createElement("div");
+    contactInfo.className = "contact-info";
+    contactInfo.appendChild(contactName);
+    contactInfo.appendChild(contactEmail);
+
+    const img = document.createElement("img");
+    img.src = "/assets/phone.svg";
+    img.alt = `call ${contactStatus}`;
+
+    const phoneButton = document.createElement("button");
+    phoneButton.className = `phone ${contactStatus}`;
+    phoneButton.appendChild(img);
+
+    const contactDiv = document.createElement("div");
+    contactDiv.className = "contact";
+    contactDiv.appendChild(contactInfo);
+    contactDiv.appendChild(phoneButton);
+
+    return contactDiv;
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return undefined;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// getContactStatus
+// -----------------------------------------------------------------------------
+function getContactStatus(second) {
   try {
     if (second < 100) {
       return "online";
