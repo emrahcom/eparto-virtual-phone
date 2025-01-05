@@ -35,8 +35,8 @@ async function watchCall() {
     // Check it again after a while. The background script updates it if its
     // status changes.
     setTimeout(watchCall, 500);
-  } catch (e) {
-    if (DEBUG) console.error(e);
+  } catch (_e) {
+    //if (DEBUG) console.error(_e);
 
     globalThis.close();
   }
