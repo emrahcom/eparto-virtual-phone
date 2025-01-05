@@ -75,6 +75,9 @@ async function initialize() {
     const phoneName = call?.intercom_attr?.phone_name;
     if (!phoneName) throw "missing phone name";
 
+    // Update the window title.
+    document.title = phoneName;
+
     // Update the phone name in UI.
     const el = document.getElementById("phone");
     if (el) el.textContent = phoneName;
