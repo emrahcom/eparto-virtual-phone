@@ -98,13 +98,16 @@ function generateContactDiv(contact) {
     contactInfo.appendChild(contactName);
     contactInfo.appendChild(contactEmail);
 
-    const img = document.createElement("img");
-    img.src = "/assets/phone.svg";
-    img.alt = `call ${contactStatus}`;
+    const phoneIcon = document.createElement("img");
+    phoneIcon.src = "/assets/phone.svg";
+    phoneIcon.alt = `call ${contactStatus}`;
 
     const phoneButton = document.createElement("button");
     phoneButton.className = `phone ${contactStatus}`;
-    phoneButton.appendChild(img);
+    phoneButton.onclick = function () {
+      onPhoneClick(phoneButton, contact);
+    };
+    phoneButton.appendChild(phoneIcon);
 
     const contactDiv = document.createElement("div");
     contactDiv.className = "contact";
@@ -135,5 +138,17 @@ function getContactStatus(second) {
     if (DEBUG) console.error(e);
 
     return "offline";
+  }
+}
+
+// -----------------------------------------------------------------------------
+// onPhoneClick
+// -----------------------------------------------------------------------------
+async function onPhoneClick(button, contact) {
+  try {
+    await console.log(button);
+    await console.log(contact);
+  } catch (e) {
+    if (DEBUG) console.error(e);
   }
 }
