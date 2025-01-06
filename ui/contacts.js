@@ -85,20 +85,11 @@ function generateContactDiv(contact) {
   try {
     const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
 
-    const contactName = document.createElement("h3");
-    contactName.className = "contact-name";
-    contactName.textContent = contact?.name || "";
-
-    const contactEmail = document.createElement("p");
-    contactEmail.className = "contact-email";
-    contactEmail.textContent = contact?.profile_email || "";
-
-    const contactInfo = document.createElement("div");
-    contactInfo.className = "contact-info";
-    contactInfo.appendChild(contactName);
-    contactInfo.appendChild(contactEmail);
+    const contactInfoDiv = generateContactInfoDiv(contact);
+    if (!contactInfoDiv) throw "failed while generating contact info div";
 
     const callSpinner = generateSpinner();
+
     const phoneIcon = document.createElement("img");
     phoneIcon.src = "/assets/phone.svg";
     phoneIcon.alt = `call ${contactStatus}`;
@@ -112,11 +103,37 @@ function generateContactDiv(contact) {
 
     const contactDiv = document.createElement("div");
     contactDiv.className = "contact";
-    contactDiv.appendChild(contactInfo);
+    contactDiv.appendChild(contactInfoDiv);
     contactDiv.appendChild(phoneButton);
     contactDiv.appendChild(callSpinner);
 
     return contactDiv;
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return undefined;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// generateContactInfoDiv
+// -----------------------------------------------------------------------------
+function generateContactInfoDiv(contact) {
+  try {
+    const contactName = document.createElement("h3");
+    contactName.className = "contact-info-name";
+    contactName.textContent = contact?.name || "";
+
+    const contactEmail = document.createElement("p");
+    contactEmail.className = "contact-info-email";
+    contactEmail.textContent = contact?.profile_email || "";
+
+    const contactInfoDiv = document.createElement("div");
+    contactInfoDiv.className = "contact-info";
+    contactInfoDiv.appendChild(contactName);
+    contactInfoDiv.appendChild(contactEmail);
+
+    return contactInfoDiv;
   } catch (e) {
     if (DEBUG) console.error(e);
 
