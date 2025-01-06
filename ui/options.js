@@ -76,9 +76,9 @@ async function saveOptions() {
     const baseUrl = document.getElementById("base-url");
     if (!baseUrl) throw "missing input box, base-url";
 
-    let value = baseUrl.value || DEFAULT_BASE_URL;
+    let value = baseUrl.value;
     value = value.replace(/[/\s]+$/, "");
-    value = value.trim();
+    value = value.trim() || DEFAULT_BASE_URL;
 
     const item = {
       "base-url": value,

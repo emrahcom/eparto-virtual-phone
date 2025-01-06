@@ -20,20 +20,26 @@ setTimeout(watchCall, 1000);
 // -----------------------------------------------------------------------------
 async function watchCall() {
   try {
-    // Get the call object from the storage. The background script saves and
+    // Get the call object from the storage. The background script saves it and
     // keeps it up-to-date.
     const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
     const call = storedItems[`call-${MSGID}`];
 
+    // If it doesn't exist, this means that it has been ended by the caller.
     if (!call) throw "missing call object";
+
+    // Dont continue if another client has handled the call.
     if (call.status !== "none") throw "already processed by another client";
 
+    // Dont continue if it is expired. Expiration happens when the call is not
+    // ended properly by the caller. For example, if she closes her browser
+    // directly without canceling the call...
     const expiredAt = new Date(call.expired_at);
     if (isNaN(expiredAt)) throw "invalid expire time";
     if (Date.now() > expiredAt.getTime()) throw "expired call";
 
-    // Check it again after a while. The background script updates it if its
-    // status changes.
+    // Check it again after a while. The background script will update its
+    // status if its status changes.
     setTimeout(watchCall, 500);
   } catch (_e) {
     //if (DEBUG) console.error(_e);
@@ -67,7 +73,7 @@ async function initialize() {
     const call = storedItems[`call-${MSGID}`];
     if (!call) throw "missing call object (initizaling)";
 
-    // URL of the call with moderator token.
+    // URL of the conference room with moderator token.
     CALL_URL = call?.intercom_attr?.owner_url;
     if (!CALL_URL) throw "missing call url";
 
@@ -75,7 +81,7 @@ async function initialize() {
     const phoneName = call?.intercom_attr?.phone_name;
     if (!phoneName) throw "missing phone name";
 
-    // Update the window title.
+    // Update the window title, show the name of the public phone as title.
     document.title = phoneName;
 
     // Update the phone name in UI.
@@ -115,7 +121,8 @@ async function acceptCall() {
     // Set intercom status as accepted.
     const res = await setStatus("accepted");
 
-    // Open the call in a new tab.
+    // Open the conference room in a new tab. The caller will also join this
+    // conference room when she receives "call is accepted" message.
     if (res) globalThis.open(CALL_URL, "_blank");
 
     // Close the popup.
@@ -126,7 +133,7 @@ async function acceptCall() {
 }
 
 // -----------------------------------------------------------------------------
-// setStatus (inform the caller about your response)
+// setStatus (inform the caller about the action taken)
 // -----------------------------------------------------------------------------
 async function setStatus(status) {
   const payload = {
