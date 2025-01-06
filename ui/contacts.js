@@ -101,6 +101,10 @@ function generateContactDiv(contact) {
     };
     phoneButton.appendChild(phoneIcon);
 
+    callSpinner.onclick = function () {
+      onSpinnerClick(phoneButton, callSpinner);
+    };
+
     const contactDiv = document.createElement("div");
     contactDiv.className = "contact";
     contactDiv.appendChild(contactInfoDiv);
@@ -147,12 +151,16 @@ function generateContactInfoDiv(contact) {
 function generateSpinner() {
   const spinnerDiv = document.createElement("div");
   spinnerDiv.className = "spinner";
+  spinnerDiv.title = "Cancel call";
   spinnerDiv.style.display = "none";
   spinnerDiv.innerHTML = `
     <div class="spinner-circle"></div>
     <div class="spinner-circle"></div>
     <div class="spinner-circle"></div>
   `;
+
+  // onClick event will be defined later in the caller function because it needs
+  // a reference to the phone button which is not created yet.
 
   return spinnerDiv;
 }
@@ -186,6 +194,20 @@ async function onPhoneClick(button, spinner, contact) {
     await console.log(button);
     await console.log(spinner);
     await console.log(contact);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// onSpinnerClick
+// -----------------------------------------------------------------------------
+async function onSpinnerClick(button, spinner) {
+  try {
+    spinner.style.display = "none";
+    button.style.display = "block";
+    await console.log(button);
+    await console.log(spinner);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
