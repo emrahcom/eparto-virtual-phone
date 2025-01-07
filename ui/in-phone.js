@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByCode } from "../lib/common.js";
+import { getByKey } from "../lib/common.js";
 
 const DEBUG = true;
 
@@ -140,5 +140,5 @@ async function setStatus(status) {
     id: MSGID,
   };
 
-  return await getByCode(`/api/pub/intercom/set/${status}`, payload);
+  return await getByKey(`/api/pub/intercom/set/${status}`, payload);
 }

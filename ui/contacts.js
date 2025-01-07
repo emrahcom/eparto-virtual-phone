@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByCode } from "../lib/common.js";
+import { getByKey } from "../lib/common.js";
 
 const DEBUG = true;
 
@@ -35,7 +35,7 @@ async function initialize() {
 // getContactList
 // -----------------------------------------------------------------------------
 async function getContactList() {
-  return await getByCode("/api/pub/contact/list");
+  return await getByKey("/api/pub/contact/list");
 }
 
 // -----------------------------------------------------------------------------
@@ -197,7 +197,7 @@ async function onPhoneClick(contact, phoneButton, callSpinner) {
     const payload = {
       contact_id: contact.id,
     };
-    const calls = await getByCode("/api/pub/contact/call", payload);
+    const calls = await getByKey("/api/pub/contact/call", payload);
     const call = calls[0];
     if (!call) throw "failed to initiate outgoing call";
 
