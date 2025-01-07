@@ -38,6 +38,15 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 // -----------------------------------------------------------------------------
+// onMessage (internal messages)
+// -----------------------------------------------------------------------------
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.action === "start-outcall") {
+    startOutCall(msg);
+  }
+});
+
+// -----------------------------------------------------------------------------
 // initial
 // -----------------------------------------------------------------------------
 ping();
@@ -202,21 +211,12 @@ async function cleanupInCall(msgId) {
 }
 
 // -----------------------------------------------------------------------------
-// onMessage (internal messages)
-// -----------------------------------------------------------------------------
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "start-outcall") {
-    startOutCall(msg);
-  }
-});
-
-// -----------------------------------------------------------------------------
 // startOutCall
 // -----------------------------------------------------------------------------
 async function startOutCall(call) {
   try {
     // Trigger the cleanup job which will remove the outgoing call objects after
-    // a while.
+    // a while. This will also end the call if there is no answer yet.
     triggerCleanupOutCall(call.id);
 
     // Save id of the active call as contact value. So, it is possible to find
@@ -229,7 +229,7 @@ async function startOutCall(call) {
 
     // Save the call object.
     const callItem = {
-      [`call-${call.id}`]: call.id,
+      [`outcall-${call.id}`]: call,
     };
     await chrome.storage.session.set(callItem);
 
@@ -244,10 +244,13 @@ async function startOutCall(call) {
 // -----------------------------------------------------------------------------
 function triggerCleanupOutCall(callId) {
   try {
-    // Remove all objects related with this outgoing call after 1 min. There is
-    // no problem if the browser is closed before this is done, because there
-    // are only session objects which will be removed anyway after the session.
-    chrome.alarms.create(`cleanup-outcall-${callId}`, { delayInMinutes: 1 });
+    // Remove all objects related with this outgoing call after 30 sec. This
+    // will also end the call if there is no answer yet.
+    //
+    // There is no problem if the browser is closed before this is done,
+    // because there are only session objects which will be removed anyway after
+    // the session.
+    chrome.alarms.create(`cleanup-outcall-${callId}`, { delayInMinutes: 0.5 });
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -260,7 +263,24 @@ async function cleanupOutCall(callId) {
   try {
     if (!callId) throw "missing call id";
 
+    // Get stored call object.
+    let storedItems = await chrome.storage.session.get(`outcall-${callId}`);
+    const call = storedItems[`outcall-${callId}`];
+    const contactId = call.contact_id;
+
+    // Remove the outgoing call object.
     await chrome.storage.session.remove(`outcall-${callId}`);
+
+    // Reset the active call value if it keeps this call id. If the active call
+    // for the related contact is not this call then dont reset the value. This
+    // means that a new call is stated for this contact and will be handled in
+    // another thread.
+    storedItems = await chrome.storage.session.get(`contact-${contactId}`);
+    const activeCall = storedItems[`contact-${contactId}`];
+
+    if (activeCall === callId) {
+      await chrome.storage.session.remove(`contact-${contactId}`);
+    }
   } catch (e) {
     if (DEBUG) console.error(e);
   }
