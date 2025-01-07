@@ -157,7 +157,7 @@ function initializeCall(msg) {
     // Create the popup and show it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
-        `ui/incoming-${msg.message_type}.html?id=${msg.id}`,
+        `ui/in-${msg.message_type}.html?id=${msg.id}`,
       ),
       type: "popup",
       focused: true,
@@ -195,3 +195,15 @@ async function cleanupCall(msgId) {
     if (DEBUG) console.error(e);
   }
 }
+
+// -----------------------------------------------------------------------------
+// onMessage (internal messages)
+// -----------------------------------------------------------------------------
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.action === "start-outgoing-call") {
+    console.log(msg);
+  }
+});
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

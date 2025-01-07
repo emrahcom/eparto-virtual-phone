@@ -193,6 +193,11 @@ async function onPhoneClick(button, spinner, contact) {
       contact_id: contact.id,
     };
     const calls = await getByCode("/api/pub/contact/call", payload);
+    const call = calls[0];
+    if (!call) throw "failed while starting the outgoing call";
+
+    call.action = "start-outgoing-call";
+    chrome.runtime.sendMessage(call);
 
     button.style.display = "none";
     spinner.style.display = "flex";
