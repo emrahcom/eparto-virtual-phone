@@ -22,11 +22,11 @@ async function watchCall() {
   try {
     // Get the call object from the storage. The background script saves it and
     // keeps it up-to-date.
-    const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
-    const call = storedItems[`call-${MSGID}`];
+    const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
+    const call = storedItems[`incall-${MSGID}`];
 
     // If it doesn't exist, this means that it has been ended by the caller.
-    if (!call) throw "missing call object";
+    if (!call) throw "missing incoming call object";
 
     // Dont continue if another client has handled the call.
     if (call.status !== "none") throw "already processed by another client";
@@ -35,8 +35,8 @@ async function watchCall() {
     // ended properly by the caller. For example, if she closes her browser
     // directly without canceling the call...
     const expiredAt = new Date(call.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time";
-    if (Date.now() > expiredAt.getTime()) throw "expired call";
+    if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
+    if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
 
     // Check it again after a while. The background script will update its
     // status if its status changes.
@@ -69,9 +69,9 @@ async function initialize() {
   try {
     // Get the call object from the storage. The background script saves it into
     // the storage before opening this popup.
-    const storedItems = await chrome.storage.session.get(`call-${MSGID}`);
-    const call = storedItems[`call-${MSGID}`];
-    if (!call) throw "missing call object (initizaling)";
+    const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
+    const call = storedItems[`incall-${MSGID}`];
+    if (!call) throw "missing incoming call object (initializing)";
 
     // URL of the conference room with moderator token.
     CALL_URL = call?.intercom_attr?.owner_url;

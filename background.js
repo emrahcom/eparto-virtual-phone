@@ -28,9 +28,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     // fix, skip it.
     const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
-  } else if (alarm.name.startsWith("cleanup-call-")) {
-    const msgId = alarm.name.substr(13);
-    cleanupCall(msgId);
+  } else if (alarm.name.startsWith("cleanup-incall-")) {
+    const msgId = alarm.name.substr(15);
+    cleanupInCall(msgId);
   }
 });
 
@@ -88,12 +88,12 @@ async function removeOldMessagesFromStorage(messages) {
     // Trace stored messages and remove it if it is not in the id list. This
     // means that this message is removed by its owner on the server-side.
     for (const key of await chrome.storage.session.getKeys()) {
-      if (!key.startsWith("call-")) continue;
+      if (!key.startsWith("incall-")) continue;
 
       const msgId = key.substr(5);
       if (ids.includes(msgId)) continue;
 
-      await chrome.storage.session.remove(`call-${msgId}`);
+      await chrome.storage.session.remove(`incall-${msgId}`);
     }
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -110,19 +110,19 @@ async function callMessageHandler(msg) {
 
     // Is there already a session object for this call?
     // Be carefull, the return value is a list, not a single item...
-    const storedItems = await chrome.storage.session.get(`call-${msgId}`);
-    const storedItem = storedItems[`call-${msgId}`];
+    const storedItems = await chrome.storage.session.get(`incall-${msgId}`);
+    const storedItem = storedItems[`incall-${msgId}`];
 
     // Create or update (if already exists) the session object.
     // Be carefull, key will not be generated dynamically if it is not in [].
     const item = {
-      [`call-${msgId}`]: msg,
+      [`incall-${msgId}`]: msg,
     };
     await chrome.storage.session.set(item);
 
-    // If this is the first message of the call then initialize the call.
-    // Initializing means create its popup, trigger its cleanup job, etc.
-    if (!storedItem) initializeCall(msg);
+    // If this is the first message of the incoming call then initialize the
+    // call. Initializing means create its popup, trigger its cleanup job, etc.
+    if (!storedItem) initializeInCall(msg);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -136,14 +136,16 @@ async function phoneMessageHandler(msg) {
 }
 
 // -----------------------------------------------------------------------------
-// initializeCall
+// initializeInCall
 //
+// This function is for initializing incoming direct calls and phone calls.
 // All attributes are expected to be exist at this stage. Fail if they dont.
 // -----------------------------------------------------------------------------
-function initializeCall(msg) {
+function initializeInCall(msg) {
   try {
-    // Trigger the cleanup job which will remove the call object after a while.
-    triggerCleanupCall(msg.id);
+    // Trigger the cleanup job which will remove the incoming call object after
+    // a while.
+    triggerCleanupInCall(msg.id);
 
     // Cancel if the status is not "none". This means that the call is already
     // processed (accepted, rejected, seen, etc.) by another client.
@@ -170,27 +172,27 @@ function initializeCall(msg) {
 }
 
 // -----------------------------------------------------------------------------
-// triggerCleanupCall
+// triggerCleanupInCall
 // -----------------------------------------------------------------------------
-function triggerCleanupCall(msgId) {
+function triggerCleanupInCall(msgId) {
   try {
-    // Remove all objects related with this call after 1 min. There is no
-    // problem if the browser is closed before this is done, because there are
-    // only session objects which will be removed anyway after the session ends.
-    chrome.alarms.create(`cleanup-call-${msgId}`, { delayInMinutes: 1 });
+    // Remove all objects related with this incoming call after 1 min. There is
+    // no problem if the browser is closed before this is done, because there
+    // are only session objects which will be removed anyway after the session.
+    chrome.alarms.create(`cleanup-incall-${msgId}`, { delayInMinutes: 1 });
   } catch (e) {
     if (DEBUG) console.error(e);
   }
 }
 
 // -----------------------------------------------------------------------------
-// cleanupCall
+// cleanupInCall
 // -----------------------------------------------------------------------------
-async function cleanupCall(msgId) {
+async function cleanupInCall(msgId) {
   try {
     if (!msgId) throw "missing message id";
 
-    await chrome.storage.session.remove(`call-${msgId}`);
+    await chrome.storage.session.remove(`incall-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -200,7 +202,7 @@ async function cleanupCall(msgId) {
 // onMessage (internal messages)
 // -----------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "start-outgoing-call") {
+  if (msg.action === "start-outcall") {
     console.log(msg);
   }
 });

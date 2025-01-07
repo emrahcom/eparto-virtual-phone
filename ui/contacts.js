@@ -67,6 +67,7 @@ function showContactList(contacts) {
     const container = document.getElementById("contact-list");
     if (!container) throw "missing contact-list container";
 
+    // Generate a contact div for each contact.
     for (const contact of contacts) {
       const contactDiv = generateContactDiv(contact);
       if (!contactDiv) continue;
@@ -196,7 +197,7 @@ async function onPhoneClick(button, spinner, contact) {
     const call = calls[0];
     if (!call) throw "failed while starting the outgoing call";
 
-    call.action = "start-outgoing-call";
+    call.action = "start-outcall";
     chrome.runtime.sendMessage(call);
 
     button.style.display = "none";
