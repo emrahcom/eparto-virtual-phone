@@ -31,6 +31,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   } else if (alarm.name.startsWith("cleanup-incall-")) {
     const msgId = alarm.name.substr(15);
     cleanupInCall(msgId);
+  } else if (alarm.name.startsWith("cleanup-outcall-")) {
+    const callId = alarm.name.substr(16);
+    cleanupOutCall(callId);
   }
 });
 
@@ -143,7 +146,7 @@ async function phoneMessageHandler(msg) {
 // -----------------------------------------------------------------------------
 function initializeInCall(msg) {
   try {
-    // Trigger the cleanup job which will remove the incoming call object after
+    // Trigger the cleanup job which will remove the incoming call objects after
     // a while.
     triggerCleanupInCall(msg.id);
 
@@ -212,14 +215,52 @@ chrome.runtime.onMessage.addListener((msg) => {
 // -----------------------------------------------------------------------------
 async function startOutCall(call) {
   try {
-    console.log(call);
-    // Save id of the active call as value. So, it is possible to find if there
-    // is an active call in the background for this contact. UI needs this value
-    // to handle the call state.
+    // Trigger the cleanup job which will remove the outgoing call objects after
+    // a while.
+    triggerCleanupOutCall(call.id);
+
+    // Save id of the active call as contact value. So, it is possible to find
+    // if there is an active call in the background for this contact. UI needs
+    // this value to handle the call status.
     const item = {
       [`contact-${call.contact_id}`]: call.id,
     };
     await chrome.storage.session.set(item);
+
+    // Save the call object.
+    const callItem = {
+      [`call-${call.id}`]: call.id,
+    };
+    await chrome.storage.session.set(callItem);
+
+    // Trigger the ringing loop.
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// triggerCleanupOutCall
+// -----------------------------------------------------------------------------
+function triggerCleanupOutCall(callId) {
+  try {
+    // Remove all objects related with this outgoing call after 1 min. There is
+    // no problem if the browser is closed before this is done, because there
+    // are only session objects which will be removed anyway after the session.
+    chrome.alarms.create(`cleanup-outcall-${callId}`, { delayInMinutes: 1 });
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// cleanupOutCall
+// -----------------------------------------------------------------------------
+async function cleanupOutCall(callId) {
+  try {
+    if (!callId) throw "missing call id";
+
+    await chrome.storage.session.remove(`outcall-${callId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
