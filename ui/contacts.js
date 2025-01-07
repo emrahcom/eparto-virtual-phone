@@ -244,7 +244,7 @@ async function updateCallStatus(contactId, phoneButton, callSpinner) {
 
     // Update the call status of this contact.
     if (activeCall) {
-      // Switch to the ringing mode since there is an active call.
+      // Switch to the ring mode since there is an active call.
       phoneButton.style.display = "none";
       callSpinner.style.display = "flex";
     } else {
