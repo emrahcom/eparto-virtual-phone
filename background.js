@@ -43,14 +43,14 @@ ping();
 // ping
 // -----------------------------------------------------------------------------
 async function ping() {
-  return await getByCode("api/pub/identity/ping");
+  return await getByCode("/api/pub/identity/ping");
 }
 
 // -----------------------------------------------------------------------------
 // getIntercomMessages
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
-  return await getByCode("api/pub/intercom/list");
+  return await getByCode("/api/pub/intercom/list");
 }
 
 // -----------------------------------------------------------------------------

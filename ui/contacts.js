@@ -35,7 +35,7 @@ async function initialize() {
 // getContactList
 // -----------------------------------------------------------------------------
 async function getContactList() {
-  return await getByCode("api/pub/contact/list");
+  return await getByCode("/api/pub/contact/list");
 }
 
 // -----------------------------------------------------------------------------
@@ -83,24 +83,10 @@ function showContactList(contacts) {
 // -----------------------------------------------------------------------------
 function generateContactDiv(contact) {
   try {
-    const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
-
     const contactInfoDiv = generateContactInfoDiv(contact);
-    if (!contactInfoDiv) throw "failed while generating contact info div";
 
-    const callSpinner = generateSpinner();
-
-    const phoneIcon = document.createElement("img");
-    phoneIcon.src = "/assets/phone.svg";
-    phoneIcon.alt = `call ${contactStatus}`;
-
-    const phoneButton = document.createElement("button");
-    phoneButton.className = `phone ${contactStatus}`;
-    phoneButton.onclick = function () {
-      onPhoneClick(phoneButton, callSpinner, contact);
-    };
-    phoneButton.appendChild(phoneIcon);
-
+    const callSpinner = generateSpinnerDiv();
+    const phoneButton = generatePhoneButton(contact, callSpinner);
     callSpinner.onclick = function () {
       onSpinnerClick(phoneButton, callSpinner);
     };
@@ -120,35 +106,29 @@ function generateContactDiv(contact) {
 }
 
 // -----------------------------------------------------------------------------
-// generateContactInfoDiv
+// generateContactInfoDiv (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generateContactInfoDiv(contact) {
-  try {
-    const contactName = document.createElement("h3");
-    contactName.className = "contact-info-name";
-    contactName.textContent = contact?.name || "";
+  const contactName = document.createElement("h3");
+  contactName.className = "contact-info-name";
+  contactName.textContent = contact?.name || "";
 
-    const contactEmail = document.createElement("p");
-    contactEmail.className = "contact-info-email";
-    contactEmail.textContent = contact?.profile_email || "";
+  const contactEmail = document.createElement("p");
+  contactEmail.className = "contact-info-email";
+  contactEmail.textContent = contact?.profile_email || "";
 
-    const contactInfoDiv = document.createElement("div");
-    contactInfoDiv.className = "contact-info";
-    contactInfoDiv.appendChild(contactName);
-    contactInfoDiv.appendChild(contactEmail);
+  const contactInfoDiv = document.createElement("div");
+  contactInfoDiv.className = "contact-info";
+  contactInfoDiv.appendChild(contactName);
+  contactInfoDiv.appendChild(contactEmail);
 
-    return contactInfoDiv;
-  } catch (e) {
-    if (DEBUG) console.error(e);
-
-    return undefined;
-  }
+  return contactInfoDiv;
 }
 
 // -----------------------------------------------------------------------------
-// generateSpinner
+// generateSpinnerDiv (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
-function generateSpinner() {
+function generateSpinnerDiv() {
   const spinnerDiv = document.createElement("div");
   spinnerDiv.className = "spinner";
   spinnerDiv.title = "Cancel call";
@@ -163,6 +143,26 @@ function generateSpinner() {
   // a reference to the phone button which is not created yet.
 
   return spinnerDiv;
+}
+
+// -----------------------------------------------------------------------------
+// generatePhoneButton (will be placed in ContactDiv)
+// -----------------------------------------------------------------------------
+function generatePhoneButton(contact, callSpinner) {
+  const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
+
+  const phoneIcon = document.createElement("img");
+  phoneIcon.src = "/assets/phone.svg";
+  phoneIcon.alt = `call ${contactStatus}`;
+
+  const phoneButton = document.createElement("button");
+  phoneButton.className = `phone ${contactStatus}`;
+  phoneButton.onclick = function () {
+    onPhoneClick(phoneButton, callSpinner, contact);
+  };
+  phoneButton.appendChild(phoneIcon);
+
+  return phoneButton;
 }
 
 // -----------------------------------------------------------------------------
@@ -189,11 +189,13 @@ function getContactStatus(second) {
 // -----------------------------------------------------------------------------
 async function onPhoneClick(button, spinner, contact) {
   try {
+    const payload = {
+      contact_id: contact.id,
+    };
+    const calls = await getByCode("/api/pub/contact/call", payload);
+
     button.style.display = "none";
     spinner.style.display = "flex";
-    await console.log(button);
-    await console.log(spinner);
-    await console.log(contact);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -207,7 +209,6 @@ async function onSpinnerClick(button, spinner) {
     spinner.style.display = "none";
     button.style.display = "block";
     await console.log(button);
-    await console.log(spinner);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
