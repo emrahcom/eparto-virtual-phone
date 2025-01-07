@@ -89,7 +89,7 @@ function generateContactDiv(contact) {
     const callSpinner = generateSpinnerDiv();
     const phoneButton = generatePhoneButton(contact, callSpinner);
     callSpinner.onclick = function () {
-      onSpinnerClick(phoneButton, callSpinner);
+      onSpinnerClick(contact.id, phoneButton, callSpinner);
     };
 
     const contactDiv = document.createElement("div");
@@ -97,6 +97,8 @@ function generateContactDiv(contact) {
     contactDiv.appendChild(contactInfoDiv);
     contactDiv.appendChild(phoneButton);
     contactDiv.appendChild(callSpinner);
+
+    updateCallStatus(contact.id, phoneButton, callSpinner);
 
     return contactDiv;
   } catch (e) {
@@ -159,7 +161,7 @@ function generatePhoneButton(contact, callSpinner) {
   const phoneButton = document.createElement("button");
   phoneButton.className = `phone ${contactStatus}`;
   phoneButton.onclick = function () {
-    onPhoneClick(phoneButton, callSpinner, contact);
+    onPhoneClick(contact, phoneButton, callSpinner);
   };
   phoneButton.appendChild(phoneIcon);
 
@@ -188,7 +190,7 @@ function getContactStatus(second) {
 // -----------------------------------------------------------------------------
 // onPhoneClick
 // -----------------------------------------------------------------------------
-async function onPhoneClick(button, spinner, contact) {
+async function onPhoneClick(contact, phoneButton, callSpinner) {
   try {
     const payload = {
       contact_id: contact.id,
@@ -198,10 +200,11 @@ async function onPhoneClick(button, spinner, contact) {
     if (!call) throw "failed while starting the outgoing call";
 
     call.action = "start-outcall";
+    call.contact_id = contact.id;
     chrome.runtime.sendMessage(call);
 
-    button.style.display = "none";
-    spinner.style.display = "flex";
+    phoneButton.style.display = "none";
+    callSpinner.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -210,12 +213,43 @@ async function onPhoneClick(button, spinner, contact) {
 // -----------------------------------------------------------------------------
 // onSpinnerClick
 // -----------------------------------------------------------------------------
-async function onSpinnerClick(button, spinner) {
+async function onSpinnerClick(contactId, phoneButton, callSpinner) {
   try {
-    spinner.style.display = "none";
-    button.style.display = "block";
-    await console.log(button);
+    await chrome.storage.session.remove(`contact-${contactId}`);
+
+    callSpinner.style.display = "none";
+    phoneButton.style.display = "block";
   } catch (e) {
     if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// updateCallStatus
+// -----------------------------------------------------------------------------
+async function updateCallStatus(contactId, phoneButton, callSpinner) {
+  try {
+    const storedItems = await chrome.storage.session.get(
+      `contact-${contactId}`,
+    );
+    const activeCall = storedItems[`contact-${contactId}`];
+
+    // Update the call status of this contact.
+    if (activeCall) {
+      // Switch to the ringing mode since there is an active call.
+      phoneButton.style.display = "none";
+      callSpinner.style.display = "flex";
+    } else {
+      // Switch to the normal mode since there is no active call.
+      callSpinner.style.display = "none";
+      phoneButton.style.display = "block";
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  } finally {
+    // Update the state again after a while.
+    setTimeout(() => {
+      updateCallStatus(contactId, phoneButton, callSpinner);
+    }, 1000);
   }
 }

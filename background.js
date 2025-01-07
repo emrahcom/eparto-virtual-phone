@@ -203,9 +203,24 @@ async function cleanupInCall(msgId) {
 // -----------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === "start-outcall") {
-    console.log(msg);
+    startOutCall(msg);
   }
 });
 
 // -----------------------------------------------------------------------------
+// startOutCall
 // -----------------------------------------------------------------------------
+async function startOutCall(call) {
+  try {
+    console.log(call);
+    // Save id of the active call as value. So, it is possible to find if there
+    // is an active call in the background for this contact. UI needs this value
+    // to handle the call state.
+    const item = {
+      [`contact-${call.contact_id}`]: call.id,
+    };
+    await chrome.storage.session.set(item);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
