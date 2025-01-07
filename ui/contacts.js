@@ -98,6 +98,7 @@ function generateContactDiv(contact) {
     contactDiv.appendChild(phoneButton);
     contactDiv.appendChild(callSpinner);
 
+    // Create a watcher for each contact that will monitor and update its status
     updateCallStatus(contact.id, phoneButton, callSpinner);
 
     return contactDiv;
@@ -192,17 +193,20 @@ function getContactStatus(second) {
 // -----------------------------------------------------------------------------
 async function onPhoneClick(contact, phoneButton, callSpinner) {
   try {
+    // Initialize the call and get the generated call object.
     const payload = {
       contact_id: contact.id,
     };
     const calls = await getByCode("/api/pub/contact/call", payload);
     const call = calls[0];
-    if (!call) throw "failed while starting the outgoing call";
+    if (!call) throw "failed to initiate outgoing call";
 
+    // The call process will be processed by the service worker.
     call.action = "start-outcall";
     call.contact_id = contact.id;
     chrome.runtime.sendMessage(call);
 
+    // Update UI status.
     phoneButton.style.display = "none";
     callSpinner.style.display = "flex";
   } catch (e) {
@@ -215,8 +219,12 @@ async function onPhoneClick(contact, phoneButton, callSpinner) {
 // -----------------------------------------------------------------------------
 async function onSpinnerClick(contactId, phoneButton, callSpinner) {
   try {
+    // Remove the stored contact object. This means that there is no active call
+    // for this contact. The service worker stops ringing if there is no contact
+    // object in the storage.
     await chrome.storage.session.remove(`contact-${contactId}`);
 
+    // Update UI status.
     callSpinner.style.display = "none";
     phoneButton.style.display = "block";
   } catch (e) {
@@ -225,7 +233,7 @@ async function onSpinnerClick(contactId, phoneButton, callSpinner) {
 }
 
 // -----------------------------------------------------------------------------
-// updateCallStatus
+// updateCallStatus (only on UI)
 // -----------------------------------------------------------------------------
 async function updateCallStatus(contactId, phoneButton, callSpinner) {
   try {
@@ -247,9 +255,9 @@ async function updateCallStatus(contactId, phoneButton, callSpinner) {
   } catch (e) {
     if (DEBUG) console.error(e);
   } finally {
-    // Update the state again after a while.
+    // Update the status again after a while.
     setTimeout(() => {
       updateCallStatus(contactId, phoneButton, callSpinner);
-    }, 1000);
+    }, 500);
   }
 }

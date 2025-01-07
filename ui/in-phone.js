@@ -20,7 +20,7 @@ setTimeout(watchCall, 1000);
 // -----------------------------------------------------------------------------
 async function watchCall() {
   try {
-    // Get the call object from the storage. The background script saves it and
+    // Get the call object from the storage. The service worker saves it and
     // keeps it up-to-date.
     const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
     const call = storedItems[`incall-${MSGID}`];
@@ -38,8 +38,8 @@ async function watchCall() {
     if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
     if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
 
-    // Check it again after a while. The background script will update its
-    // status if its status changes.
+    // Check it again after a while. The service worker will update its status
+    // if its status changes.
     setTimeout(watchCall, 500);
   } catch (_e) {
     //if (DEBUG) console.error(_e);
@@ -67,7 +67,7 @@ initialize();
 // -----------------------------------------------------------------------------
 async function initialize() {
   try {
-    // Get the call object from the storage. The background script saves it into
+    // Get the call object from the storage. The service worker saves it into
     // the storage before opening this popup.
     const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
     const call = storedItems[`incall-${MSGID}`];
