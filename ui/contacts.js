@@ -35,7 +35,7 @@ async function initialize() {
 // getContactList
 // -----------------------------------------------------------------------------
 async function getContactList() {
-  return await getByKey("/api/pub/contact/list");
+  return await getByKey("/api/pub/contact/list/bykey");
 }
 
 // -----------------------------------------------------------------------------
@@ -197,7 +197,7 @@ async function onPhoneClick(contact, phoneButton, callSpinner) {
     const payload = {
       contact_id: contact.id,
     };
-    const calls = await getByKey("/api/pub/contact/call", payload);
+    const calls = await getByKey("/api/pub/contact/call/bykey", payload);
     const call = calls[0];
     if (!call) throw "failed to initiate outgoing call";
 

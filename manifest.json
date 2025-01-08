@@ -6,7 +6,7 @@
   "homepage_url": "https://github.com/emrahcom/eparto-virtual-phone",
   "permissions": ["alarms", "storage"],
   "host_permissions": [
-    "https://*/api/pub/contact/list",
+    "https://*/api/pub/contact/list/bykey",
     "https://*/api/pub/identity/ping",
     "https://*/api/pub/intercom/list",
     "https://*/api/pub/intercom/set/*"
