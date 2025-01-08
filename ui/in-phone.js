@@ -140,5 +140,5 @@ async function setStatus(status) {
     id: MSGID,
   };
 
-  return await getByKey(`/api/pub/intercom/set/${status}`, payload);
+  return await getByKey(`/api/pub/intercom/set/${status}/bykey`, payload);
 }
