@@ -70,7 +70,7 @@ async function ping() {
 // getIntercomMessages
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
-  return await getByKey("/api/pub/intercom/list");
+  return await getByKey("/api/pub/intercom/list/bykey");
 }
 
 // -----------------------------------------------------------------------------
@@ -292,7 +292,7 @@ async function cleanupOutCall(callId) {
     const payload = {
       id: call.id,
     };
-    await getByKey("/api/pub/intercom/del-with-notification", payload);
+    await getByKey("/api/pub/intercom/del-with-notification/bykey", payload);
 
     // Reset the active call value if it keeps this call id. If the active call
     // for the related contact is not this call then dont reset the value. This
@@ -349,7 +349,7 @@ async function ringOutCall(callId) {
     const payload = {
       id: call.id,
     };
-    const ring = await getByKey("/api/pub/intercom/call/ring", payload);
+    const ring = await getByKey("/api/pub/intercom/call/ring/bykey", payload);
 
     handleRingStatus(ring, callId);
   } catch (e) {
@@ -375,7 +375,7 @@ async function handleRingStatus(ring, call) {
     const payload = {
       id: call.id,
     };
-    await getByKey("/api/pub/intercom/del", payload);
+    await getByKey("/api/pub/intercom/del/bykey", payload);
 
     // Go to the meeting room if accepted.
     if (ring.status === "accepted") {
