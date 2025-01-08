@@ -345,13 +345,15 @@ async function ringOutCall(callId) {
     if (activeCall !== call.id) return;
 
     // Ring and handle the ring status. The response contains the latest status
-    // depending on the answer from the other peer.
+    // depending on the answer from the other peer. Expected return value is an
+    // array with a single element. This single element is the intercom object.
     const payload = {
       id: call.id,
     };
-    const ring = await getByKey("/api/pub/intercom/call/ring/bykey", payload);
+    const rings = await getByKey("/api/pub/intercom/call/ring/bykey", payload);
+    const ring = rings[0];
 
-    handleRingStatus(ring, callId);
+    await handleRingStatus(ring, callId);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -360,11 +362,11 @@ async function ringOutCall(callId) {
 // -----------------------------------------------------------------------------
 // handleRingStatus
 // -----------------------------------------------------------------------------
-async function handleRingStatus(ring, call) {
+async function handleRingStatus(ring, callId) {
   try {
     // Ring again after a while if still no response from the peer.
     if (ring.status === "none" || ring.status === "seen") {
-      chrome.alarms.create(`ring-outcall-${call.id}`, { delayInMinutes: 0.02 });
+      chrome.alarms.create(`ring-outcall-${callId}`, { delayInMinutes: 0.02 });
       return;
     }
 
