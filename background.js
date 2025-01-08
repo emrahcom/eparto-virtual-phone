@@ -63,7 +63,7 @@ ping();
 // ping
 // -----------------------------------------------------------------------------
 async function ping() {
-  return await getByKey("/api/pub/identity/ping");
+  return await getByKey("/api/pub/identity/ping/bykey");
 }
 
 // -----------------------------------------------------------------------------
