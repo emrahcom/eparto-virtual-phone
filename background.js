@@ -329,7 +329,7 @@ async function ringOutCall(callId) {
     if (!callId) throw "missing call id";
 
     // Get stored call object. cleanupOutCall deletes the call object if it
-    // is expired. So, no needs to ring anymore ifthis is the case.
+    // is expired. So, no needs to ring anymore if this is the case.
     let storedItems = await chrome.storage.session.get(`outcall-${callId}`);
     const call = storedItems[`outcall-${callId}`];
     if (!call) return;
@@ -345,7 +345,7 @@ async function ringOutCall(callId) {
     if (activeCall !== call.id) return;
 
     // Ring and handle the ring status. The response contains the latest status
-    // depending on the answer of the other peer.
+    // depending on the answer from the other peer.
     const payload = {
       id: call.id,
     };
