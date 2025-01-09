@@ -34,13 +34,13 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
   } else if (alarm.name.startsWith("cleanup-incall-")) {
-    const msgId = alarm.name.substr(15);
+    const msgId = alarm.name.substr("cleanup-incall-".length);
     cleanupInCall(msgId);
   } else if (alarm.name.startsWith("cleanup-outcall-")) {
-    const callId = alarm.name.substr(16);
+    const callId = alarm.name.substr("cleanup-outcall-".length);
     cleanupOutCall(callId);
   } else if (alarm.name.startsWith("ring-outcall-")) {
-    const callId = alarm.name.substr(13);
+    const callId = alarm.name.substr("ring-outcall-".length);
     ringOutCall(callId);
   }
 });
@@ -110,7 +110,7 @@ async function removeOldMessagesFromStorage(messages) {
     for (const key of await chrome.storage.session.getKeys()) {
       if (!key.startsWith("incall-")) continue;
 
-      const msgId = key.substr(5);
+      const msgId = key.substr("incall-".length);
       if (ids.includes(msgId)) continue;
 
       await chrome.storage.session.remove(`incall-${msgId}`);
