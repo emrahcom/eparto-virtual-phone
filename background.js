@@ -292,8 +292,8 @@ async function cleanupOutCall(callId) {
     if (!callId) throw "missing call id";
 
     // Get stored call object. ringOutCall deletes the call object before the
-    // expire time if answered by other peer. So, there is no need to clean up
-    // in this case.
+    // expire time if answered by other peer or ended by the caller. So, there
+    // is no need to clean up in this case.
     let storedItems = await chrome.storage.session.get(`outcall-${callId}`);
     const call = storedItems[`outcall-${callId}`];
     if (!call) return;
@@ -304,7 +304,7 @@ async function cleanupOutCall(callId) {
     // Send a notification to the callee about the missing call. Currently the
     // callee is informed by an email about the missing call.
     const payload = {
-      id: call.id,
+      id: callId,
     };
     await getByKey("/api/pub/intercom/del-with-notification/bykey", payload);
 
@@ -315,10 +315,6 @@ async function cleanupOutCall(callId) {
     const contactId = call.contact_id;
     storedItems = await chrome.storage.session.get(`contact-${contactId}`);
     const activeCall = storedItems[`contact-${contactId}`];
-
-    // Remove the contact object if this call is its active call. So, the
-    // contact status will be idle in this case. If a new call is started for
-    // the related contact then dont touch this contact object.
     if (activeCall === callId) {
       await chrome.storage.session.remove(`contact-${contactId}`);
     }
@@ -358,20 +354,42 @@ async function ringOutCall(callId) {
     );
     const activeCall = storedItems[`contact-${call.contact_id}`];
 
-    // Stop ringing if this call is not active anymore. This happens when it is
+    // End the call if this call is not active anymore. This happens when it is
     // stopped on UI by the user.
-    if (activeCall !== call.id) return;
+    if (activeCall !== callId) {
+      await endCall(callId);
+      return;
+    }
 
     // Ring and handle the ring status. The response contains the latest status
     // depending on the answer from the other peer. Expected return value is an
     // array with a single element. This single element is the intercom object.
     const payload = {
-      id: call.id,
+      id: callId,
     };
     const rings = await getByKey("/api/pub/intercom/call/ring/bykey", payload);
     const ring = rings[0];
 
     await handleRingStatus(ring, call);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// endCall
+// -----------------------------------------------------------------------------
+async function endCall(callId) {
+  try {
+    // Delete the call object.
+    await chrome.storage.session.remove(`outcall-${callId}`);
+
+    // Send a notification to the callee about the missing call. Currently the
+    // callee is informed by an email about the missing call.
+    const payload = {
+      id: callId,
+    };
+    await getByKey("/api/pub/intercom/del-with-notification/bykey", payload);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
