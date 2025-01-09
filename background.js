@@ -371,7 +371,7 @@ async function ringOutCall(callId) {
     const rings = await getByKey("/api/pub/intercom/call/ring/bykey", payload);
     const ring = rings[0];
 
-    await handleRingStatus(ring, callId);
+    await handleRingStatus(ring, call);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -380,11 +380,11 @@ async function ringOutCall(callId) {
 // -----------------------------------------------------------------------------
 // handleRingStatus
 // -----------------------------------------------------------------------------
-async function handleRingStatus(ring, callId) {
+async function handleRingStatus(ring, call) {
   try {
     // Ring again after a while if still no response from the peer.
     if (ring.status === "none" || ring.status === "seen") {
-      chrome.alarms.create(`ring-outcall-${callId}`, { delayInMinutes: 0.02 });
+      chrome.alarms.create(`ring-outcall-${call.id}`, { delayInMinutes: 0.02 });
       return;
     }
 
