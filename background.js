@@ -419,7 +419,7 @@ async function handleRingStatus(ring, call) {
 
     // Go to the meeting room if accepted.
     if (ring.status === "accepted") {
-      globalThis.open(call.url, "_blank");
+      chrome.tabs.create({ url: call.url });
     }
   } catch (e) {
     if (DEBUG) console.error(e);
