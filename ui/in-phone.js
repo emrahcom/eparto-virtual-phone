@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByKey } from "../lib/common.js";
+import { getByKey, safeText } from "../lib/common.js";
 
 const DEBUG = true;
 
@@ -73,7 +73,7 @@ async function initialize() {
     const call = storedItems[`incall-${MSGID}`];
     if (!call) throw "missing incoming call object (initializing)";
 
-    // Initialize UI depending on call type.
+    // Initialize UI depending on the call type.
     if (call.message_type === "call") {
       initializeCall(call);
     } else if (call.message_type === "phone") {
@@ -96,16 +96,16 @@ async function initialize() {
 // initializeCall (Direct call from a contact)
 // -----------------------------------------------------------------------------
 function initializeCall(call) {
-  // URL of the conference room with moderator token (if needed).
+  // URL of the conference room with member token (if needed).
   CALL_URL = call?.intercom_attr?.url;
   if (!CALL_URL) throw "missing call url";
 
   // Name of the contact (caller).
   const contactName = call?.contact_name;
-  if (!contactName) throw "missing phone name";
+  if (!contactName) throw "missing contact name";
 
   // Update the window title, show the name of the contact as title.
-  document.title = contactName;
+  document.title = safeText(contactName);
 
   // Update the contact name in UI.
   const el = document.getElementById("contact");
@@ -133,7 +133,7 @@ function initializePhone(call) {
   if (!phoneName) throw "missing phone name";
 
   // Update the window title, show the name of the public phone as title.
-  document.title = phoneName;
+  document.title = safeText(phoneName);
 
   // Update the phone name in UI.
   const el = document.getElementById("phone");
