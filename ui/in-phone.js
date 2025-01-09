@@ -33,7 +33,7 @@ async function watchCall() {
 
     // Dont continue if it is expired. Expiration happens when the call is not
     // ended properly by the caller. For example, if she closes her browser
-    // directly without canceling the call...
+    // directly without cancelling the call...
     const expiredAt = new Date(call.expired_at);
     if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
     if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
@@ -73,20 +73,14 @@ async function initialize() {
     const call = storedItems[`incall-${MSGID}`];
     if (!call) throw "missing incoming call object (initializing)";
 
-    // URL of the conference room with moderator token.
-    CALL_URL = call?.intercom_attr?.owner_url;
-    if (!CALL_URL) throw "missing call url";
-
-    // Name of ringing public phone.
-    const phoneName = call?.intercom_attr?.phone_name;
-    if (!phoneName) throw "missing phone name";
-
-    // Update the window title, show the name of the public phone as title.
-    document.title = phoneName;
-
-    // Update the phone name in UI.
-    const el = document.getElementById("phone");
-    if (el) el.textContent = phoneName;
+    // Initialize UI depending on call type.
+    if (call.message_type === "call") {
+      initializeCall(call);
+    } else if (call.message_type === "phone") {
+      initializePhone(call);
+    } else {
+      throw "unknown call type";
+    }
 
     // Start ringing.
     const ring = document.getElementById("ring");
@@ -96,6 +90,62 @@ async function initialize() {
 
     globalThis.close();
   }
+}
+
+// -----------------------------------------------------------------------------
+// initializeCall (Direct call from a contact)
+// -----------------------------------------------------------------------------
+function initializeCall(call) {
+  // URL of the conference room with moderator token (if needed).
+  CALL_URL = call?.intercom_attr?.url;
+  if (!CALL_URL) throw "missing call url";
+
+  // Name of the contact (caller).
+  const contactName = call?.contact_name;
+  if (!contactName) throw "missing phone name";
+
+  // Update the window title, show the name of the contact as title.
+  document.title = contactName;
+
+  // Update the contact name in UI.
+  const el = document.getElementById("contact");
+  if (el) el.textContent = contactName;
+
+  // Hide phone-info
+  const phoneDiv = document.getElementById("phone-info");
+  if (phoneDiv) phoneDiv.style.display = "none";
+
+  // Show call-info
+  const callDiv = document.getElementById("call-info");
+  if (callDiv) callDiv.style.display = "flex";
+}
+
+// -----------------------------------------------------------------------------
+// initializePhone (Public call from a virtual public phone)
+// -----------------------------------------------------------------------------
+function initializePhone(call) {
+  // URL of the conference room with moderator token (if needed).
+  CALL_URL = call?.intercom_attr?.owner_url;
+  if (!CALL_URL) throw "missing call url";
+
+  // Name of ringing public phone.
+  const phoneName = call?.intercom_attr?.phone_name;
+  if (!phoneName) throw "missing phone name";
+
+  // Update the window title, show the name of the public phone as title.
+  document.title = phoneName;
+
+  // Update the phone name in UI.
+  const el = document.getElementById("phone");
+  if (el) el.textContent = phoneName;
+
+  // Show phone-info
+  const phoneDiv = document.getElementById("phone-info");
+  if (phoneDiv) phoneDiv.style.display = "flex";
+
+  // Hide call-info
+  const callDiv = document.getElementById("call-info");
+  if (callDiv) callDiv.style.display = "none";
 }
 
 // -----------------------------------------------------------------------------
