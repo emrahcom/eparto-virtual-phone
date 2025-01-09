@@ -152,9 +152,9 @@ async function callMessageHandler(msg) {
     };
     await chrome.storage.session.set(item);
 
-    // If this is the first message of the incoming call then initialize the
-    // call. Initializing means create its popup, trigger its cleanup job, etc.
-    if (!storedItem) initializeInCall(msg);
+    // If this is the first message of the incoming call then start the call.
+    // This means creating its popup, triggering its cleanup job, etc.
+    if (!storedItem) startInCall(msg);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -168,12 +168,12 @@ async function phoneMessageHandler(msg) {
 }
 
 // -----------------------------------------------------------------------------
-// initializeInCall
+// startInCall
 //
 // This function is for initializing incoming direct calls and phone calls.
 // All attributes are expected to be exist at this stage. Fail if they dont.
 // -----------------------------------------------------------------------------
-function initializeInCall(msg) {
+function startInCall(msg) {
   try {
     // Trigger the cleanup job which will remove the incoming call objects after
     // a while.
@@ -301,18 +301,19 @@ async function cleanupOutCall(callId) {
     // Remove the outgoing call object, expired.
     await chrome.storage.session.remove(`outcall-${callId}`);
 
-    // Send a notification to the callee about the missing call. Currently the
+    // Send a notification to the callee about the expired call. Currently the
     // callee is informed by an email about the missing call.
     const payload = {
       id: callId,
     };
     await getByKey("/api/pub/intercom/del-with-notification/bykey", payload);
 
-    // Reset the active call value if it keeps this call id. If the active call
+    const contactId = call.contact_id;
+
+    // Reset the active call value if it has this call id. If the active call
     // for the related contact is not this call then dont reset the value. This
     // means that a new call is started for this contact and will be handled in
     // another thread.
-    const contactId = call.contact_id;
     storedItems = await chrome.storage.session.get(`contact-${contactId}`);
     const activeCall = storedItems[`contact-${contactId}`];
     if (activeCall === callId) {
@@ -417,7 +418,7 @@ async function handleRingStatus(ring, call) {
     };
     await getByKey("/api/pub/intercom/del/bykey", payload);
 
-    // Go to the meeting room if accepted.
+    // Open the meeting room in a new tab if accepted.
     if (ring.status === "accepted") {
       chrome.tabs.create({ url: call.url });
     }
