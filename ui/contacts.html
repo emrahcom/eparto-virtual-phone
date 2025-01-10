@@ -5,12 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eparto Virtual Phone</title>
     <style>
+      .info {
+        width: 98%;
+        min-width: 300px;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 4px;
+        font-family: sans-serif;
+        font-size: 1.1em;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+      }
+
+      .info-header {
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: 666;
+        padding: 12px;
+        color: #555;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .info-content {
+        padding: 12px 16px;
+        font-size: 1.1em;
+        color: #666;
+      }
+
+      .info a {
+        color: #007bff;
+        text-decoration: none;
+        font-size: 1.1em;
+        transition: color 0.2s ease-in-out;
+      }
+
+      .info a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+      }
+
       .contact-list {
         width: 98%;
+        min-width: 200px;
         max-width: 400px;
         margin: 0 auto;
         padding: 4px;
-        font-family: "Roboto", sans-serif;
+        font-family: sans-serif;
         overflow-y: auto;
       }
 
@@ -114,7 +158,93 @@
   </head>
 
   <body>
-    <div id="contact-list" class="contact-list"></div>
+    <div id="setup-guide" class="info" style="display: none">
+      <header class="info-header">Setup Guide</header>
+      <div class="info-content">
+        <p>Your settings are not yet complete.</p>
+
+        <p>
+          First, please create an account on our site. You can do this by
+          clicking <strong>Sign Up</strong> on the
+          <a id="welcome-link" href="https://app.eparto.net" target="_blank">
+            welcome page
+          </a>.
+        </p>
+
+        <p>
+          Once registered, please create a private key on the
+          <a
+            id="private-key-link"
+            href="https://app.eparto.net/pri/identity/key"
+            target="_blank"
+          >
+            private key page
+          </a>.
+        </p>
+
+        <p>
+          Finally, please enter the created private key into
+          <a href="/ui/options.html" target="_blank">options page</a> to
+          complete the process.
+        </p>
+      </div>
+    </div>
+
+    <div id="failed-request" class="info" style="display: none">
+      <header class="info-header">Something Went Wrong</header>
+      <div class="info-content">
+        <p>
+          An issue occurred, which might be due to a temporary network problem.
+          Please try again later.
+        </p>
+
+        <p>
+          If the problem persists, check your settings on the
+          <a href="/ui/options.html" target="_blank">options page</a>.
+        </p>
+      </div>
+    </div>
+
+    <div id="empty-list" class="info" style="display: none">
+      <header class="info-header">No Contacts Found</header>
+      <div class="info-content">
+        <p>
+          Your contact list is currently empty. Please create contact keys and
+          share them with your contacts to start building your list.
+        </p>
+
+        <p>
+          You can create a contact key from the
+          <a
+            id="contact-key-link"
+            href="https://app.eparto.net/pri/contact/invite"
+            target="_blank"
+          >
+            key creation page
+          </a>.
+        </p>
+
+        <p>
+          Your contacts can still call you if you have created
+          <a
+            id="virtual-phone-link"
+            href="https://app.eparto.net/pri/phone"
+            target="_blank"
+          >
+            public virtual phones
+          </a>
+          and shared them on web pages or directly with your contacts.
+        </p>
+
+        <p>
+          If you have contacts but can't see them here, please check your
+          settings in
+          <a href="/ui/options.html" target="_blank">options page</a>.
+        </p>
+      </div>
+    </div>
+
+    <div id="contact-list" class="contact-list" style="display: none"></div>
 
     <script type="module" src="contacts.js"></script>
   </body>

@@ -4,6 +4,7 @@
 import { getByKey } from "../lib/common.js";
 
 const DEBUG = true;
+const DEFAULT_BASE_URL = "https://app.eparto.net";
 
 // -----------------------------------------------------------------------------
 // main
@@ -15,6 +16,14 @@ initialize();
 // -----------------------------------------------------------------------------
 async function initialize() {
   try {
+    // Show the setup guide if there is no defined private key.
+    const storedPrivateKeys = await chrome.storage.local.get("private-key");
+    const keyValue = storedPrivateKeys["private-key"];
+    if (!keyValue) {
+      showSetupGuide();
+      return;
+    }
+
     const contacts = await getContactList();
 
     if (!contacts) {
@@ -39,24 +48,68 @@ async function getContactList() {
 }
 
 // -----------------------------------------------------------------------------
+// showSetupGuide
+// -----------------------------------------------------------------------------
+async function showSetupGuide() {
+  try {
+    const container = document.getElementById("setup-guide");
+    if (!container) throw "missing setup-guide container";
+
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
+
+    const welcomeLink = document.getElementById("welcome-link");
+    welcomeLink.href = baseUrl;
+
+    const privateKeyLink = document.getElementById("private-key-link");
+    privateKeyLink.href = `${baseUrl}/pri/identity/key`;
+
+    container.style.display = "block";
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // showFailedRequest
 // -----------------------------------------------------------------------------
 function showFailedRequest() {
-  console.log("failed request");
+  try {
+    const container = document.getElementById("failed-request");
+    if (!container) throw "missing failed-request container";
+    container.style.display = "block";
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
 }
 
 // -----------------------------------------------------------------------------
 // showUnexpectedResponse (alias for showFailedRequest)
 // -----------------------------------------------------------------------------
 function showUnexpectedResponse() {
-  console.log("unexpected response");
+  return showFailedRequest();
 }
 
 // -----------------------------------------------------------------------------
 // showEmptyContactList
 // -----------------------------------------------------------------------------
-function showEmptyContactList() {
-  console.log("empty list");
+async function showEmptyContactList() {
+  try {
+    const container = document.getElementById("empty-list");
+    if (!container) throw "missing empty-list container";
+
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
+
+    const contactKeyLink = document.getElementById("contact-key-link");
+    contactKeyLink.href = `${baseUrl}/pri/contact/invite`;
+    const virtualPhoneLink = document.getElementById("virtual-phone-link");
+    virtualPhoneLink.href = `${baseUrl}/pri/phone`;
+
+    container.style.display = "block";
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -74,6 +127,8 @@ function showContactList(contacts) {
 
       container.appendChild(contactDiv);
     }
+
+    container.style.display = "block";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
