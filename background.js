@@ -1,13 +1,12 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG } from "./common/config.js";
+import {
+  DEBUG,
+  INCALL_EXPIRE_TIME,
+  OUTCALL_EXPIRE_TIME,
+} from "./common/config.js";
 import { getByKey } from "./common/function.js";
-
-// Expire time in minute for incoming call.
-const INCALL_EXPIRE_TIME = 1;
-// Expire time in minute for outgoing call.
-const OUTCALL_EXPIRE_TIME = 0.5;
 
 // -----------------------------------------------------------------------------
 // Alarms
