@@ -1,9 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByKey } from "./lib/common.js";
-
-const DEBUG = true;
+import { DEBUG } from "./common/config.js";
+import { getByKey } from "./common/function.js";
 
 // Expire time in minute for incoming call.
 const INCALL_EXPIRE_TIME = 1;

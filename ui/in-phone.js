@@ -1,9 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByKey, safeText } from "../lib/common.js";
-
-const DEBUG = true;
+import { DEBUG } from "../common/config.js";
+import { getByKey, safeText } from "../common/function.js";
 
 const qs = new URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();

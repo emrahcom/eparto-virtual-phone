@@ -1,10 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { getByKey } from "../lib/common.js";
-
-const DEBUG = true;
-const DEFAULT_BASE_URL = "https://app.eparto.net";
+import { DEBUG, DEFAULT_BASE_URL } from "../common/config.js";
+import { getByKey } from "../common/function.js";
 
 // -----------------------------------------------------------------------------
 // main
