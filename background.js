@@ -90,7 +90,7 @@ function messageHandler(messages) {
 
     // If a message doesn't exist on the server-side anymore then remove its
     // local copy. This happens when the message is dropped by its initiator.
-    removeOldMessagesFromStorage(messages);
+    removeOldCallObjects(messages);
 
     if (!messages.length) return;
 
@@ -108,23 +108,26 @@ function messageHandler(messages) {
 }
 
 // -----------------------------------------------------------------------------
-// removeOldMessagesFromStorage
+// removeOldCallObjects
 // -----------------------------------------------------------------------------
-async function removeOldMessagesFromStorage(messages) {
+async function removeOldCallObjects(messages) {
   try {
-    // List ids of active messages.
+    // List ids of active messages. Messages is the list received from the
+    // server.
     const ids = messages.map((msg) => msg.id);
 
-    // Trace stored messages and remove it if it is not in the id list. This
-    // means that this message is removed by its initiator on the server-side.
+    // Trace stored local call objects and remove it if it is not in the id
+    // list. This means that this message is removed by its initiator on the
+    // server-side.
     for (const key of await chrome.storage.session.getKeys()) {
-      // Skip it if not a call message.
+      // Skip it if not a call object.
       if (!key.startsWith("incall-")) continue;
 
       const msgId = key.substr("incall-".length);
-      // Skip it if still exist on the server-side.
+      // Skip it if still exist on server-side.
       if (ids.includes(msgId)) continue;
 
+      // Remove the local copy of the message.
       await chrome.storage.session.remove(`incall-${msgId}`);
     }
   } catch (e) {
@@ -170,8 +173,9 @@ async function phoneMessageHandler(msg) {
 // -----------------------------------------------------------------------------
 // startInCall
 //
-// This function is for initializing incoming direct calls and phone calls.
-// All attributes are expected to be exist at this stage. Fail if they dont.
+// This function is for initializing incoming direct calls and incoming phone
+// calls. All attributes are expected to be exist at this stage. Fail if they
+// dont.
 // -----------------------------------------------------------------------------
 function startInCall(msg) {
   try {
@@ -252,7 +256,7 @@ async function startOutCall(call) {
     };
     await chrome.storage.session.set(item);
 
-    // Save the call object.
+    // Save the call object into the local storage.
     const callItem = {
       [`outcall-${call.id}`]: call,
     };
@@ -298,11 +302,12 @@ async function cleanupOutCall(callId) {
     const call = storedItems[`outcall-${callId}`];
     if (!call) return;
 
-    // Remove the outgoing call object, expired.
+    // Remove the local copy of the outgoing call, expired.
     await chrome.storage.session.remove(`outcall-${callId}`);
 
-    // Send a notification to the callee about the expired call. Currently the
-    // callee is informed by an email about the missing call.
+    // Remove the call object on server-side with a notification to the callee
+    // about the expired call. Currently the callee is informed by an email
+    // about the missing call.
     const payload = {
       id: callId,
     };
@@ -362,9 +367,10 @@ async function ringOutCall(callId) {
       return;
     }
 
-    // Ring and handle the ring status. The response contains the latest status
-    // depending on the answer from the other peer. Expected return value is an
-    // array with a single element. This single element is the intercom object.
+    // Ring and handle the returned ring status. The response contains the
+    // latest status depending on the answer from other peers. Expected return
+    // value is an array with a single element. This single element is the
+    // intercom object.
     const payload = {
       id: callId,
     };
@@ -382,11 +388,12 @@ async function ringOutCall(callId) {
 // -----------------------------------------------------------------------------
 async function endCall(callId) {
   try {
-    // Delete the call object.
+    // Delete the local copy of the call object.
     await chrome.storage.session.remove(`outcall-${callId}`);
 
-    // Send a notification to the callee about the missing call. Currently the
-    // callee is informed by an email about the missing call.
+    // Remove the call object on server-side with a notification to the callee
+    // about the expired call. Currently the callee is informed by an email
+    // about the missing call.
     const payload = {
       id: callId,
     };
@@ -401,13 +408,13 @@ async function endCall(callId) {
 // -----------------------------------------------------------------------------
 async function handleRingStatus(ring, call) {
   try {
-    // Ring again after a while if still no response from the peer.
+    // Ring again after a while if still no response from the peers.
     if (ring.status === "none" || ring.status === "seen") {
       chrome.alarms.create(`ring-outcall-${call.id}`, { delayInMinutes: 0.02 });
       return;
     }
 
-    // Delete the call objects if it is accepted or rejected by other peer. This
+    // Delete the call objects if it is accepted or rejected by callee. This
     // also means that no needs to ring aymore.
     await chrome.storage.session.remove(`outcall-${call.id}`);
     await chrome.storage.session.remove(`contact-${call.contact_id}`);
