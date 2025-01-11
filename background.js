@@ -413,7 +413,7 @@ async function handleRingStatus(ring, call) {
     }
 
     // Delete the call objects if it is accepted or rejected by callee. This
-    // also means that no needs to ring aymore.
+    // also means that no needs to ring anymore.
     await chrome.storage.session.remove(`outcall-${call.id}`);
     await chrome.storage.session.remove(`contact-${call.contact_id}`);
 
