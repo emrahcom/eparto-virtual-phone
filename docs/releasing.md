@@ -10,7 +10,7 @@ Remove the development files and create the zip file:
 cp -arp ../eparto-virtual-phone /tmp/
 
 cd /tmp/eparto-virtual-phone
-rm -rf .git .gitignore docs LICENSE
+rm -rf .git .gitignore docs LICENSE README.md
 ls -alh
 
 zip -r eparto-virtual-phone .
