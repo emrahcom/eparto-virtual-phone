@@ -20,10 +20,9 @@ outlines our data practices.
 - This data is also temporarily stored in the extension storage for a maximum of
   1 minute and is then automatically deleted.
 
-3. **Private Key:***
+3. **Private Key:**
 
-- Your private key is stored securely in the extension storage for long-term
-  use.
+- Your private key is stored in the extension storage for long-term use.
 - You can delete your private key at any time through the extension's interface.
 
 ### How We Use Your Information
