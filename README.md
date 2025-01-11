@@ -10,14 +10,14 @@ directly from the web browser.
 
 ### Features
 
-- Contact List\
+- **Contact List**\
   View and call your contacts right from the extension’s popup.
 
-- Incoming Call Notifications\
+- **Incoming Call Notifications**\
   When someone from your contact list calls, you’ll see a notification with
   options to accept or reject the call
 
-- Audio and Video Calls\
+- **Audio and Video Calls**\
   You can accept calls and communicate via audio or video, depending on your
   preference.
 
