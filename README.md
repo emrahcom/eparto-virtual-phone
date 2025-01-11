@@ -10,16 +10,13 @@ directly from the web browser.
 
 ### Features
 
-- Contact List
-  View and call your contacts right from the extension’s popup.
+- Contact List View and call your contacts right from the extension’s popup.
 
-- Incoming Call Notifications
-  When someone from your contact list calls, you’ll see a notification with
-  options to accept or reject the call
+- Incoming Call Notifications When someone from your contact list calls, you’ll
+  see a notification with options to accept or reject the call
 
-- Audio and Video Calls
-  You can accept calls and communicate via audio or video, depending on your
-  preference.
+- Audio and Video Calls You can accept calls and communicate via audio or video,
+  depending on your preference.
 
 Eparto Virtual Phone is designed to provide a simple and direct way to
 communicate with your contacts, all within your browser. No need for additional
