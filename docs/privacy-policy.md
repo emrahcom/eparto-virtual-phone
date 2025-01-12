@@ -8,15 +8,17 @@ outlines our data practices.
 
 1. **Contact List:**
 
-- The extension accesses your contact list, which contains names and email
-  addresses.
+- The extension accesses the contact list provided by the extension's backend
+  server, which contains names and email addresses. This contact list is not
+  related to or obtained from other applications or environments.
 - This information is temporarily stored in the extension storage for a maximum
   of 1 minute and is then automatically deleted.
 
 2. **Call Data:**
 
 - The extension accesses information about who is calling whom and the time of
-  the call.
+  the call within this extension. This data is not related to calls made through
+  other applications or environments.
 - This data is also temporarily stored in the extension storage for a maximum of
   1 minute and is then automatically deleted.
 
