@@ -24,3 +24,22 @@ from the web browser.
 Eparto Virtual Phone is designed to provide a simple and direct way to
 communicate with your contacts, all within your browser. No need for additional
 apps or devices, just open the extension and start calling.
+
+### Installation
+
+- **Install Extension**\
+  Add
+  [Eparto Virtual Phone](https://chromewebstore.google.com/detail/eparto-virtual-phone/njihflnogjnjnmflicfongbnehhpkhmj)
+  from Chrome Web Store.
+
+- **Eparto Account**\
+  Got to [eparto.net](https://app.eparto.net) and click
+  [Sign Up](https://app.eparto.net/id/registration) to create an account.
+
+- **Create Private Key**\
+  Click [here](https://app.eparto.net/pri/identity/key/add) to create a private
+  key for your extension.
+
+- **Set Private Key**\
+  Go to the extension options page and enter your private key to complete the
+  setup.
