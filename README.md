@@ -2,11 +2,10 @@
 
 ## Eparto Virtual Phone
 
-Eparto Virtual Phone is a Chrome extension for
-[Galaxy](https://github.com/emrahcom/galaxy) users. It allows users to use their
-browser as a virtual phone without having to leave the browser or use additional
-devices. It is a simple and efficient way to make and receive calls directly
-from the web browser.
+Eparto Virtual Phone is a Chrome extension for [Eparto](https://app.eparto.net)
+users. It allows users to use their browser as a virtual phone without having to
+leave the browser or use additional devices. It is a simple and efficient way to
+make and receive calls directly from the web browser.
 
 ### Features
 
