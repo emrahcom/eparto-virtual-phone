@@ -33,8 +33,8 @@ apps or devices, just open the extension and start calling.
   from Chrome Web Store.
 
 - **Eparto Account**\
-  Got to [eparto.net](https://app.eparto.net) and click
-  [Sign Up](https://app.eparto.net/id/registration) to create an account.
+  Go to [eparto.net](https://app.eparto.net) and click the **Sign Up** button to
+  create an account.
 
 - **Create Private Key**\
   Click [here](https://app.eparto.net/pri/identity/key/add) to create a private
