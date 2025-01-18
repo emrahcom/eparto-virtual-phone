@@ -67,8 +67,8 @@ There are two ways to make calls with your Eparto Virtual Phone:
 
    If you want to receive calls through a public phone, follow these steps:
 
-   1. Go to the [Public Phones](https://app.eparto.net/pri/phone) on the Eparto
-      website.
+   1. Go to the [Public Phones](https://app.eparto.net/pri/phone) page on the
+      Eparto website.
 
    2. Create a public phone.
 
