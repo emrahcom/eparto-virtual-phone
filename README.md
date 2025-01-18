@@ -1,4 +1,4 @@
-![Eparto Chrome extension](/docs/images/eparto-chrome-extension.png)
+![Eparto Chrome extension](docs/images/eparto-chrome-extension.png)
 
 ## Eparto Virtual Phone
 
