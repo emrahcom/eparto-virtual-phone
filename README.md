@@ -32,13 +32,13 @@ apps or devices, just open the extension and start calling.
   [Eparto Virtual Phone](https://chromewebstore.google.com/detail/eparto-virtual-phone/njihflnogjnjnmflicfongbnehhpkhmj)
   from Chrome Web Store.
 
-- **Eparto Account**\
+- **Register on Eparto**\
   Go to [eparto.net](https://app.eparto.net) and click the **Sign Up** button to
-  create an account.
+  create an account. Then, follow the prompts to complete your registration.
 
 - **Create Private Key**\
-  Click [here](https://app.eparto.net/pri/identity/key/add) to create a private
-  key for your extension.
+  Click [here](https://app.eparto.net/pri/identity/key/add) to create your
+  private key for the extension after registration.
 
 - **Set Private Key**\
   Go to the extension options page and enter your private key to complete the
