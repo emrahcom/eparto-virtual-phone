@@ -74,3 +74,17 @@ There are two ways to make calls with your Eparto Virtual Phone:
 
    3. Share its link or QR code with your friends, or display it on a website
       for others to find and call you.
+
+### Privacy
+
+Eparto Virtual Phone prioritizes the privacy. The extension communicates solely
+with the configured backend server (_[eparto.net](https://app.eparto.net) by
+default_) to facilitate its features. It does not track the browsing activity,
+monitor other tabs or collect any information about the user's actions outside
+of its intended functionality. All interactions are limited to what is necessary
+to provide a secure and seamless virtual phone experience.
+
+See [Privacy Policy](docs/privacy-policy.md) for more details.
+
+If you want to install and use your own backend server, see
+[Galaxy](https://github.com/emrahcom/galaxy).
