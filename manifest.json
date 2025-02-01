@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Eparto virtual phone",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Use your browser as a virtual phone",
   "homepage_url": "https://github.com/emrahcom/eparto-virtual-phone",
   "permissions": ["alarms", "storage"],
