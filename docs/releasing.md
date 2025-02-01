@@ -22,7 +22,7 @@
 - Remove the development files and create the zip file:
 
   ```bash
-  rm -rf .git .gitignore docs LICENSE README.md
+  rm -rf .git .gitignore docs LICENSE README.md google*.html
   ls -alh
 
   zip -r eparto-virtual-phone .
