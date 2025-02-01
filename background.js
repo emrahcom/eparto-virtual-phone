@@ -16,9 +16,11 @@ chrome.alarms.create("ping", {
   periodInMinutes: 1,
 });
 
-// Poll intercom messages.
+// Poll intercom messages. Create the following alarm when the triggered alarm
+// starts. Because Chrome doesn't allow periodInMinutes to be less than 30 sec.
+// https://developer.chrome.com/docs/extensions/reference/api/alarms
 chrome.alarms.create("intercomMessages", {
-  periodInMinutes: 0.035,
+  delayInMinutes: 0.030,
 });
 
 // Alarm listeners.
@@ -26,6 +28,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "ping") {
     ping();
   } else if (alarm.name === "intercomMessages") {
+    // Before getting intercom messages, create the following alarm.
+    chrome.alarms.create("intercomMessages", {
+      delayInMinutes: 0.030,
+    });
+
     // Known issue: if this alarm ends after the next alarm because of some
     // network issues then the old message will overwrite the new one but dont
     // fix, skip it.
