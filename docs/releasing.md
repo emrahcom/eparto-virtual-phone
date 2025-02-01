@@ -1,17 +1,29 @@
 # Releasing
 
-Update the version in [manifest.json](/manifest.json).
+- Check codes
 
-Disable debug logging in [config.js](/common/config.js).
+  ```bash
+  deno fmt --check
+  deno lint
+  deno check *.js */*.js
+  ```
 
-Remove the development files and create the zip file:
+- Update the version in [manifest.json](/manifest.json).
 
-```bash
-cp -arp ../eparto-virtual-phone /tmp/
+- Copy the folder to a temporary location
 
-cd /tmp/eparto-virtual-phone
-rm -rf .git .gitignore docs LICENSE README.md
-ls -alh
+  ```bash
+  cp -arp ../eparto-virtual-phone /tmp/
+  cd /tmp/eparto-virtual-phone
+  ```
 
-zip -r eparto-virtual-phone .
-```
+- Disable debug logging in [config.js](/common/config.js).
+
+- Remove the development files and create the zip file:
+
+  ```bash
+  rm -rf .git .gitignore docs LICENSE README.md
+  ls -alh
+
+  zip -r eparto-virtual-phone .
+  ```
