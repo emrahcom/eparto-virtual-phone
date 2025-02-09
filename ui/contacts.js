@@ -140,16 +140,15 @@ async function showContactList(contacts) {
 // -----------------------------------------------------------------------------
 async function generateContactListHeaderDiv() {
   try {
-    // The only expected scheme is https.
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
-    const domain = baseUrl.replace("https://", "");
 
-    // Show the link of the contact page on the web site.
+    // Show the link of the contacts page.
     const contactPageLink = document.createElement("a");
+    contactPageLink.className = "contact-page-link";
     contactPageLink.href = `${baseUrl}/pri/contact`;
     contactPageLink.target = "_blank";
-    contactPageLink.textContent = domain;
+    contactPageLink.textContent = "Open the contacts page";
 
     const contactListHeaderDiv = document.createElement("div");
     contactListHeaderDiv.className = "contact-list-header";
