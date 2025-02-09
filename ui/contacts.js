@@ -31,7 +31,7 @@ async function initialize() {
     } else if (contacts.length === 0) {
       showEmptyContactList();
     } else {
-      showContactList(contacts);
+      await showContactList(contacts);
     }
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -113,10 +113,13 @@ async function showEmptyContactList() {
 // -----------------------------------------------------------------------------
 // showContactList
 // -----------------------------------------------------------------------------
-function showContactList(contacts) {
+async function showContactList(contacts) {
   try {
     const container = document.getElementById("contact-list");
     if (!container) throw "missing contact-list container";
+
+    const contactListHeaderDiv = await generateContactListHeaderDiv();
+    if (contactListHeaderDiv) container.appendChild(contactListHeaderDiv);
 
     // Generate a contact div for each contact.
     for (const contact of contacts) {
@@ -129,6 +132,34 @@ function showContactList(contacts) {
     container.style.display = "block";
   } catch (e) {
     if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// generateContactListHeaderDiv
+// -----------------------------------------------------------------------------
+async function generateContactListHeaderDiv() {
+  try {
+    // The only expected scheme is https.
+    const storedBaseUrls = await chrome.storage.local.get("base-url");
+    const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
+    const domain = baseUrl.replace("https://", "");
+
+    // Show the link of the contact page on the web site.
+    const contactPageLink = document.createElement("a");
+    contactPageLink.href = `${baseUrl}/pri/contact`;
+    contactPageLink.target = "_blank";
+    contactPageLink.textContent = domain;
+
+    const contactListHeaderDiv = document.createElement("div");
+    contactListHeaderDiv.className = "contact-list-header";
+    contactListHeaderDiv.appendChild(contactPageLink);
+
+    return contactListHeaderDiv;
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return undefined;
   }
 }
 
