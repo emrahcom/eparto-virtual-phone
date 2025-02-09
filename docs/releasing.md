@@ -27,3 +27,15 @@
 
   zip -r eparto-virtual-phone .
   ```
+
+- Open the developer dashboard on Chrome Web Store
+
+- Select Eparto Virtual Phone as item
+
+- Go to the package tab
+
+- Upload new package
+
+- Save draft
+
+- Submit for review
