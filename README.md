@@ -35,6 +35,9 @@ apps or devices, just open the extension and start calling.
    Go to [eparto.net](https://app.eparto.net) and click the **Sign Up** button
    to create an account. Then, follow the prompts to complete your registration.
 
+   This service is completely free and its source codes are publicly available
+   at [Galaxy](https://github.com/emrahcom/galaxy).
+
 3. **Create Private Key**\
    Click [here](https://app.eparto.net/pri/identity/key/add) to create your
    private key for the extension after registration.
