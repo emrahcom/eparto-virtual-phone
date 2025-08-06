@@ -95,7 +95,7 @@ function messageHandler(messages) {
 
     // If a message doesn't exist on the server-side anymore then remove its
     // local copy. This happens when the message is dropped by its initiator.
-    removeOldCallObjects(messages);
+    removeOldObjects(messages);
 
     if (!messages.length) return;
 
@@ -105,6 +105,8 @@ function messageHandler(messages) {
         callMessageHandler(msg);
       } else if (msg?.message_type === "phone") {
         phoneMessageHandler(msg);
+      } else if (msg?.message_type === "text") {
+        textMessageHandler(msg);
       }
     }
   } catch (e) {
@@ -113,27 +115,35 @@ function messageHandler(messages) {
 }
 
 // -----------------------------------------------------------------------------
-// removeOldCallObjects
+// removeOldObjects
 // -----------------------------------------------------------------------------
-async function removeOldCallObjects(messages) {
+async function removeOldObjects(messages) {
   try {
     // List ids of active messages. Messages is the list received from the
     // server.
     const ids = messages.map((msg) => msg.id);
 
-    // Trace stored local call objects and remove it if it is not in the id
-    // list. This means that this message is removed by its initiator on the
+    // Trace stored local objects and remove it if it is not in the id list.
+    // This means that this message is removed by its initiator on the
     // server-side.
     for (const key of await chrome.storage.session.getKeys()) {
-      // Skip it if not a call object.
-      if (!key.startsWith("incall-")) continue;
+      if (key.startsWith("incall-")) {
+        const msgId = key.substr("incall-".length);
 
-      const msgId = key.substr("incall-".length);
-      // Skip it if still exist on server-side.
-      if (ids.includes(msgId)) continue;
+        // Skip it if still exists on the server-side.
+        if (ids.includes(msgId)) continue;
 
-      // Remove the local copy of the message.
-      await chrome.storage.session.remove(`incall-${msgId}`);
+        // Remove the local copy of the message since it doesnt exist in list.
+        await chrome.storage.session.remove(`incall-${msgId}`);
+      } else if (key.startsWith("intext-")) {
+        const msgId = key.substr("intext-".length);
+
+        // Skip it if still exists on the server-side.
+        if (ids.includes(msgId)) continue;
+
+        // Remove the local copy of the message since it doesnt exist in list.
+        await chrome.storage.session.remove(`intext-${msgId}`);
+      }
     }
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -434,6 +444,69 @@ async function handleRingStatus(ring, call) {
     if (ring.status === "accepted") {
       chrome.tabs.create({ url: call.url });
     }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// textMessageHandler
+// -----------------------------------------------------------------------------
+async function textMessageHandler(msg) {
+  try {
+    const msgId = msg?.id;
+    if (!msgId) throw "missing message id";
+
+    // Is there already a session object for this incoming text message?
+    // Be carefull, the return value is a list, not a single item...
+    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
+    const storedItem = storedItems[`intext-${msgId}`];
+
+    // Create or update (if already exists) the session object.
+    // Be carefull, key will not be generated dynamically if it is not in [].
+    const item = {
+      [`intext-${msgId}`]: msg,
+    };
+    await chrome.storage.session.set(item);
+
+    // If this is the first message of the incoming text then show the text.
+    // This means creating its popup, triggering its cleanup job, etc.
+    if (!storedItem) showInText(msg);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// showInText
+//
+// This function is for initializing incoming text message. All attributes are
+// expected to be exist at this stage. Fail if they dont.
+//
+// No scheduled clean job for text messages. It will be deleted when the user
+// sees it or when it is expire on the server-side.
+// -----------------------------------------------------------------------------
+function showInText(msg) {
+  try {
+    // Cancel if the status is not "none". This means that the text message is
+    // already processed (accepted, rejected, seen, etc.) by another client.
+    if (msg.status !== "none") return;
+
+    // Cancel if the text message is already expired.
+    const expiredAt = new Date(msg.expired_at);
+    if (isNaN(expiredAt)) throw "invalid expire time";
+    if (Date.now() > expiredAt.getTime()) return;
+
+    // Create the incoming text popup and show it.
+    chrome.windows.create({
+      url: chrome.runtime.getURL(
+        `ui/in-text.html?id=${msg.id}`,
+      ),
+      type: "popup",
+      focused: true,
+      width: 320,
+      height: 120,
+    });
   } catch (e) {
     if (DEBUG) console.error(e);
   }
