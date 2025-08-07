@@ -1,1 +1,47 @@
-in-text
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incoming text message</title>
+    <style>
+      body {
+        background-color: #fafafa;
+        font-family: sans-serif;
+      }
+
+      .info {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        color: dimgray;
+        font-size: 1.2em;
+      }
+
+      .sender {
+        margin-left: 8px;
+        margin-right: 4px;
+        font-weight: 600;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .desc {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="chat-info" class="info" style="display: none">
+      <img src="/assets/icon-chat.svg" alt="incoming text message">
+      <span id="contact" class="sender">Contact</span>
+      <span class="desc">set a message</span>
+    </div>
+
+    <audio id="ring" src="/assets/ringing.mp3" loop></audio>
+
+    <script type="module" src="in-text.js"></script>
+  </body>
+</html>

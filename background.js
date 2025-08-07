@@ -483,7 +483,7 @@ async function textMessageHandler(msg) {
 // This function is for initializing incoming text message. All attributes are
 // expected to be exist at this stage. Fail if they dont.
 //
-// No scheduled clean job for text messages. It will be deleted when the user
+// No scheduled cleanup job for text messages. It will be deleted when the user
 // sees it or when it is expire on the server-side.
 // -----------------------------------------------------------------------------
 function showInText(msg) {
