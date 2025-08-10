@@ -80,9 +80,16 @@ async function ping() {
 // getIntercomMessages
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
+  const payload = {};
+  const last = await chrome.storage.local.get("intercom_last_msg_at") || "0";
+
+  // The value should be the epoch time in microseconds of the last received
+  // message.
+  payload.value = Number(last) || 0;
+
   // Poll intercom messages from the server. This function is triggered by an
   // alarm periodically.
-  return await getByKey("/api/pub/intercom/list/bykey");
+  return await getByKey("/api/pub/intercom/list/bykey", payload);
 }
 
 // -----------------------------------------------------------------------------
