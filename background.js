@@ -28,16 +28,20 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "ping") {
     ping();
   } else if (alarm.name === "intercomMessages") {
-    // Before getting intercom messages, create the following alarm.
+    // Before getting intercom messages, create the next alarm.
     chrome.alarms.create("intercomMessages", {
       delayInMinutes: 0.030,
     });
 
     // Known issue: if this alarm ends after the next alarm because of some
-    // network issues then the old message will overwrite the new one but dont
-    // fix, skip it.
+    // network issues then the message order will not be correct but dont fix,
+    // skip it.
     const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
+
+    // Call the popupHandler to display messages in the queue. It will display
+    // critical messages and a limited number of non-critical messages.
+    popupHandler();
   } else if (alarm.name.startsWith("cleanup-incall-")) {
     const msgId = alarm.name.substr("cleanup-incall-".length);
     cleanupInCall(msgId);
@@ -101,7 +105,6 @@ function messageHandler(messages) {
     if (!Array.isArray(messages)) throw "invalid structure for message list";
     if (!messages.length) return;
 
-    // THERE SHOULD BE A LOGIC TO SHOW ONLY THE LAST 5 POPUP
     // Process messages depending on their types.
     for (const msg of messages) {
       if (msg?.message_type === "text") {
@@ -115,6 +118,17 @@ function messageHandler(messages) {
   } catch (e) {
     if (DEBUG) console.error(e);
   }
+}
+
+// -----------------------------------------------------------------------------
+// popupHandler
+//
+// popupHandler only handles text messages. Call and phone messages are shown
+// immediately since they are urgent.
+// -----------------------------------------------------------------------------
+async function popupHandler() {
+  // do nothing for now
+  // count the number of popups for chrome.runtime.getURL('ui/in-text.html')
 }
 
 // -----------------------------------------------------------------------------
@@ -137,9 +151,33 @@ async function textMessageHandler(msg) {
     };
     await chrome.storage.session.set(item);
 
-    // If this is the first message of the incoming text then show the text.
-    // This means creating its popup, triggering its cleanup job, etc.
-    if (!storedItem) showInText(msg);
+    // If this is the first message of the incoming text then add it to the
+    // queue. popupHandler periodically checks this queue and create a new
+    // popup when the number of open popups is less than a threshold.
+    if (!storedItem) addToQueue(msgId);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// addToQueue
+// -----------------------------------------------------------------------------
+async function addToQueue(msgId) {
+  try {
+    if (!msgId) throw "missing message id";
+
+    // Is there already a message queue for incoming text message?
+    // Be carefull, the return value is a list, not a single item...
+    const messageQueues = await chrome.storage.session.get('message-queue');
+    const messageQueue = messageQueues['message-queue'] || [];
+    messageQueue.push(msgId);
+
+    // Create or update (if already exists) the message queue.
+    const item = {
+      ['message-queue']: messageQueue,
+    };
+    await chrome.storage.session.set(item);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
