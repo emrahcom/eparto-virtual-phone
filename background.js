@@ -39,8 +39,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const messages = await getIntercomMessages();
     if (messages) messageHandler(messages);
 
-    // Call the popupHandler to display messages in the queue. It will display
-    // critical messages and a limited number of non-critical messages.
+    // Call the popupHandler to open new popups if needed.
+    popupHandler();
+  } else if (alarm.name === "popups") {
+    // This alarm is triggered when a text popup is closed.
+    // Call the popupHandler to display the next message in the queue.
     popupHandler();
   } else if (alarm.name.startsWith("cleanup-incall-")) {
     const msgId = alarm.name.substr("cleanup-incall-".length);
@@ -123,8 +126,9 @@ function messageHandler(messages) {
 // -----------------------------------------------------------------------------
 // popupHandler
 //
-// popupHandler only handles text messages. Call and phone messages are shown
-// immediately since they are urgent.
+// popupHandler only handles text messages and shows a limited number of text
+// messages at a time. Call and phone messages are shown immediately since they
+// are urgent and they are not handled by popupHandler.
 // -----------------------------------------------------------------------------
 async function popupHandler() {
   // do nothing for now
