@@ -133,7 +133,7 @@ async function messageHandler(messages) {
 // -----------------------------------------------------------------------------
 async function popupHandler() {
   try {
-    const numberOfOpenPopups = await getNumberOfOpenPopups("ui/in-text.html");
+    const numberOfOpenPopups = await getNumberOfOpenPopups();
     const availableSlots = NUMBER_OF_ALLOWED_POPUPS - numberOfOpenPopups;
     if (availableSlots < 1) return;
 
@@ -158,13 +158,10 @@ async function popupHandler() {
 // -----------------------------------------------------------------------------
 // getNumberOfOpenPopups
 // -----------------------------------------------------------------------------
-async function getNumberOfOpenPopups(path) {
-  const tabs = await chrome.tabs.query({
-    windowType: "popup",
-    url: chrome.runtime.getURL(path),
-  });
+async function getNumberOfOpenPopups() {
+  const popups = await chrome.windows.getAll({ windowTypes: ["popup"] });
 
-  return tabs.length;
+  return popups.length;
 }
 
 // -----------------------------------------------------------------------------
