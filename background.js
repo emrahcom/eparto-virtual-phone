@@ -4,6 +4,8 @@
 import {
   DEBUG,
   INCALL_EXPIRE_TIME,
+  INTEXT_EXPIRE_TIME,
+  NUMBER_OF_ALLOWED_POPUPS,
   OUTCALL_EXPIRE_TIME,
 } from "./common/config.js";
 import { getByKey } from "./common/function.js";
@@ -11,13 +13,14 @@ import { getByKey } from "./common/function.js";
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-// Ping (update presence).
+// Ping (update the presence periodically).
 chrome.alarms.create("ping", {
   periodInMinutes: 1,
 });
 
-// Poll intercom messages. Create the following alarm when the triggered alarm
-// starts. Because Chrome doesn't allow periodInMinutes to be less than 30 sec.
+// Create the first alarm to start polling intercom messages. Each time an alarm
+// is triggered, subsequent alarm will be created in the listener. Chrome
+// does not allow periodInMinutes to be less than 30 sec.
 // https://developer.chrome.com/docs/extensions/reference/api/alarms
 chrome.alarms.create("intercomMessages", {
   delayInMinutes: 0.030,
@@ -37,14 +40,13 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     // network issues then the message order will not be correct but dont fix,
     // skip it.
     const messages = await getIntercomMessages();
-    if (messages) messageHandler(messages);
+    if (messages) await messageHandler(messages);
 
     // Call the popupHandler to open new popups if needed.
     popupHandler();
-  } else if (alarm.name === "popups") {
-    // This alarm is triggered when a text popup is closed.
-    // Call the popupHandler to display the next message in the queue.
-    popupHandler();
+  } else if (alarm.name.startsWith("cleanup-intext-")) {
+    const msgId = alarm.name.substr("cleanup-intext-".length);
+    cleanupInText(msgId);
   } else if (alarm.name.startsWith("cleanup-incall-")) {
     const msgId = alarm.name.substr("cleanup-incall-".length);
     cleanupInCall(msgId);
@@ -94,15 +96,14 @@ async function getIntercomMessages() {
   // message. This will be the start time while getting the new messages.
   payload.value = Number(last) || 0;
 
-  // Poll intercom messages from the server. This function is triggered by an
-  // alarm periodically.
+  // Poll intercom messages from the server.
   return await getByKey("/api/pub/intercom/list/bykey", payload);
 }
 
 // -----------------------------------------------------------------------------
 // messageHandler
 // -----------------------------------------------------------------------------
-function messageHandler(messages) {
+async function messageHandler(messages) {
   try {
     if (!messages) throw "missing message list";
     if (!Array.isArray(messages)) throw "invalid structure for message list";
@@ -111,11 +112,11 @@ function messageHandler(messages) {
     // Process messages depending on their types.
     for (const msg of messages) {
       if (msg?.message_type === "text") {
-        textMessageHandler(msg);
+        await textMessageHandler(msg);
       } else if (msg?.message_type === "call") {
-        callMessageHandler(msg);
+        await callMessageHandler(msg);
       } else if (msg?.message_type === "phone") {
-        phoneMessageHandler(msg);
+        await phoneMessageHandler(msg);
       }
     }
   } catch (e) {
@@ -131,8 +132,86 @@ function messageHandler(messages) {
 // are urgent and they are not handled by popupHandler.
 // -----------------------------------------------------------------------------
 async function popupHandler() {
-  // do nothing for now
-  // count the number of popups for chrome.runtime.getURL('ui/in-text.html')
+  try {
+    const numberOfOpenPopups = await getNumberOfOpenPopups("ui/in-text.html");
+    const availableSlots = NUMBER_OF_ALLOWED_POPUPS - numberOfOpenPopups;
+    if (availableSlots < 1) return;
+
+    // Is there already a message queue for incoming text message?
+    // Be carefull, the return value is a list, not a single item...
+    const messageQueues = await chrome.storage.session.get("message-queue");
+    const messageQueue = messageQueues["message-queue"] || [];
+
+    for (let i = 0; i < availableSlots; i++) {
+      const msgId = messageQueue.shift();
+      if (!msgId) break;
+
+      await showInText(msgId);
+    }
+
+    await chrome.storage.session.set({ "message-queue": messageQueue });
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// getNumberOfOpenPopups
+// -----------------------------------------------------------------------------
+async function getNumberOfOpenPopups(path) {
+  const tabs = await chrome.tabs.query({
+    windowType: "popup",
+    url: chrome.runtime.getURL(path),
+  });
+
+  return tabs.length;
+}
+
+// -----------------------------------------------------------------------------
+// showInText
+//
+// This function is for initializing incoming text message. All attributes are
+// expected to be exist at this stage. Fail if they dont.
+//
+// No scheduled cleanup job for text messages. It will be deleted when the user
+// sees it or when it is expire on the server-side.
+// -----------------------------------------------------------------------------
+async function showInText(msgId) {
+  try {
+    // Get the text object from the storage.
+    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
+    const msg = storedItems[`intext-${msgId}`];
+
+    // Remove all objects related with this incoming text after the expire time.
+    // There is no problem if the browser is closed before this is done, because
+    // there are only session objects which will be removed anyway after the
+    // session.
+    chrome.alarms.create(`cleanup-intext-${msgId}`, {
+      delayInMinutes: INTEXT_EXPIRE_TIME,
+    });
+
+    // Cancel if the status is not "none". This means that the text message is
+    // already processed (accepted, rejected, seen, etc.) by another client.
+    if (msg.status !== "none") return;
+
+    // Cancel if the text message is already expired.
+    const expiredAt = new Date(msg.expired_at);
+    if (isNaN(expiredAt)) throw "invalid expire time";
+    if (Date.now() > expiredAt.getTime()) return;
+
+    // Create the incoming text popup and show it.
+    chrome.windows.create({
+      url: chrome.runtime.getURL(
+        `ui/in-text.html?id=${msg.id}`,
+      ),
+      type: "popup",
+      focused: true,
+      width: 320,
+      height: 120,
+    });
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -158,7 +237,8 @@ async function textMessageHandler(msg) {
     // If this is the first message of the incoming text then add it to the
     // queue. popupHandler periodically checks this queue and create a new
     // popup when the number of open popups is less than a threshold.
-    if (!storedItem) addToQueue(msgId);
+    // Wait until the queue is updated unlike callMessageHandler.
+    if (!storedItem) await addToQueue(msgId);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -173,13 +253,13 @@ async function addToQueue(msgId) {
 
     // Is there already a message queue for incoming text message?
     // Be carefull, the return value is a list, not a single item...
-    const messageQueues = await chrome.storage.session.get('message-queue');
-    const messageQueue = messageQueues['message-queue'] || [];
+    const messageQueues = await chrome.storage.session.get("message-queue");
+    const messageQueue = messageQueues["message-queue"] || [];
     messageQueue.push(msgId);
 
     // Create or update (if already exists) the message queue.
     const item = {
-      ['message-queue']: messageQueue,
+      ["message-queue"]: messageQueue,
     };
     await chrome.storage.session.set(item);
   } catch (e) {
@@ -188,35 +268,13 @@ async function addToQueue(msgId) {
 }
 
 // -----------------------------------------------------------------------------
-// showInText
-//
-// This function is for initializing incoming text message. All attributes are
-// expected to be exist at this stage. Fail if they dont.
-//
-// No scheduled cleanup job for text messages. It will be deleted when the user
-// sees it or when it is expire on the server-side.
+// cleanupInText
 // -----------------------------------------------------------------------------
-function showInText(msg) {
+async function cleanupInText(msgId) {
   try {
-    // Cancel if the status is not "none". This means that the text message is
-    // already processed (accepted, rejected, seen, etc.) by another client.
-    if (msg.status !== "none") return;
+    if (!msgId) throw "missing message id";
 
-    // Cancel if the text message is already expired.
-    const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time";
-    if (Date.now() > expiredAt.getTime()) return;
-
-    // Create the incoming text popup and show it.
-    chrome.windows.create({
-      url: chrome.runtime.getURL(
-        `ui/in-text.html?id=${msg.id}`,
-      ),
-      type: "popup",
-      focused: true,
-      width: 320,
-      height: 120,
-    });
+    await chrome.storage.session.remove(`intext-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -266,9 +324,13 @@ async function phoneMessageHandler(msg) {
 // -----------------------------------------------------------------------------
 function startInCall(msg) {
   try {
-    // Trigger the cleanup job which will remove the incoming call objects after
-    // a while.
-    triggerCleanupInCall(msg.id);
+    // Remove all objects related with this incoming call after the expire time.
+    // There is no problem if the browser is closed before this is done, because
+    // there are only session objects which will be removed anyway after the
+    // session.
+    chrome.alarms.create(`cleanup-incall-${msgId}`, {
+      delayInMinutes: INCALL_EXPIRE_TIME,
+    });
 
     // Cancel if the status is not "none". This means that the call is already
     // processed (accepted, rejected, seen, etc.) by another client.
@@ -295,23 +357,6 @@ function startInCall(msg) {
 }
 
 // -----------------------------------------------------------------------------
-// triggerCleanupInCall
-// -----------------------------------------------------------------------------
-function triggerCleanupInCall(msgId) {
-  try {
-    // Remove all objects related with this incoming call after the expire time.
-    // There is no problem if the browser is closed before this is done, because
-    // there are only session objects which will be removed anyway after the
-    // session.
-    chrome.alarms.create(`cleanup-incall-${msgId}`, {
-      delayInMinutes: INCALL_EXPIRE_TIME,
-    });
-  } catch (e) {
-    if (DEBUG) console.error(e);
-  }
-}
-
-// -----------------------------------------------------------------------------
 // cleanupInCall
 // -----------------------------------------------------------------------------
 async function cleanupInCall(msgId) {
@@ -331,9 +376,15 @@ async function cleanupInCall(msgId) {
 // -----------------------------------------------------------------------------
 async function startOutCall(call) {
   try {
-    // Trigger the cleanup job which will remove the outgoing call objects after
-    // a while. This will also end the call if there is no answer yet.
-    triggerCleanupOutCall(call.id);
+    // Remove all objects related with this outgoing call after the expire time.
+    // This will also end the call if there is no answer yet.
+    //
+    // There is no problem if the browser is closed before this is done,
+    // because there are only session objects which will be removed anyway after
+    // the session.
+    chrome.alarms.create(`cleanup-outcall-${callId}`, {
+      delayInMinutes: OUTCALL_EXPIRE_TIME,
+    });
 
     // Save id of the active call as contact value. So, it is possible to find
     // if there is an active call in the background for this contact. UI needs
@@ -350,26 +401,7 @@ async function startOutCall(call) {
     await chrome.storage.session.set(callItem);
 
     // Trigger ring loop.
-    triggerOutCallRing(call.id);
-  } catch (e) {
-    if (DEBUG) console.error(e);
-  }
-}
-
-// -----------------------------------------------------------------------------
-// triggerCleanupOutCall
-// -----------------------------------------------------------------------------
-function triggerCleanupOutCall(callId) {
-  try {
-    // Remove all objects related with this outgoing call after the expire time.
-    // This will also end the call if there is no answer yet.
-    //
-    // There is no problem if the browser is closed before this is done,
-    // because there are only session objects which will be removed anyway after
-    // the session.
-    chrome.alarms.create(`cleanup-outcall-${callId}`, {
-      delayInMinutes: OUTCALL_EXPIRE_TIME,
-    });
+    chrome.alarms.create(`ring-outcall-${callId}`, { delayInMinutes: 0.02 });
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -417,18 +449,6 @@ async function cleanupOutCall(callId) {
 }
 
 // -----------------------------------------------------------------------------
-// triggerOutCallRing
-// -----------------------------------------------------------------------------
-function triggerOutCallRing(callId) {
-  try {
-    // Trigger ring loop.
-    chrome.alarms.create(`ring-outcall-${callId}`, { delayInMinutes: 0.02 });
-  } catch (e) {
-    if (DEBUG) console.error(e);
-  }
-}
-
-// -----------------------------------------------------------------------------
 // ringOutCall
 // -----------------------------------------------------------------------------
 async function ringOutCall(callId) {
@@ -450,7 +470,7 @@ async function ringOutCall(callId) {
     // End the call if this call is not active anymore. This happens when it is
     // stopped on UI by the user.
     if (activeCall !== callId) {
-      await endCall(callId);
+      await endOutCall(callId);
       return;
     }
 
@@ -471,9 +491,9 @@ async function ringOutCall(callId) {
 }
 
 // -----------------------------------------------------------------------------
-// endCall
+// endOutCall
 // -----------------------------------------------------------------------------
-async function endCall(callId) {
+async function endOutCall(callId) {
   try {
     // Delete the local copy of the call object.
     await chrome.storage.session.remove(`outcall-${callId}`);
