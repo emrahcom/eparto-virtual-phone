@@ -139,8 +139,8 @@ async function popupHandler() {
 
     // Is there already a message queue for incoming text message?
     // Be carefull, the return value is a list, not a single item...
-    const messageQueues = await chrome.storage.session.get("message-queue");
-    const messageQueue = messageQueues["message-queue"] || [];
+    const storedItems = await chrome.storage.session.get("message-queue");
+    const messageQueue = storedItems["message-queue"] || [];
 
     for (let i = 0; i < availableSlots; i++) {
       const msgId = messageQueue.shift();
@@ -250,8 +250,8 @@ async function addToQueue(msgId) {
 
     // Is there already a message queue for incoming text message?
     // Be carefull, the return value is a list, not a single item...
-    const messageQueues = await chrome.storage.session.get("message-queue");
-    const messageQueue = messageQueues["message-queue"] || [];
+    const storedItems = await chrome.storage.session.get("message-queue");
+    const messageQueue = storedItems["message-queue"] || [];
     messageQueue.push(msgId);
 
     // Create or update (if already exists) the message queue.
