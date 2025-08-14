@@ -169,16 +169,9 @@ async function getNumberOfOpenPopups() {
 //
 // This function is for initializing incoming text message. All attributes are
 // expected to be exist at this stage. Fail if they dont.
-//
-// No scheduled cleanup job for text messages. It will be deleted when the user
-// sees it or when it is expire on the server-side.
 // -----------------------------------------------------------------------------
 async function showInText(msgId) {
   try {
-    // Get the text object from the storage.
-    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
-    const msg = storedItems[`intext-${msgId}`];
-
     // Remove all objects related with this incoming text after the expire time.
     // There is no problem if the browser is closed before this is done, because
     // there are only session objects which will be removed anyway after the
@@ -187,14 +180,25 @@ async function showInText(msgId) {
       delayInMinutes: INTEXT_EXPIRE_TIME,
     });
 
+    // Get the text object from the storage.
+    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
+    const msg = storedItems[`intext-${msgId}`];
+    if (!msg) return;
+
     // Cancel if the status is not "none". This means that the text message is
     // already processed (accepted, rejected, seen, etc.) by another client.
-    if (msg.status !== "none") return;
+    if (msg.status !== "none") {
+      cleanupInText(msg.id);
+      return;
+    }
 
     // Cancel if the text message is already expired.
     const expiredAt = new Date(msg.expired_at);
     if (isNaN(expiredAt)) throw "invalid expire time";
-    if (Date.now() > expiredAt.getTime()) return;
+    if (Date.now() > expiredAt.getTime()) {
+      cleanupInText(msg.id);
+      return;
+    }
 
     // Create the incoming text popup and show it.
     chrome.windows.create({
