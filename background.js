@@ -155,7 +155,7 @@ async function popupHandler() {
     const availableSlots = NUMBER_OF_ALLOWED_POPUPS - numberOfOpenPopups;
     if (availableSlots < 1) return;
 
-    // Is there already a message queue for incoming text message?
+    // Is there already a message queue for incoming text messages?
     // Be carefull, the return value is a list, not a single item...
     const storedItems = await chrome.storage.session.get("message-queue");
     const messageQueue = storedItems["message-queue"] || [];
@@ -181,14 +181,14 @@ async function popupHandler() {
 // -----------------------------------------------------------------------------
 async function displayInText(msgId) {
   try {
-    // Get the text object from the storage.
+    // Get the incoming text object from the storage.
     const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
     const msg = storedItems[`intext-${msgId}`];
     if (!msg) return;
 
     // Remove all objects related with this incoming text after the expire time.
-    // No problem if the browser is closed before this is done, because there
-    // are only session objects which will be removed anyway after the session.
+    // No problem if the browser is closed before this is done, because they are
+    // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-intext-${msgId}`, {
       delayInMinutes: INTEXT_EXPIRE_TIME,
     });
@@ -245,7 +245,9 @@ async function textMessageHandler(msg) {
     // If this is the first message of the incoming text then add it to the
     // queue. popupHandler periodically checks this queue and create a new
     // popup when the number of open popups is less than a threshold.
-    // Wait until the queue is updated unlike callMessageHandler.
+    //
+    // Wait until the queue is updated unlike callMessageHandler. It should be
+    // ready before calling popupHandler.
     if (!storedItem) await addToQueue(msgId);
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -330,15 +332,14 @@ async function phoneMessageHandler(msg) {
 // -----------------------------------------------------------------------------
 // startInCall
 //
-// This function is for initializing incoming direct calls and incoming phone
-// calls. All attributes are expected to be exist at this stage. Fail if they
-// dont.
+// This function initalizes the incoming direct call or the incoming phone call.
+// All attributes are expected to be exist at this stage. Fail if they dont.
 // -----------------------------------------------------------------------------
 function startInCall(msg) {
   try {
     // Remove all objects related with this incoming call after the expire time.
-    // No problem if the browser is closed before this is done, because there
-    // are only session objects which will be removed anyway after the session.
+    // No problem if the browser is closed before this is done, because they are
+    // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-incall-${msgId}`, {
       delayInMinutes: INCALL_EXPIRE_TIME,
     });
@@ -399,8 +400,8 @@ async function startOutCall(call) {
     // Remove all objects related with this outgoing call after the expire time.
     // This will also end the call if there is no answer yet.
     //
-    // No problem if the browser is closed before this is done, because there
-    // are only session objects which will be removed anyway after the session.
+    // No problem if the browser is closed before this is done, because they are
+    // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-outcall-${callId}`, {
       delayInMinutes: OUTCALL_EXPIRE_TIME,
     });
