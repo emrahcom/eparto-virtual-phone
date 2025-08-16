@@ -202,8 +202,7 @@ async function showInText(msgId) {
 
     // Cancel if the text message is already expired.
     const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time";
-    if (Date.now() > expiredAt.getTime()) {
+    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) {
       cleanupInText(msg.id);
       return;
     }
@@ -350,8 +349,7 @@ function startInCall(msg) {
 
     // Cancel if the call is already expired.
     const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time";
-    if (Date.now() > expiredAt.getTime()) return;
+    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) return;
 
     // Create the incoming call popup and show it.
     chrome.windows.create({
