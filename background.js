@@ -1,4 +1,17 @@
 // -----------------------------------------------------------------------------
+// About terminology
+//
+// contact    -> A person from the friends list.
+// ping       -> Updating the presence to inform contacts.
+//
+// inCall     -> Incoming direct call, from a contact to the extension.
+// outCall    -> Outgoing direct call, from the extension to a contact.
+// inPhone    -> Incoming call from a public phone, from an anonymous person
+//               to the extension.
+// inText     -> Incoming text message, from a contact to the extension.
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
 import {
