@@ -133,8 +133,8 @@ async function messageHandler(messages) {
 // -----------------------------------------------------------------------------
 async function popupHandler() {
   try {
-    const popups = await chrome.windows.getAll({ windowTypes: ["popup"] });
-    const numberOfOpenPopups = popups.length;
+    const openPopups = await chrome.windows.getAll({ windowTypes: ["popup"] });
+    const numberOfOpenPopups = openPopups.length;
     const availableSlots = NUMBER_OF_ALLOWED_POPUPS - numberOfOpenPopups;
     if (availableSlots < 1) return;
 
