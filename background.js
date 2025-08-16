@@ -202,7 +202,7 @@ async function showInText(msgId) {
 
     // Cancel if the text message is already expired.
     const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) {
+    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime())) {
       cleanupInText(msg.id);
       return;
     }
@@ -352,7 +352,7 @@ function startInCall(msg) {
 
     // Cancel if the call is already expired.
     const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) {
+    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime())) {
       cleanupInCall(msg.id);
       return;
     }
