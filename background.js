@@ -421,7 +421,7 @@ async function startOutCall(call) {
     await chrome.storage.session.set(callItem);
 
     // Trigger ring loop.
-    chrome.alarms.create(`ring-outcall-${callId}`, { delayInMinutes: 0.02 });
+    chrome.alarms.create(`ring-outcall-${call.id}`, { delayInMinutes: 0.02 });
   } catch (e) {
     if (DEBUG) console.error(e);
   }
