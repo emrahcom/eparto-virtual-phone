@@ -133,7 +133,8 @@ async function messageHandler(messages) {
 // -----------------------------------------------------------------------------
 async function popupHandler() {
   try {
-    const numberOfOpenPopups = await getNumberOfOpenPopups();
+    const popups = await chrome.windows.getAll({ windowTypes: ["popup"] });
+    const numberOfOpenPopups = popups.length;
     const availableSlots = NUMBER_OF_ALLOWED_POPUPS - numberOfOpenPopups;
     if (availableSlots < 1) return;
 
@@ -153,15 +154,6 @@ async function popupHandler() {
   } catch (e) {
     if (DEBUG) console.error(e);
   }
-}
-
-// -----------------------------------------------------------------------------
-// getNumberOfOpenPopups
-// -----------------------------------------------------------------------------
-async function getNumberOfOpenPopups() {
-  const popups = await chrome.windows.getAll({ windowTypes: ["popup"] });
-
-  return popups.length;
 }
 
 // -----------------------------------------------------------------------------
@@ -276,6 +268,10 @@ async function cleanupInText(msgId) {
     if (!msgId) throw "missing message id";
 
     await chrome.storage.session.remove(`intext-${msgId}`);
+
+    // Sometimes this function is called directly without waiting the alarm.
+    // Delete the existing alarm in this case.
+    chrome.alarms.clear(`cleanup-intext-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
