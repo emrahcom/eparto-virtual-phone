@@ -182,9 +182,8 @@ async function popupHandler() {
 async function showInText(msgId) {
   try {
     // Remove all objects related with this incoming text after the expire time.
-    // There is no problem if the browser is closed before this is done, because
-    // there are only session objects which will be removed anyway after the
-    // session.
+    // No problem if the browser is closed before this is done, because there
+    // are only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-intext-${msgId}`, {
       delayInMinutes: INTEXT_EXPIRE_TIME,
     });
@@ -339,9 +338,8 @@ async function phoneMessageHandler(msg) {
 function startInCall(msg) {
   try {
     // Remove all objects related with this incoming call after the expire time.
-    // There is no problem if the browser is closed before this is done, because
-    // there are only session objects which will be removed anyway after the
-    // session.
+    // No problem if the browser is closed before this is done, because there
+    // are only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-incall-${msgId}`, {
       delayInMinutes: INCALL_EXPIRE_TIME,
     });
@@ -393,9 +391,8 @@ async function startOutCall(call) {
     // Remove all objects related with this outgoing call after the expire time.
     // This will also end the call if there is no answer yet.
     //
-    // There is no problem if the browser is closed before this is done,
-    // because there are only session objects which will be removed anyway after
-    // the session.
+    // No problem if the browser is closed before this is done, because there
+    // are only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-outcall-${callId}`, {
       delayInMinutes: OUTCALL_EXPIRE_TIME,
     });
