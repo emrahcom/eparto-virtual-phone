@@ -19,10 +19,8 @@ setTimeout(watchCall, 1000);
 // -----------------------------------------------------------------------------
 async function watchCall() {
   try {
-    // Get the call object from the storage. The service worker saves it and
-    // keeps it up-to-date.
-    const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
-    const call = storedItems[`incall-${MSGID}`];
+    // Get the call object again from the backend.
+    const call = await getCall();
 
     // If it doesn't exist, this means that it has been ended by the caller.
     if (!call) throw "missing incoming call object";
@@ -39,12 +37,26 @@ async function watchCall() {
 
     // Check it again after a while. The service worker will update its status
     // if its status changes.
-    setTimeout(watchCall, 500);
+    setTimeout(watchCall, 1000);
   } catch (_e) {
     //if (DEBUG) console.error(_e);
 
     globalThis.close();
   }
+}
+
+// -----------------------------------------------------------------------------
+// getCall
+// -----------------------------------------------------------------------------
+async function getCall() {
+  const payload = {
+    id: MSGID,
+  };
+
+  // Return value will be a list with a single object or an empty list.
+  const calls = await getByKey(`/api/pub/intercom/get/bykey`, payload);
+
+  return calls[0];
 }
 
 // -----------------------------------------------------------------------------
