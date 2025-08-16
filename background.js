@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// About terminology
+// About Terminology
 //
 // contact    -> A person from the friends list.
 // ping       -> Updating the presence to inform contacts.
@@ -12,7 +12,7 @@
 //
 // intercom   -> The communication channel between the extension and the backend
 //               server.
-// messages   -> Messages sent and received via intercom.
+// messages   -> Messages received via intercom.
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 // -----------------------------------------------------------------------------
-// onMessage (internal messages)
+// onMessage (internal messages within the extension)
 // -----------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === "start-outcall") {
@@ -87,7 +87,7 @@ chrome.runtime.onMessage.addListener((msg) => {
 });
 
 // -----------------------------------------------------------------------------
-// initial
+// initialize
 // -----------------------------------------------------------------------------
 // This is the initial ping which will update the user presence on the
 // server-side. There is also an alarm which runs the ping function
@@ -144,9 +144,9 @@ async function messageHandler(messages) {
 // -----------------------------------------------------------------------------
 // popupHandler
 //
-// popupHandler only handles text messages and shows a limited number of text
-// messages at a time. Call and phone messages are shown immediately since they
-// are urgent and they are not handled by popupHandler.
+// popupHandler only handles text messages and displays a limited number of text
+// messages at a time. Call and phone messages are displayed immediately since
+// they are urgent and they are not handled by popupHandler.
 // -----------------------------------------------------------------------------
 async function popupHandler() {
   try {
@@ -164,7 +164,7 @@ async function popupHandler() {
       const msgId = messageQueue.shift();
       if (!msgId) continue;
 
-      await showInText(msgId);
+      await displayInText(msgId);
     }
 
     await chrome.storage.session.set({ "message-queue": messageQueue });
@@ -174,12 +174,12 @@ async function popupHandler() {
 }
 
 // -----------------------------------------------------------------------------
-// showInText
+// displayInText
 //
-// This function is for initializing incoming text message. All attributes are
-// expected to be exist at this stage. Fail if they dont.
+// This function displays the incoming text message. All attributes are expected
+// to be exist at this stage. Fail if they dont.
 // -----------------------------------------------------------------------------
-async function showInText(msgId) {
+async function displayInText(msgId) {
   try {
     // Get the text object from the storage.
     const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
@@ -207,7 +207,7 @@ async function showInText(msgId) {
       return;
     }
 
-    // Create the incoming text popup and show it.
+    // Create the incoming text popup and display it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
         `ui/in-text.html?id=${msg.id}`,
@@ -357,7 +357,7 @@ function startInCall(msg) {
       return;
     }
 
-    // Create the incoming call popup and show it.
+    // Create the incoming call popup and display it.
     chrome.windows.create({
       url: chrome.runtime.getURL(
         `ui/in-${msg.message_type}.html?id=${msg.id}`,
