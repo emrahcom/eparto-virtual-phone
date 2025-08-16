@@ -9,6 +9,10 @@
 // inPhone    -> Incoming call from a public phone, from an anonymous person
 //               to the extension.
 // inText     -> Incoming text message, from a contact to the extension.
+//
+// intercom   -> The communication channel between the extension and the backend
+//               server.
+// messages   -> Messages sent and received via intercom.
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
@@ -26,7 +30,7 @@ import { getByKey } from "./common/function.js";
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-// Ping (update the presence periodically).
+// Ping (update the presence) periodically.
 chrome.alarms.create("ping", {
   periodInMinutes: 1,
 });
