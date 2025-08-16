@@ -181,17 +181,17 @@ async function popupHandler() {
 // -----------------------------------------------------------------------------
 async function showInText(msgId) {
   try {
+    // Get the text object from the storage.
+    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
+    const msg = storedItems[`intext-${msgId}`];
+    if (!msg) return;
+
     // Remove all objects related with this incoming text after the expire time.
     // No problem if the browser is closed before this is done, because there
     // are only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-intext-${msgId}`, {
       delayInMinutes: INTEXT_EXPIRE_TIME,
     });
-
-    // Get the text object from the storage.
-    const storedItems = await chrome.storage.session.get(`intext-${msgId}`);
-    const msg = storedItems[`intext-${msgId}`];
-    if (!msg) return;
 
     // Cancel if the status is not "none". This means that the text message is
     // already processed (accepted, rejected, seen, etc.) by another client.
@@ -345,11 +345,17 @@ function startInCall(msg) {
 
     // Cancel if the status is not "none". This means that the call is already
     // processed (accepted, rejected, seen, etc.) by another client.
-    if (msg.status !== "none") return;
+    if (msg.status !== "none") {
+      cleanupInCall(msg.id);
+      return;
+    }
 
     // Cancel if the call is already expired.
     const expiredAt = new Date(msg.expired_at);
-    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) return;
+    if (isNaN(expiredAt) || (Date.now() > expiredAt.getTime()) {
+      cleanupInCall(msg.id);
+      return;
+    }
 
     // Create the incoming call popup and show it.
     chrome.windows.create({
@@ -374,6 +380,10 @@ async function cleanupInCall(msgId) {
     if (!msgId) throw "missing message id";
 
     await chrome.storage.session.remove(`incall-${msgId}`);
+
+    // Sometimes this function is called directly without waiting the alarm.
+    // Delete the existing alarm in this case.
+    chrome.alarms.clear(`cleanup-incall-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
