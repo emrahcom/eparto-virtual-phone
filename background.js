@@ -189,7 +189,7 @@ async function displayInText(msgId) {
     // Remove all objects related with this incoming text after the expire time.
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
-    chrome.alarms.create(`cleanup-intext-${msgId}`, {
+    chrome.alarms.create(`cleanup-intext-${msg.id}`, {
       delayInMinutes: INTEXT_EXPIRE_TIME,
     });
 
@@ -217,6 +217,23 @@ async function displayInText(msgId) {
       width: 320,
       height: 120,
     });
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// cleanupInText
+// -----------------------------------------------------------------------------
+async function cleanupInText(msgId) {
+  try {
+    if (!msgId) throw "missing message id";
+
+    await chrome.storage.session.remove(`intext-${msgId}`);
+
+    // Sometimes this function is called directly without waiting the alarm.
+    // Delete the existing alarm in this case.
+    chrome.alarms.clear(`cleanup-intext-${msgId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -278,23 +295,6 @@ async function addToQueue(msgId) {
 }
 
 // -----------------------------------------------------------------------------
-// cleanupInText
-// -----------------------------------------------------------------------------
-async function cleanupInText(msgId) {
-  try {
-    if (!msgId) throw "missing message id";
-
-    await chrome.storage.session.remove(`intext-${msgId}`);
-
-    // Sometimes this function is called directly without waiting the alarm.
-    // Delete the existing alarm in this case.
-    chrome.alarms.clear(`cleanup-intext-${msgId}`);
-  } catch (e) {
-    if (DEBUG) console.error(e);
-  }
-}
-
-// -----------------------------------------------------------------------------
 // callMessageHandler
 // -----------------------------------------------------------------------------
 async function callMessageHandler(msg) {
@@ -340,7 +340,7 @@ function startInCall(msg) {
     // Remove all objects related with this incoming call after the expire time.
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
-    chrome.alarms.create(`cleanup-incall-${msgId}`, {
+    chrome.alarms.create(`cleanup-incall-${msg.id}`, {
       delayInMinutes: INCALL_EXPIRE_TIME,
     });
 
@@ -402,7 +402,7 @@ async function startOutCall(call) {
     //
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
-    chrome.alarms.create(`cleanup-outcall-${callId}`, {
+    chrome.alarms.create(`cleanup-outcall-${call.id}`, {
       delayInMinutes: OUTCALL_EXPIRE_TIME,
     });
 
