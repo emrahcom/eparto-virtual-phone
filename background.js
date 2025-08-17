@@ -19,15 +19,15 @@
 // Imports and globals
 // -----------------------------------------------------------------------------
 import {
-  CALL_POPUP_HEIGHT,
-  CALL_POPUP_WIDTH,
   DEBUG,
-  INCALL_EXPIRE_TIME,
   INTERVAL_INTERCOM_PULLING,
   INTERVAL_PING,
+  INCALL_EXPIRE_TIME,
   INTEXT_EXPIRE_TIME,
-  NUMBER_OF_ALLOWED_POPUPS,
   OUTCALL_EXPIRE_TIME,
+  NUMBER_OF_ALLOWED_POPUPS,
+  CALL_POPUP_HEIGHT,
+  CALL_POPUP_WIDTH,
   TEXT_POPUP_HEIGHT,
   TEXT_POPUP_WIDTH,
 } from "./common/config.js";
