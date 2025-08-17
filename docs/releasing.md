@@ -1,6 +1,7 @@
 # Releasing
 
-- Check codes
+- Check codes.
+  Apply "yarn run check" format when there is a conflict between deno and yarn.
 
   ```bash
   deno fmt --check
