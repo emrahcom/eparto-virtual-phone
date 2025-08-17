@@ -321,7 +321,7 @@ async function onSpinnerClick(contactId, phoneButton, callSpinner) {
 async function updateCallStatus(contactId, phoneButton, callSpinner) {
   try {
     const storedItems = await chrome.storage.session.get(
-      `contact-${contactId}`,
+      `contact-${contactId}`
     );
     const activeCall = storedItems[`contact-${contactId}`];
 
