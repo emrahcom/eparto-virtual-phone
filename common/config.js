@@ -20,7 +20,7 @@ export const NUMBER_OF_ALLOWED_POPUPS = 5;
 export const INTERVAL_PING = 1;
 
 // Pull interval in minutes to pull the intercom messages.
-export const INTERVAL_INTERCOM_PULL = 0.030;
+export const INTERVAL_INTERCOM_PULL = 0.03;
 
 // Call popup size in pixel
 export const CALL_POPUP_WIDTH = 320;
