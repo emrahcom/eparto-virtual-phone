@@ -4,7 +4,8 @@ export default [
       ecmaVersion: 2021,
       sourceType: "module",
       globals: {
-        browser: "readonly",
+        chrome: "readonly",
+        console: "readonly",
       },
     },
     rules: {
