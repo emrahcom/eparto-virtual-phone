@@ -21,7 +21,7 @@ export async function getByKey(path, payload = {}) {
 
     payload.key_value = keyValue;
 
-    const res = await fetch(url, {
+    const res = await globalThis.fetch(url, {
       headers: {
         Accept: "application/json",
       },
@@ -43,8 +43,8 @@ export async function getByKey(path, payload = {}) {
 // -----------------------------------------------------------------------------
 export function safeText(text) {
   try {
-    const textNode = document.createTextNode(text);
-    const containerDiv = document.createElement("div");
+    const textNode = globalThis.document.createTextNode(text);
+    const containerDiv = globalThis.document.createElement("div");
     containerDiv.appendChild(textNode);
 
     // Return the encoded text.
