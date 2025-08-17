@@ -15,3 +15,17 @@ export const OUTCALL_EXPIRE_TIME = 0.5;
 
 // Number of allowed popups at a time.
 export const NUMBER_OF_ALLOWED_POPUPS = 5;
+
+// Ping interval in minutes to update the presence.
+export const INTERVAL_PING = 1;
+
+// Pull interval in minutes to pull the intercom messages.
+export const INTERVAL_INTERCOM_PULL = 0.030;
+
+// Call popup size in pixel
+export const CALL_POPUP_WIDTH = 320;
+export const CALL_POPUP_HEIGHT = 120;
+
+// Text popup size in pixel
+export const TEXT_POPUP_WIDTH = 320;
+export const TEXT_POPUP_HEIGHT = 120;

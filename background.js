@@ -19,11 +19,17 @@
 // Imports and globals
 // -----------------------------------------------------------------------------
 import {
+  CALL_POPUP_HEIGHT,
+  CALL_POPUP_WIDTH,
   DEBUG,
   INCALL_EXPIRE_TIME,
+  INTERVAL_INTERCOM_PULL,
+  INTERVAL_PING,
   INTEXT_EXPIRE_TIME,
   NUMBER_OF_ALLOWED_POPUPS,
   OUTCALL_EXPIRE_TIME,
+  TEXT_POPUP_HEIGHT,
+  TEXT_POPUP_WIDTH,
 } from "./common/config.js";
 import { getByKey } from "./common/function.js";
 
@@ -32,7 +38,7 @@ import { getByKey } from "./common/function.js";
 // -----------------------------------------------------------------------------
 // Ping (update the presence) periodically.
 chrome.alarms.create("ping", {
-  periodInMinutes: 1,
+  periodInMinutes: INTERVAL_PING,
 });
 
 // Create the first alarm to start polling intercom messages. Each time an alarm
@@ -40,7 +46,7 @@ chrome.alarms.create("ping", {
 // does not allow periodInMinutes to be less than 30 sec.
 // https://developer.chrome.com/docs/extensions/reference/api/alarms
 chrome.alarms.create("intercomMessages", {
-  delayInMinutes: 0.030,
+  delayInMinutes: INTERVAL_INTERCOM_PULL,
 });
 
 // Alarm listeners.
@@ -50,7 +56,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   } else if (alarm.name === "intercomMessages") {
     // Before getting intercom messages, create the next alarm.
     chrome.alarms.create("intercomMessages", {
-      delayInMinutes: 0.030,
+      delayInMinutes: INTERVAL_INTERCOM_PULL,
     });
 
     // Known issue: if this alarm ends after the next alarm because of some
@@ -214,8 +220,8 @@ async function displayInText(msgId) {
       ),
       type: "popup",
       focused: true,
-      width: 320,
-      height: 120,
+      width: TEXT_POPUP_WIDTH,
+      height: TEXT_POPUP_HEIGHT,
     });
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -365,8 +371,8 @@ function startInCall(msg) {
       ),
       type: "popup",
       focused: true,
-      width: 320,
-      height: 120,
+      width: CALL_POPUP_WIDTH,
+      height: CALL_POPUP_HEIGHT,
     });
   } catch (e) {
     if (DEBUG) console.error(e);
