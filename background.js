@@ -168,7 +168,8 @@ async function popupHandler() {
 
     for (let i = 0; i < availableSlots; i++) {
       const msgId = messageQueue.shift();
-      if (!msgId) continue;
+      // Stop if there is no more id in the list.
+      if (!msgId) break;
 
       await displayInText(msgId);
     }
