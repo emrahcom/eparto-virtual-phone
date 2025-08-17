@@ -4,7 +4,7 @@
 import { DEBUG } from "../common/config.js";
 import { getByKey, safeText } from "../common/function.js";
 
-const qs = new URLSearchParams(globalThis.location.search);
+const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
 
 let CALL_URL;
@@ -12,7 +12,7 @@ let CALL_URL;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-setTimeout(watchCall, 1000);
+globalThis.setTimeout(watchCall, 1000);
 
 // -----------------------------------------------------------------------------
 // watchCall
@@ -37,10 +37,8 @@ async function watchCall() {
 
     // Check it again after a while. The service worker will update its status
     // if its status changes.
-    setTimeout(watchCall, 1000);
-  } catch (_e) {
-    //if (DEBUG) console.error(_e);
-
+    globalThis.setTimeout(watchCall, 1000);
+  } catch {
     globalThis.close();
   }
 }
@@ -62,10 +60,10 @@ async function getCall() {
 // -----------------------------------------------------------------------------
 // Event listeners
 // -----------------------------------------------------------------------------
-const rejectButton = document.getElementById("reject");
+const rejectButton = globalThis.document.getElementById("reject");
 rejectButton.addEventListener("click", rejectCall);
 
-const acceptButton = document.getElementById("accept");
+const acceptButton = globalThis.document.getElementById("accept");
 acceptButton.addEventListener("click", acceptCall);
 
 // -----------------------------------------------------------------------------
@@ -94,7 +92,7 @@ async function initialize() {
     }
 
     // Start ringing.
-    const ring = document.getElementById("ring");
+    const ring = globalThis.document.getElementById("ring");
     if (ring) ring.play();
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -116,18 +114,18 @@ function initializeCall(call) {
   if (!contactName) throw "missing contact name";
 
   // Update the window title, show the name of the contact as title.
-  document.title = safeText(contactName);
+  globalThis.document.title = safeText(contactName);
 
   // Update the contact name in UI.
-  const el = document.getElementById("contact");
+  const el = globalThis.document.getElementById("contact");
   if (el) el.textContent = contactName;
 
   // Hide phone-info
-  const phoneDiv = document.getElementById("phone-info");
+  const phoneDiv = globalThis.document.getElementById("phone-info");
   if (phoneDiv) phoneDiv.style.display = "none";
 
   // Show call-info
-  const callDiv = document.getElementById("call-info");
+  const callDiv = globalThis.document.getElementById("call-info");
   if (callDiv) callDiv.style.display = "flex";
 }
 
@@ -144,18 +142,18 @@ function initializePhone(call) {
   if (!phoneName) throw "missing phone name";
 
   // Update the window title, show the name of the public phone as title.
-  document.title = safeText(phoneName);
+  globalThis.document.title = safeText(phoneName);
 
   // Update the phone name in UI.
-  const el = document.getElementById("phone");
+  const el = globalThis.document.getElementById("phone");
   if (el) el.textContent = phoneName;
 
   // Show phone-info
-  const phoneDiv = document.getElementById("phone-info");
+  const phoneDiv = globalThis.document.getElementById("phone-info");
   if (phoneDiv) phoneDiv.style.display = "flex";
 
   // Hide call-info
-  const callDiv = document.getElementById("call-info");
+  const callDiv = globalThis.document.getElementById("call-info");
   if (callDiv) callDiv.style.display = "none";
 }
 
