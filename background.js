@@ -395,7 +395,7 @@ async function cleanupInCall(msgId) {
 async function startOutCall(call) {
   try {
     // Remove all objects related with this outgoing call after the expire time.
-    // This will also end the call if there is no answer yet.
+    // This will also terminate the call if there is no answer yet.
     //
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
@@ -432,8 +432,8 @@ async function cleanupOutCall(callId) {
     if (!callId) throw "missing call id";
 
     // Get stored call object. ringOutCall deletes the call object before the
-    // expire time if answered by other peer or ended by the caller. So, there
-    // is no need to clean up in this case.
+    // expire time if answered by other peer or terminated by the caller. So,
+    // there is no need to clean up in this case.
     let storedItems = await chrome.storage.session.get(`outcall-${callId}`);
     const call = storedItems[`outcall-${callId}`];
     if (!call) return;
@@ -484,10 +484,10 @@ async function ringOutCall(callId) {
     );
     const activeCall = storedItems[`contact-${call.contact_id}`];
 
-    // End the call if this call is not active anymore. This happens when it is
-    // stopped on UI by the user.
+    // Terminate the call if this call is not active anymore. This happens when
+    // the call is stopped on UI by the user.
     if (activeCall !== callId) {
-      await endOutCall(callId);
+      await terminateOutCall(callId);
       return;
     }
 
@@ -508,9 +508,9 @@ async function ringOutCall(callId) {
 }
 
 // -----------------------------------------------------------------------------
-// endOutCall
+// terminateOutCall
 // -----------------------------------------------------------------------------
-async function endOutCall(callId) {
+async function terminateOutCall(callId) {
   try {
     // Delete the local copy of the call object.
     await chrome.storage.session.remove(`outcall-${callId}`);
