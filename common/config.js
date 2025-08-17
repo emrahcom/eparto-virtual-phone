@@ -11,14 +11,18 @@ export const INTERVAL_PING = 1;
 // Interval in minutes to pull the intercom messages.
 export const INTERVAL_INTERCOM_PULLING = 2 / 60;
 
-// Expire time in minutes for incoming text.
-export const EXPIRE_TIME_INTEXT = 8 * 60;
-
-// Expire time in minutes for incoming call.
-export const EXPIRE_TIME_INCALL = 1;
-
 // Expire time in minutes for outgoing call.
 export const EXPIRE_TIME_OUTCALL = 30 / 60;
+
+// Expire time in minutes for incoming call.
+// This should be longer than EXPIRE_TIME_OUTCALL to avoid causing premature
+// termination.
+export const EXPIRE_TIME_INCALL = 1;
+
+// Expire time in minutes for incoming text.
+// Text messages are stored on the server-side for a maximum of 8 hours if the
+// receiver doesnt check. Checked messages are deleted immediately.
+export const EXPIRE_TIME_INTEXT = 8 * 60;
 
 // Number of allowed popups at a time.
 export const NUMBER_OF_ALLOWED_POPUPS = 5;

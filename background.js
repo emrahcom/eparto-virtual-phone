@@ -37,6 +37,7 @@ import { getByKey } from "./common/function.js";
 // Alarms
 // -----------------------------------------------------------------------------
 // Ping (update the presence) periodically.
+// Start pinging in 2 sec and later in every INTERVAL_PING min.
 chrome.alarms.create("ping", {
   periodInMinutes: INTERVAL_PING,
   delayInMinutes: 2 / 60,
