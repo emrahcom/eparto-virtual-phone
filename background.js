@@ -20,16 +20,16 @@
 // -----------------------------------------------------------------------------
 import {
   DEBUG,
-  INTERVAL_INTERCOM_PULLING,
   INTERVAL_PING,
-  INCALL_EXPIRE_TIME,
-  INTEXT_EXPIRE_TIME,
-  OUTCALL_EXPIRE_TIME,
+  INTERVAL_INTERCOM_PULLING,
+  EXPIRE_TIME_INCALL,
+  EXPIRE_TIME_INTEXT,
+  EXPIRE_TIME_OUTCALL,
   NUMBER_OF_ALLOWED_POPUPS,
-  CALL_POPUP_HEIGHT,
-  CALL_POPUP_WIDTH,
-  TEXT_POPUP_HEIGHT,
-  TEXT_POPUP_WIDTH,
+  POPUP_INCALL_HEIGHT,
+  POPUP_INCALL_WIDTH,
+  POPUP_INTEXT_HEIGHT,
+  POPUP_INTEXT_WIDTH,
 } from "./common/config.js";
 import { getByKey } from "./common/function.js";
 
@@ -197,7 +197,7 @@ async function displayInText(msgId) {
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-intext-${msg.id}`, {
-      delayInMinutes: INTEXT_EXPIRE_TIME,
+      delayInMinutes: EXPIRE_TIME_INTEXT,
     });
 
     // Cancel if the status is not "none". This means that the text message is
@@ -219,8 +219,8 @@ async function displayInText(msgId) {
       url: chrome.runtime.getURL(`ui/in-text.html?id=${msg.id}`),
       type: "popup",
       focused: true,
-      width: TEXT_POPUP_WIDTH,
-      height: TEXT_POPUP_HEIGHT,
+      width: POPUP_INTEXT_WIDTH,
+      height: POPUP_INTEXT_HEIGHT,
     });
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -346,7 +346,7 @@ function startInCall(msg) {
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-incall-${msg.id}`, {
-      delayInMinutes: INCALL_EXPIRE_TIME,
+      delayInMinutes: EXPIRE_TIME_INCALL,
     });
 
     // Cancel if the status is not "none". This means that the call is already
@@ -368,8 +368,8 @@ function startInCall(msg) {
       url: chrome.runtime.getURL(`ui/in-${msg.message_type}.html?id=${msg.id}`),
       type: "popup",
       focused: true,
-      width: CALL_POPUP_WIDTH,
-      height: CALL_POPUP_HEIGHT,
+      width: POPUP_INCALL_WIDTH,
+      height: POPUP_INCALL_HEIGHT,
     });
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -406,7 +406,7 @@ async function startOutCall(call) {
     // No problem if the browser is closed before this is done, because they are
     // only session objects which will be removed anyway after the session.
     chrome.alarms.create(`cleanup-outcall-${call.id}`, {
-      delayInMinutes: OUTCALL_EXPIRE_TIME,
+      delayInMinutes: EXPIRE_TIME_OUTCALL,
     });
 
     // Save id of the active call as contact value. So, it is possible to find
