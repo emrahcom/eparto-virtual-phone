@@ -113,7 +113,7 @@ async function ping() {
 // -----------------------------------------------------------------------------
 async function getIntercomMessages() {
   const payload = {};
-  const last = await chrome.storage.local.get("intercom_last_msg_at") || "0";
+  const last = (await chrome.storage.local.get("intercom_last_msg_at")) || "0";
 
   // The value should be the epoch time in microseconds of the last received
   // message. This will be the start time while getting the new messages.
@@ -215,9 +215,7 @@ async function displayInText(msgId) {
 
     // Create the incoming text popup and display it.
     chrome.windows.create({
-      url: chrome.runtime.getURL(
-        `ui/in-text.html?id=${msg.id}`,
-      ),
+      url: chrome.runtime.getURL(`ui/in-text.html?id=${msg.id}`),
       type: "popup",
       focused: true,
       width: TEXT_POPUP_WIDTH,
@@ -366,9 +364,7 @@ function startInCall(msg) {
 
     // Create the incoming call popup and display it.
     chrome.windows.create({
-      url: chrome.runtime.getURL(
-        `ui/in-${msg.message_type}.html?id=${msg.id}`,
-      ),
+      url: chrome.runtime.getURL(`ui/in-${msg.message_type}.html?id=${msg.id}`),
       type: "popup",
       focused: true,
       width: CALL_POPUP_WIDTH,
@@ -489,7 +485,7 @@ async function ringOutCall(callId) {
 
     // Get the active call.
     storedItems = await chrome.storage.session.get(
-      `contact-${call.contact_id}`,
+      `contact-${call.contact_id}`
     );
     const activeCall = storedItems[`contact-${call.contact_id}`];
 
