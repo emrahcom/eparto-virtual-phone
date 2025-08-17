@@ -35,8 +35,7 @@ async function watchCall() {
     if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
     if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
 
-    // Check it again after a while. The service worker will update its status
-    // if its status changes.
+    // Check it again after a while.
     globalThis.setTimeout(watchCall, WATCH_PERIOD_INCALL);
   } catch {
     globalThis.close();

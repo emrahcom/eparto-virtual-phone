@@ -30,18 +30,37 @@
         overflow: hidden;
         white-space: nowrap;
       }
+
+      .message {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+      }
     </style>
   </head>
 
   <body>
-    <div id="chat-info" class="info" style="display: flex">
+    <div id="chat-info" class="info">
       <img src="/assets/icon-chat.svg" alt="incoming text message" />
       <span id="contact" class="sender">Contact</span>
       <span class="desc">time</span>
     </div>
 
-    <audio id="ring" src="/assets/notification.mp3"></audio>
+    <div id="chat-messages" class="message">
+      <div>hello</div>
+    </div>
+
+    <audio id="notification" src="/assets/notification.mp3"></audio>
 
     <script type="module" src="in-text.js"></script>
+    <script type="module">
+      import { setStatus } from "./in-text.js";
+
+      window.onunload = function () {
+        const notification = globalThis.document.getElementById("notification");
+        if (notification) notification.play();
+        setStatus("seen");
+      };
+    </script>
   </body>
 </html>
