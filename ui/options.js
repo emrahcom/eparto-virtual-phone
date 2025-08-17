@@ -75,6 +75,7 @@ async function saveOptions() {
     const baseUrl = globalThis.document.getElementById("base-url");
     if (!baseUrl) throw "missing input box, base-url";
 
+    // Remove the trailing "/" and space characters.
     let value = baseUrl.value;
     value = value.replace(/[/\s]+$/, "");
     value = value.trim() || DEFAULT_BASE_URL;
