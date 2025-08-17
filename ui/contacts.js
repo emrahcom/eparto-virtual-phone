@@ -50,16 +50,17 @@ async function getContactList() {
 // -----------------------------------------------------------------------------
 async function showSetupGuide() {
   try {
-    const container = document.getElementById("setup-guide");
+    const container = globalThis.document.getElementById("setup-guide");
     if (!container) throw "missing setup-guide container";
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
 
-    const welcomeLink = document.getElementById("welcome-link");
+    const welcomeLink = globalThis.document.getElementById("welcome-link");
     welcomeLink.href = baseUrl;
 
-    const privateKeyLink = document.getElementById("private-key-link");
+    const privateKeyLink =
+      globalThis.document.getElementById("private-key-link");
     privateKeyLink.href = `${baseUrl}/pri/identity/key`;
 
     container.style.display = "block";
@@ -73,7 +74,7 @@ async function showSetupGuide() {
 // -----------------------------------------------------------------------------
 function showFailedRequest() {
   try {
-    const container = document.getElementById("failed-request");
+    const container = globalThis.document.getElementById("failed-request");
     if (!container) throw "missing failed-request container";
     container.style.display = "block";
   } catch (e) {
@@ -93,15 +94,17 @@ function showUnexpectedResponse() {
 // -----------------------------------------------------------------------------
 async function showEmptyContactList() {
   try {
-    const container = document.getElementById("empty-list");
+    const container = globalThis.document.getElementById("empty-list");
     if (!container) throw "missing empty-list container";
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
 
-    const contactKeyLink = document.getElementById("contact-key-link");
+    const contactKeyLink =
+      globalThis.document.getElementById("contact-key-link");
     contactKeyLink.href = `${baseUrl}/pri/contact/invite`;
-    const virtualPhoneLink = document.getElementById("virtual-phone-link");
+    const virtualPhoneLink =
+      globalThis.document.getElementById("virtual-phone-link");
     virtualPhoneLink.href = `${baseUrl}/pri/phone`;
 
     container.style.display = "block";
@@ -115,7 +118,7 @@ async function showEmptyContactList() {
 // -----------------------------------------------------------------------------
 async function showContactList(contacts) {
   try {
-    const container = document.getElementById("contact-list");
+    const container = globalThis.document.getElementById("contact-list");
     if (!container) throw "missing contact-list container";
 
     const contactListHeaderDiv = await generateContactListHeaderDiv();
@@ -144,13 +147,13 @@ async function generateContactListHeaderDiv() {
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
 
     // Show the link of the contacts page.
-    const contactPageLink = document.createElement("a");
+    const contactPageLink = globalThis.document.createElement("a");
     contactPageLink.className = "contact-page-link";
     contactPageLink.href = `${baseUrl}/pri/contact`;
     contactPageLink.target = "_blank";
     contactPageLink.textContent = "Open the contacts page";
 
-    const contactListHeaderDiv = document.createElement("div");
+    const contactListHeaderDiv = globalThis.document.createElement("div");
     contactListHeaderDiv.className = "contact-list-header";
     contactListHeaderDiv.appendChild(contactPageLink);
 
@@ -175,7 +178,7 @@ function generateContactDiv(contact) {
       onSpinnerClick(contact.id, phoneButton, callSpinner);
     };
 
-    const contactDiv = document.createElement("div");
+    const contactDiv = globalThis.document.createElement("div");
     contactDiv.className = "contact";
     contactDiv.appendChild(contactInfoDiv);
     contactDiv.appendChild(phoneButton);
@@ -196,15 +199,15 @@ function generateContactDiv(contact) {
 // generateContactInfoDiv (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generateContactInfoDiv(contact) {
-  const contactName = document.createElement("h3");
+  const contactName = globalThis.document.createElement("h3");
   contactName.className = "contact-info-name";
   contactName.textContent = contact?.name || "";
 
-  const contactEmail = document.createElement("p");
+  const contactEmail = globalThis.document.createElement("p");
   contactEmail.className = "contact-info-email";
   contactEmail.textContent = contact?.profile_email || "";
 
-  const contactInfoDiv = document.createElement("div");
+  const contactInfoDiv = globalThis.document.createElement("div");
   contactInfoDiv.className = "contact-info";
   contactInfoDiv.appendChild(contactName);
   contactInfoDiv.appendChild(contactEmail);
@@ -216,7 +219,7 @@ function generateContactInfoDiv(contact) {
 // generateSpinnerDiv (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generateSpinnerDiv() {
-  const spinnerDiv = document.createElement("div");
+  const spinnerDiv = globalThis.document.createElement("div");
   spinnerDiv.className = "spinner";
   spinnerDiv.title = "Cancel call";
   spinnerDiv.style.display = "none";
@@ -238,11 +241,11 @@ function generateSpinnerDiv() {
 function generatePhoneButton(contact, callSpinner) {
   const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
 
-  const phoneIcon = document.createElement("img");
+  const phoneIcon = globalThis.document.createElement("img");
   phoneIcon.src = "/assets/phone.svg";
   phoneIcon.alt = `call ${contactStatus}`;
 
-  const phoneButton = document.createElement("button");
+  const phoneButton = globalThis.document.createElement("button");
   phoneButton.className = `phone ${contactStatus}`;
   phoneButton.onclick = function () {
     onPhoneClick(contact, phoneButton, callSpinner);
@@ -339,7 +342,7 @@ async function updateCallStatus(contactId, phoneButton, callSpinner) {
     if (DEBUG) console.error(e);
   } finally {
     // Update the status again after a while.
-    setTimeout(() => {
+    globalThis.setTimeout(() => {
       updateCallStatus(contactId, phoneButton, callSpinner);
     }, 500);
   }
