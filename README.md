@@ -53,7 +53,6 @@ There are two ways to make calls with your Eparto Virtual Phone:
 1. **Calls with Contacts**
 
    To make calls with someone in your contact list, follow these steps:
-
    1. Go to the [Contact Keys](https://app.eparto.net/pri/contact/invite) page
       on the Eparto website.
 
@@ -69,7 +68,6 @@ There are two ways to make calls with your Eparto Virtual Phone:
 2. **Calls via Public Phones**
 
    If you want to receive calls through a public phone, follow these steps:
-
    1. Go to the [Public Phones](https://app.eparto.net/pri/phone) page on the
       Eparto website.
 
