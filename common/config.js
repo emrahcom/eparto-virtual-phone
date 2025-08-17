@@ -9,7 +9,7 @@ export const DEFAULT_BASE_URL = "https://app.eparto.net";
 export const INTERVAL_PING = 1;
 
 // Interval in minutes to pull the intercom messages.
-export const INTERVAL_INTERCOM_PULLING = 0.03;
+export const INTERVAL_INTERCOM_PULLING = 2 / 60;
 
 // Expire time in minutes for incoming text.
 export const EXPIRE_TIME_INTEXT = 8 * 60;
@@ -18,7 +18,7 @@ export const EXPIRE_TIME_INTEXT = 8 * 60;
 export const EXPIRE_TIME_INCALL = 1;
 
 // Expire time in minutes for outgoing call.
-export const EXPIRE_TIME_OUTCALL = 0.5;
+export const EXPIRE_TIME_OUTCALL = 30 / 60;
 
 // Number of allowed popups at a time.
 export const NUMBER_OF_ALLOWED_POPUPS = 5;

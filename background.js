@@ -39,6 +39,7 @@ import { getByKey } from "./common/function.js";
 // Ping (update the presence) periodically.
 chrome.alarms.create("ping", {
   periodInMinutes: INTERVAL_PING,
+  delayInMinutes: 2 / 60,
 });
 
 // Create the first alarm to start polling intercom messages. Each time an alarm
@@ -91,14 +92,6 @@ chrome.runtime.onMessage.addListener((msg) => {
     startOutCall(msg);
   }
 });
-
-// -----------------------------------------------------------------------------
-// initialize
-// -----------------------------------------------------------------------------
-// This is the initial ping which will update the user presence on the
-// server-side. There is also an alarm which runs the ping function
-// periodically.
-ping();
 
 // -----------------------------------------------------------------------------
 // ping
