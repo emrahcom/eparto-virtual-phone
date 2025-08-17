@@ -1,4 +1,5 @@
 // Enable debug logs.
+// Disable this parameter before releasing.
 export const DEBUG = true;
 
 // Use this base URL if there is no custom one.
