@@ -23,7 +23,7 @@ import {
   CALL_POPUP_WIDTH,
   DEBUG,
   INCALL_EXPIRE_TIME,
-  INTERVAL_INTERCOM_PULL,
+  INTERVAL_INTERCOM_PULLING,
   INTERVAL_PING,
   INTEXT_EXPIRE_TIME,
   NUMBER_OF_ALLOWED_POPUPS,
@@ -46,7 +46,7 @@ chrome.alarms.create("ping", {
 // does not allow periodInMinutes to be less than 30 sec.
 // https://developer.chrome.com/docs/extensions/reference/api/alarms
 chrome.alarms.create("intercomMessages", {
-  delayInMinutes: INTERVAL_INTERCOM_PULL,
+  delayInMinutes: INTERVAL_INTERCOM_PULLING,
 });
 
 // Alarm listeners.
@@ -56,7 +56,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   } else if (alarm.name === "intercomMessages") {
     // Before getting intercom messages, create the next alarm.
     chrome.alarms.create("intercomMessages", {
-      delayInMinutes: INTERVAL_INTERCOM_PULL,
+      delayInMinutes: INTERVAL_INTERCOM_PULLING,
     });
 
     // Known issue: if this alarm ends after the next alarm because of some
