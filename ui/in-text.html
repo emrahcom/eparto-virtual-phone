@@ -53,14 +53,5 @@
     <audio id="notification" src="/assets/notification.mp3"></audio>
 
     <script type="module" src="in-text.js"></script>
-    <script type="module">
-      import { setStatus } from "./in-text.js";
-
-      window.onunload = function () {
-        const notification = globalThis.document.getElementById("notification");
-        if (notification) notification.play();
-        setStatus("seen");
-      };
-    </script>
   </body>
 </html>
