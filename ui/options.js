@@ -6,13 +6,13 @@ import { DEBUG, DEFAULT_BASE_URL } from "../common/config.js";
 // -----------------------------------------------------------------------------
 // Event listeners
 // -----------------------------------------------------------------------------
-const cancelButton = document.getElementById("cancel");
+const cancelButton = globalThis.document.getElementById("cancel");
 cancelButton.addEventListener("click", cancelOptions);
 
-const saveButton = document.getElementById("save");
+const saveButton = globalThis.document.getElementById("save");
 saveButton.addEventListener("click", saveOptions);
 
-const inputPrivateKey = document.getElementById("private-key");
+const inputPrivateKey = globalThis.document.getElementById("private-key");
 inputPrivateKey.addEventListener("focus", inputPrivateKey.select);
 
 // -----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ async function initialize() {
     let item = storedItems["private-key"];
     if (item) {
       // Show only the first and last two characters, not the whole key...
-      const privateKey = document.getElementById("private-key");
+      const privateKey = globalThis.document.getElementById("private-key");
       privateKey.value = item.slice(0, 2) + "*****" + item.slice(-2);
     }
 
@@ -38,7 +38,7 @@ async function initialize() {
     storedItems = await chrome.storage.local.get("base-url");
     item = storedItems["base-url"] || DEFAULT_BASE_URL;
 
-    const baseUrl = document.getElementById("base-url");
+    const baseUrl = globalThis.document.getElementById("base-url");
     baseUrl.value = item;
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -61,7 +61,7 @@ async function saveOptions() {
     // 20 characters. If the user updates this box, the new value will be longer
     // than 20 characters. Save it if there is a new value or if it is an empty
     // string.
-    const privateKey = document.getElementById("private-key");
+    const privateKey = globalThis.document.getElementById("private-key");
     if (!privateKey) throw "missing input box, private-key";
     if (privateKey.value.length === 0 || privateKey.value.length > 20) {
       const item = {
@@ -72,7 +72,7 @@ async function saveOptions() {
 
     // Allow to input an empty string for the base URL. This will reset the
     // value by using DEFAULT_BASE_URL. Dont save the trailing "/" character.
-    const baseUrl = document.getElementById("base-url");
+    const baseUrl = globalThis.document.getElementById("base-url");
     if (!baseUrl) throw "missing input box, base-url";
 
     let value = baseUrl.value;
