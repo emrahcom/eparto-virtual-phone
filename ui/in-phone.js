@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG } from "../common/config.js";
+import { DEBUG, WATCH_PERIOD_INCALL } from "../common/config.js";
 import { getByKey, safeText } from "../common/function.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
@@ -12,7 +12,7 @@ let CALL_URL;
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-globalThis.setTimeout(watchCall, 1000);
+globalThis.setTimeout(watchCall, WATCH_PERIOD_INCALL);
 
 // -----------------------------------------------------------------------------
 // watchCall
@@ -29,15 +29,15 @@ async function watchCall() {
     if (call.status !== "none") throw "already processed by another client";
 
     // Dont continue if it is expired. Expiration happens when the call is not
-    // ended properly by the caller. For example, if she closes her browser
-    // directly without cancelling the call...
+    // terminated properly by the caller. For example, if she closes her
+    // browser directly without cancelling the call...
     const expiredAt = new Date(call.expired_at);
     if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
     if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
 
     // Check it again after a while. The service worker will update its status
     // if its status changes.
-    globalThis.setTimeout(watchCall, 1000);
+    globalThis.setTimeout(watchCall, WATCH_PERIOD_INCALL);
   } catch {
     globalThis.close();
   }

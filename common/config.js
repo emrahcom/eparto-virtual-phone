@@ -19,6 +19,12 @@ export const EXPIRE_TIME_OUTCALL = 30 / 60;
 // termination.
 export const EXPIRE_TIME_INCALL = 1;
 
+// Watch period in milliseconds for incoming call.
+export const WATCH_PERIOD_INCALL = 1000;
+
+// Watch period in milliseconds for incoming text.
+export const WATCH_PERIOD_INTEXT = 300 * 1000;
+
 // Expire time in minutes for incoming text.
 // Text messages are stored on the server-side for a maximum of 8 hours if the
 // receiver doesnt check. Checked messages are deleted immediately.
