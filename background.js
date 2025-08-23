@@ -18,8 +18,12 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { INTERVAL_INTERCOM_PULLING, INTERVAL_PING } from "./lib/config.js";
-import { ping } from "./lib/common.js";
+import {
+  DEBUG,
+  INTERVAL_INTERCOM_PULLING,
+  INTERVAL_PING,
+} from "./lib/config.js";
+import { ping, getSessionObject, setStatus } from "./lib/common.js";
 import { getIntercomMessages, messageHandler } from "./lib/intercom.js";
 import { cleanupInCall } from "./lib/incoming-call.js";
 import { cleanupInText, popupHandler } from "./lib/incoming-text.js";
@@ -94,6 +98,18 @@ chrome.runtime.onMessage.addListener((msg) => {
 // -----------------------------------------------------------------------------
 // onRemoved (catch the closed popups)
 // -----------------------------------------------------------------------------
-chrome.windows.onRemoved.addListener((windowId) => {
-  console.error(windowId);
+chrome.windows.onRemoved.addListener(async (windowId) => {
+  try {
+    // Get the message id of the closed popup using windowId as key.
+    const msgId = await getSessionObject(`${windowId}`);
+    if (!msgId) return;
+
+    // Since it is closed, set its status as "seen" on the server-side.
+    await setStatus(msgId, "seen");
+
+    // Remove the session object.
+    await chrome.storage.session.remove(`${windowId}`);
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
 });
