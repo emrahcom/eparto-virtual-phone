@@ -2,7 +2,7 @@
 // Imports and globals
 // -----------------------------------------------------------------------------
 import { DEBUG, WATCH_PERIOD_INCALL } from "../common/config.js";
-import { getByKey, safeText } from "../common/function.js";
+import { getByKey, safeText, setStatus } from "../common/function.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
@@ -162,7 +162,7 @@ function initializePhone(call) {
 async function rejectCall() {
   try {
     // Set intercom status as rejected.
-    await setStatus("rejected");
+    await setStatus(MSGID, "rejected");
 
     // Close the popup.
     globalThis.close();
@@ -177,7 +177,7 @@ async function rejectCall() {
 async function acceptCall() {
   try {
     // Set intercom status as accepted.
-    const res = await setStatus("accepted");
+    const res = await setStatus(MSGID, "accepted");
 
     // Open the conference room in a new tab. The caller will also join this
     // conference room when she receives "call is accepted" message.
@@ -188,15 +188,4 @@ async function acceptCall() {
   } catch (e) {
     if (DEBUG) console.error(e);
   }
-}
-
-// -----------------------------------------------------------------------------
-// setStatus (inform the caller about the action taken)
-// -----------------------------------------------------------------------------
-async function setStatus(status) {
-  const payload = {
-    id: MSGID,
-  };
-
-  return await getByKey(`/api/pub/intercom/set/${status}/bykey`, payload);
 }

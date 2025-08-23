@@ -98,14 +98,3 @@ function initializeText(text) {
   const el = globalThis.document.getElementById("contact");
   if (el) el.textContent = contactName;
 }
-
-// -----------------------------------------------------------------------------
-// setStatus (inform the other clients about the action taken)
-// -----------------------------------------------------------------------------
-export async function setStatus(status) {
-  const payload = {
-    id: MSGID,
-  };
-
-  return await getByKey(`/api/pub/intercom/set/${status}/bykey`, payload);
-}

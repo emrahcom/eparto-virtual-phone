@@ -39,6 +39,17 @@ export async function getByKey(path, payload = {}) {
 }
 
 // -----------------------------------------------------------------------------
+// setStatus (inform the caller about the action taken)
+// -----------------------------------------------------------------------------
+export async function setStatus(msgId, status) {
+  const payload = {
+    id: msgId,
+  };
+
+  return await getByKey(`/api/pub/intercom/set/${status}/bykey`, payload);
+}
+
+// -----------------------------------------------------------------------------
 // safeText (Make text safe for HTML pages)
 // -----------------------------------------------------------------------------
 export function safeText(text) {
