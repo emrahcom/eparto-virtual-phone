@@ -2,7 +2,7 @@
 // Imports and globals
 // -----------------------------------------------------------------------------
 import { DEBUG, DEFAULT_BASE_URL } from "../lib/config.js";
-import { getByKey } from "../lib/common.js";
+import { getByKey, getSessionObject } from "../lib/common.js";
 
 // -----------------------------------------------------------------------------
 // main
@@ -323,10 +323,7 @@ async function onSpinnerClick(contactId, phoneButton, callSpinner) {
 // -----------------------------------------------------------------------------
 async function updateCallStatus(contactId, phoneButton, callSpinner) {
   try {
-    const storedItems = await chrome.storage.session.get(
-      `contact-${contactId}`,
-    );
-    const activeCall = storedItems[`contact-${contactId}`];
+    const activeCall = await getSessionObject(`contact-${contactId}`);
 
     // Update the call status of this contact.
     if (activeCall) {
