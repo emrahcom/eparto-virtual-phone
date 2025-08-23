@@ -94,6 +94,6 @@ chrome.runtime.onMessage.addListener((msg) => {
 // -----------------------------------------------------------------------------
 // onRemoved (catch the closed popups)
 // -----------------------------------------------------------------------------
-chrome.windows.onRemoved.addListener(windowId => {
+chrome.windows.onRemoved.addListener((windowId) => {
   console.error(windowId);
 });
