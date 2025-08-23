@@ -2,7 +2,12 @@
 // Imports and globals
 // -----------------------------------------------------------------------------
 import { DEBUG, WATCH_PERIOD_INCALL } from "../lib/config.js";
-import { getByKey, safeText, setStatus } from "../lib/common.js";
+import {
+  getByKey,
+  getSessionObject,
+  safeText,
+  setStatus,
+} from "../lib/common.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
@@ -77,8 +82,7 @@ async function initialize() {
   try {
     // Get the call object from the storage. The service worker saves it into
     // the storage before opening this popup.
-    const storedItems = await chrome.storage.session.get(`incall-${MSGID}`);
-    const call = storedItems[`incall-${MSGID}`];
+    const call = await getSessionObject(`incall-${MSGID}`);
     if (!call) throw "missing incoming call object (initializing)";
 
     // Initialize UI depending on the call type.
