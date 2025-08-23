@@ -4,10 +4,6 @@
   deno and yarn.
 
   ```bash
-  deno fmt --check
-  deno lint
-  deno check *.js */*.js
-
   rm -rf yarn.lock node_modules
   yarn install
   yarn outdated
@@ -18,6 +14,8 @@
 
   yarn run check
   yarn run lint
+  deno lint
+  deno check *.js */*.js
   ```
 
 - Update the version in [manifest.json](/manifest.json).
