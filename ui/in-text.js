@@ -1,7 +1,11 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG, WATCH_PERIOD_INTEXT } from "../lib/config.js";
+import {
+  DEBUG,
+  WATCH_DELAY_INTEXT,
+  WATCH_PERIOD_INTEXT,
+} from "../lib/config.js";
 import { getByKey, getSessionObject, safeText } from "../lib/common.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
@@ -10,7 +14,7 @@ const MSGID = qs.get("id") || globalThis.close();
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-globalThis.setTimeout(watchText, WATCH_PERIOD_INTEXT);
+globalThis.setTimeout(watchText, WATCH_DELAY_INTEXT);
 
 // -----------------------------------------------------------------------------
 // watchText
