@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import { DEBUG, WATCH_PERIOD_INTEXT } from "../lib/config.js";
 import { getByKey, safeText } from "../lib/common.js";
+import { getByKey, getSessionObject, safeText } from "../lib/common.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
@@ -66,8 +67,7 @@ async function initialize() {
   try {
     // Get the text object from the storage. The service worker saves it into
     // the storage before opening this popup.
-    const storedItems = await chrome.storage.session.get(`intext-${MSGID}`);
-    const text = storedItems[`intext-${MSGID}`];
+    const text = await getSessionObject(`intext-${MSGID}`);
     if (!text) throw "missing incoming text object (initializing)";
 
     // Initialize UI.
