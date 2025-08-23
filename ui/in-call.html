@@ -1,1 +1,91 @@
-in-phone.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incoming call</title>
+    <style>
+      body {
+        background-color: #fafafa;
+        font-family: sans-serif;
+      }
+
+      .info {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        color: dimgray;
+        font-size: 1.2em;
+      }
+
+      .caller {
+        margin-left: 8px;
+        margin-right: 4px;
+        font-weight: 600;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .desc {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+        gap: 32px;
+      }
+
+      button {
+        width: 38px;
+        height: 32px;
+        padding: 0px;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      .reject {
+        background-color: #ff4d4d;
+      }
+
+      .accept {
+        background-color: #16a34a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="phone-info" class="info" style="display: flex">
+      <img src="/assets/icon-phone.svg" alt="incoming call" />
+      <span id="phone" class="caller">Phone</span>
+      <span class="desc">is ringing</span>
+    </div>
+
+    <div id="call-info" class="info" style="display: none">
+      <img src="/assets/icon-phone.svg" alt="incoming call" />
+      <span id="contact" class="caller">Contact</span>
+      <span class="desc">is calling</span>
+    </div>
+
+    <div class="actions">
+      <button id="reject" class="reject">
+        <img src="/assets/reject.svg" alt="reject" />
+      </button>
+
+      <button id="accept" class="accept">
+        <img src="/assets/accept.svg" alt="accept" />
+      </button>
+    </div>
+
+    <audio id="ring" src="/assets/ringing.mp3" loop></audio>
+
+    <script type="module" src="in-call.js"></script>
+  </body>
+</html>
