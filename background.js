@@ -30,8 +30,8 @@ import {
   POPUP_INCALL_WIDTH,
   POPUP_INTEXT_HEIGHT,
   POPUP_INTEXT_WIDTH,
-} from "./common/config.js";
-import { getByKey } from "./common/function.js";
+} from "./lib/config.js";
+import { getByKey } from "./lib/common.js";
 
 // -----------------------------------------------------------------------------
 // Alarms

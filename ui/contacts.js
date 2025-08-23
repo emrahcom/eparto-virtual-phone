@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG, DEFAULT_BASE_URL } from "../common/config.js";
-import { getByKey } from "../common/function.js";
+import { DEBUG, DEFAULT_BASE_URL } from "../lib/config.js";
+import { getByKey } from "../lib/common.js";
 
 // -----------------------------------------------------------------------------
 // main

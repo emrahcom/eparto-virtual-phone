@@ -29,7 +29,7 @@
   cd /tmp/eparto-virtual-phone
   ```
 
-- Disable debug logging in [config.js](/common/config.js).
+- Disable debug logging in [config.js](/lib/config.js).
 
 - Remove the development files and create the zip file:
 

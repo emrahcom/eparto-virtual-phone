@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG, WATCH_PERIOD_INTEXT } from "../common/config.js";
-import { getByKey, safeText } from "../common/function.js";
+import { DEBUG, WATCH_PERIOD_INTEXT } from "../lib/config.js";
+import { getByKey, safeText } from "../lib/common.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
