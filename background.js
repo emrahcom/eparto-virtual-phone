@@ -38,7 +38,7 @@ import {
 // -----------------------------------------------------------------------------
 // Ping (update the presence) periodically.
 // Start pinging in 2 sec and later in every INTERVAL_PING min.
-chrome.alarms.create("ping", {
+chrome.alarms.create("intercom-ping", {
   periodInMinutes: INTERVAL_PING,
   delayInMinutes: 2 / 60,
 });
@@ -47,7 +47,7 @@ chrome.alarms.create("ping", {
 // is triggered, subsequent alarm will be created in the listener. Chrome
 // does not allow periodInMinutes to be less than 30 sec.
 // https://developer.chrome.com/docs/extensions/reference/api/alarms
-chrome.alarms.create("intercomMessages", {
+chrome.alarms.create("intercom-get-messages", {
   delayInMinutes: INTERVAL_INTERCOM_PULLING,
 });
 
@@ -55,11 +55,11 @@ chrome.alarms.create("intercomMessages", {
 // Alarm listeners
 // -----------------------------------------------------------------------------
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "ping") {
+  if (alarm.name === "intercom-ping") {
     ping();
-  } else if (alarm.name === "intercomMessages") {
+  } else if (alarm.name === "intercom-get-messages") {
     // Before getting intercom messages, create the next alarm.
-    chrome.alarms.create("intercomMessages", {
+    chrome.alarms.create("intercom-get-messages", {
       delayInMinutes: INTERVAL_INTERCOM_PULLING,
     });
 
