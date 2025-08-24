@@ -72,17 +72,17 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     // Call the popupHandler to open new popups if needed.
     // popupHandler handles only text messages.
     popupHandler();
-  } else if (alarm.name.startsWith("cleanup-intext-")) {
-    const msgId = alarm.name.substr("cleanup-intext-".length);
+  } else if (alarm.name.startsWith("intext-cleanup-")) {
+    const msgId = alarm.name.substr("intext-cleanup-".length);
     cleanupInText(msgId);
-  } else if (alarm.name.startsWith("cleanup-incall-")) {
-    const msgId = alarm.name.substr("cleanup-incall-".length);
+  } else if (alarm.name.startsWith("incall-cleanup-")) {
+    const msgId = alarm.name.substr("incall-cleanup-".length);
     cleanupInCall(msgId);
-  } else if (alarm.name.startsWith("cleanup-outcall-")) {
-    const callId = alarm.name.substr("cleanup-outcall-".length);
+  } else if (alarm.name.startsWith("outcall-cleanup-")) {
+    const callId = alarm.name.substr("outcall-cleanup-".length);
     cleanupOutCall(callId);
-  } else if (alarm.name.startsWith("ring-outcall-")) {
-    const callId = alarm.name.substr("ring-outcall-".length);
+  } else if (alarm.name.startsWith("outcall-ring-")) {
+    const callId = alarm.name.substr("outcall-ring-".length);
     ringOutCall(callId);
   }
 });
@@ -91,7 +91,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // onMessage (internal messages within the extension)
 // -----------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "start-outcall") {
+  if (msg.action === "outcall-start") {
     // Contact page sends this message when the user clicks the call button.
     startOutCall(msg);
   }
