@@ -102,13 +102,17 @@ async function initialize() {
 // -----------------------------------------------------------------------------
 function initializeText(text) {
   // Name of the contact (sender).
-  const contactName = text?.contact_name;
+  const contactName = text.contact_name;
   if (!contactName) throw "missing contact name";
 
   // Update the window title, show the name of the contact as title.
   globalThis.document.title = safeText(contactName);
 
   // Update the contact name in UI.
-  const el = globalThis.document.getElementById("contact");
-  if (el) el.textContent = contactName;
+  const elContact = globalThis.document.getElementById("contact");
+  if (elContact) elContact.textContent = contactName;
+
+  // Update the message in UI.
+  const elMessage = globalThis.document.getElementById("message");
+  if (elMessage) elMessage.textContent = text.intercom_attr.message;
 }

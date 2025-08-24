@@ -31,10 +31,16 @@
         white-space: nowrap;
       }
 
-      .message {
+      .details {
         display: flex;
         align-items: center;
         justify-content: left;
+        flex-wrap: wrap;
+      }
+
+      .message {
+        white-space: pre;
+        overflow-x: auto;
       }
     </style>
   </head>
@@ -46,8 +52,8 @@
       <span class="desc">time</span>
     </div>
 
-    <div id="chat-messages" class="message">
-      <div>hello</div>
+    <div id="chat-details" class="details">
+      <pre id="message" class="message"></pre>
     </div>
 
     <audio id="notification" src="/assets/notification.mp3"></audio>
