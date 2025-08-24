@@ -24,8 +24,14 @@ async function watchText() {
     // Get the text object again from the backend.
     const text = await getText();
 
-    // If it doesn't exist, this means that it has been deleted on the
-    // server-side.
+    // If there is a temporary network issue then try again after a while.
+    if (text === null) {
+      globalThis.setTimeout(watchText, WATCH_PERIOD_INTEXT);
+      return;
+    }
+
+    // If it doesn't exist (undefined), this means that it has been deleted on
+    // the server-side.
     if (!text) throw "missing incoming text object";
 
     // Dont continue if another client has handled the text.
@@ -54,8 +60,10 @@ async function getText() {
 
   // Return value will be a list with a single object or an empty list.
   const texts = await getByKey(`/api/pub/intercom/get/bykey`, payload);
+  if (texts) texts[0];
 
-  return texts[0];
+  // Since no list, probably there is temporary network issue.
+  return null;
 }
 
 // -----------------------------------------------------------------------------
