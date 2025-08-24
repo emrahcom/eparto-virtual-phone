@@ -51,7 +51,9 @@ chrome.alarms.create("intercomMessages", {
   delayInMinutes: INTERVAL_INTERCOM_PULLING,
 });
 
-// Alarm listeners.
+// -----------------------------------------------------------------------------
+// Alarm listeners
+// -----------------------------------------------------------------------------
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "ping") {
     ping();
@@ -90,7 +92,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // -----------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === "start-outcall") {
-    // Contact page sends this message when the user clicks the phone button.
+    // Contact page sends this message when the user clicks the call button.
     startOutCall(msg);
   }
 });
@@ -98,17 +100,17 @@ chrome.runtime.onMessage.addListener((msg) => {
 // -----------------------------------------------------------------------------
 // onRemoved (catch the closed popups)
 // -----------------------------------------------------------------------------
-chrome.windows.onRemoved.addListener(async (windowId) => {
+chrome.windows.onRemoved.addListener(async (popupId) => {
   try {
     // Get the message id of the closed popup using windowId as key.
-    const msgId = await getSessionObject(`${windowId}`);
+    const msgId = await getSessionObject(`popup-${popupId}`);
     if (!msgId) return;
 
     // Since it is closed, set its status as "seen" on the server-side.
     await setStatus(msgId, "seen");
 
     // Remove the session object.
-    await chrome.storage.session.remove(`${windowId}`);
+    await chrome.storage.session.remove(`popup-${popupId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
