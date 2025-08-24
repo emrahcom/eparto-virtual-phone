@@ -62,7 +62,7 @@ async function getText() {
   const texts = await getByKey(`/api/pub/intercom/get/bykey`, payload);
   if (texts) return texts[0];
 
-  // Since no list, probably there is temporary network issue.
+  // Since no list, most probably there is temporary network issue.
   return null;
 }
 
