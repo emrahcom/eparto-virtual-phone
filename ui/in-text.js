@@ -6,7 +6,12 @@ import {
   WATCH_DELAY_INTEXT,
   WATCH_PERIOD_INTEXT,
 } from "../lib/config.js";
-import { getByKey, getSessionObject, safeText } from "../lib/common.js";
+import {
+  displayLocalTime,
+  getByKey,
+  getSessionObject,
+  safeText,
+} from "../lib/common.js";
 
 const qs = new globalThis.URLSearchParams(globalThis.location.search);
 const MSGID = qs.get("id") || globalThis.close();
@@ -111,6 +116,10 @@ function initializeText(text) {
   // Update the contact name in UI.
   const elContact = globalThis.document.getElementById("contact");
   if (elContact) elContact.textContent = contactName;
+
+  // Update the description in UI, display the time.
+  const elDesc = globalThis.document.getElementById("desc");
+  if (elDesc) elDesc.textContent = displayLocalTime(text.created_at);
 
   // Update the message in UI.
   const elMessage = globalThis.document.getElementById("message");
