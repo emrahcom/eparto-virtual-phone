@@ -106,7 +106,7 @@ chrome.windows.onRemoved.addListener(async (popupId) => {
     const msgId = await getSessionObject(`popup-${popupId}`);
     if (!msgId) return;
 
-    // Remove the session object. It is not needed aymore.
+    // Remove the session object. It is not needed anymore.
     await chrome.storage.session.remove(`popup-${popupId}`);
 
     // Since it is closed, set its status as "seen" on the server-side.
