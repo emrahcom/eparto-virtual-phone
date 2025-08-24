@@ -60,7 +60,7 @@ async function getText() {
 
   // Return value will be a list with a single object or an empty list.
   const texts = await getByKey(`/api/pub/intercom/get/bykey`, payload);
-  if (texts) texts[0];
+  if (texts) return texts[0];
 
   // Since no list, probably there is temporary network issue.
   return null;
