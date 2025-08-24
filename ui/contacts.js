@@ -288,7 +288,7 @@ async function onPhoneClick(contact, phoneButton, callSpinner) {
     if (!call) throw "failed to initiate outgoing call";
 
     // The call process will be processed by the service worker.
-    call.action = "start-outcall";
+    call.action = "outcall-start";
     call.contact_id = contact.id;
     chrome.runtime.sendMessage(call);
 
