@@ -102,15 +102,15 @@ chrome.runtime.onMessage.addListener((msg) => {
 // -----------------------------------------------------------------------------
 chrome.windows.onRemoved.addListener(async (popupId) => {
   try {
-    // Get the message id of the closed popup using windowId as key.
+    // Get the message id of the closed popup using popupId as key.
     const msgId = await getSessionObject(`popup-${popupId}`);
     if (!msgId) return;
 
+    // Remove the session object. It is not needed aymore.
+    await chrome.storage.session.remove(`popup-${popupId}`);
+
     // Since it is closed, set its status as "seen" on the server-side.
     await setStatus(msgId, "seen");
-
-    // Remove the session object.
-    await chrome.storage.session.remove(`popup-${popupId}`);
   } catch (e) {
     if (DEBUG) console.error(e);
   }
