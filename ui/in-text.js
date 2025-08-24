@@ -21,7 +21,9 @@ globalThis.setTimeout(watchText, WATCH_DELAY_INTEXT);
 // -----------------------------------------------------------------------------
 async function watchText() {
   try {
-    // Get the text object again from the backend.
+    // Get the text object from the backend.
+    // If this object is not available then the return value will be undefined.
+    // If there is a network or config error then the return value will be null.
     const text = await getText();
 
     // If there is a temporary network issue then try again after a while.
@@ -31,10 +33,10 @@ async function watchText() {
     }
 
     // If it doesn't exist (undefined), this means that it has been deleted on
-    // the server-side.
+    // the backend.
     if (!text) throw "missing incoming text object";
 
-    // Dont continue if another client has handled the text.
+    // Dont continue if another client has already handled the text.
     if (text.status !== "none") throw "already processed by another client";
 
     // Dont continue if it is expired. Expiration happens when the text is not
@@ -43,7 +45,8 @@ async function watchText() {
     if (isNaN(expiredAt)) throw "invalid expire time for incoming text";
     if (Date.now() > expiredAt.getTime()) throw "expired incoming text";
 
-    // Check it again after a while.
+    // Check it again after a while since the text is not seen yet by any
+    // client.
     globalThis.setTimeout(watchText, WATCH_PERIOD_INTEXT);
   } catch {
     globalThis.close();
@@ -62,7 +65,7 @@ async function getText() {
   const texts = await getByKey(`/api/pub/intercom/get/bykey`, payload);
   if (texts) return texts[0];
 
-  // Since no list, most probably there is temporary network issue.
+  // Since no list, most probably there is temporary network or config issue.
   return null;
 }
 
@@ -76,7 +79,7 @@ initialize();
 // -----------------------------------------------------------------------------
 async function initialize() {
   try {
-    // Get the text object from the storage. The service worker saves it into
+    // Get the text object from the storage. The service worker saved it into
     // the storage before opening this popup.
     const text = await getSessionObject(`intext-${MSGID}`);
     if (!text) throw "missing incoming text object (initializing)";
