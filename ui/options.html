@@ -5,120 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Options</title>
     <style>
+      :root {
+        font-size: 16px;
+      }
       body {
         display: flex;
         justify-content: center;
         margin: 0;
-        padding: 20px;
+        padding: 1.25rem;
         background-color: #f9fafc;
         font-family: sans-serif;
       }
-
       .container {
-        padding: 25px;
+        padding: 1.5rem;
         width: 100%;
-        max-width: 400px;
+        max-width: 25rem;
         background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
       }
-
       h2 {
-        margin-bottom: 20px;
-        font-size: 1.6em;
+        margin-bottom: 1.25rem;
+        font-size: 1.6rem;
         text-align: center;
       }
-
       label {
         display: block;
-        margin-top: 15px;
-        font-size: 1.2em;
+        margin-top: 1rem;
+        font-size: 0.875rem;
         font-weight: 600;
         color: #333;
       }
-
       input {
-        padding: 10px;
-        margin-top: 5px;
+        padding: 0.75rem;
+        margin-top: 0.25rem;
         width: 100%;
         border: 1px solid #ccc;
-        border-radius: 6px;
+        border-radius: 0.25rem;
         box-sizing: border-box;
-        font-size: 1em;
+        font-size: 1rem;
       }
-
       input:focus {
         border-color: #4caf50;
         outline: none;
       }
-
       .base-url {
         background-color: #f0f0f0;
-        color: damgray;
+        color: dimgray;
         opacity: 0.6;
       }
-
       .action {
         display: flex;
         justify-content: flex-end;
-        margin-top: 25px;
-        gap: 20px;
+        margin-top: 1.5rem;
+        gap: 1.25rem;
       }
-
       button {
-        width: 80px;
-        padding: 10px 16px;
-        font-size: 1.2em;
+        width: 5rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
         font-weight: 600;
         border: none;
-        border-radius: 6px;
+        border-radius: 0.25rem;
         cursor: pointer;
       }
-
       .cancel {
         background-color: #e53935;
         color: white;
       }
-
       .cancel:hover {
         background-color: #ff4d4d;
       }
-
       .save {
         background-color: #43a047;
         color: white;
       }
-
       .save:hover {
         background-color: #4caf50;
       }
     </style>
   </head>
-
   <body>
     <div class="container">
       <h2>Options</h2>
-      <label for="private-key">Private Key</label>
-      <input
-        id="private-key"
-        type="text"
-        placeholder="Enter your private key"
-      />
-
-      <label for="base-url">Server Address</label>
-      <input
-        id="base-url"
-        class="base-url"
-        type="text"
-        placeholder="Enter the server address"
-      />
-
-      <div class="action">
-        <button id="cancel" class="cancel">Cancel</button>
-        <button id="save" class="save">Save</button>
-      </div>
+      <form>
+        <label for="private-key">Private Key</label>
+        <input
+          id="private-key"
+          type="text"
+          placeholder="Enter your private key"
+        />
+        <label for="base-url">Server Address</label>
+        <input
+          id="base-url"
+          class="base-url"
+          type="text"
+          placeholder="Enter the server address"
+        />
+        <div class="action">
+          <button id="cancel" type="button" class="cancel">Cancel</button>
+          <button id="save" type="submit" class="save">Save</button>
+        </div>
+      </form>
     </div>
-
     <script type="module" src="options.js"></script>
   </body>
 </html>
