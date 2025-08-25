@@ -5,60 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Incoming text message</title>
     <style>
+      :root {
+        font-size: 16px;
+      }
       body {
         background-color: #fafafa;
         font-family: sans-serif;
+        margin: 0;
+        padding: 1rem;
       }
-
-      .info {
+      .notification-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .header {
         display: flex;
         align-items: center;
-        justify-content: left;
+        gap: 0.5rem;
         color: dimgray;
-        font-size: 1.2em;
       }
-
+      .header img {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
       .sender {
-        margin-left: 8px;
-        margin-right: 4px;
         font-weight: 600;
+        font-size: 1rem;
         overflow: hidden;
         white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 0;
       }
-
       .desc {
+        font-size: 1rem;
         overflow: hidden;
         white-space: nowrap;
+        text-overflow: ellipsis;
         margin-left: auto;
       }
-
       .details {
         display: flex;
         align-items: center;
-        justify-content: left;
+        justify-content: flex-start;
         flex-wrap: wrap;
       }
-
       .message {
         white-space: pre;
         overflow-x: auto;
         font-family: inherit;
+        font-size: 1rem;
       }
     </style>
   </head>
-
   <body>
-    <div id="chat-info" class="info">
-      <img src="/assets/icon-chat.svg" alt="incoming text message" />
-      <span id="contact" class="sender">Contact</span>
-      <span id="desc" class="desc"></span>
-    </div>
+    <div role="alert" aria-live="polite" class="notification-container">
+      <header class="header">
+        <img src="/assets/icon-chat.svg" alt="Incoming text message" />
+        <h1 class="sender" id="contact">Contact</h1>
+        <span class="desc" id="desc"></span>
+      </header>
 
-    <div id="chat-details" class="details">
-      <pre id="message" class="message"></pre>
-    </div>
+      <div class="details">
+        <pre class="message" id="message"></pre>
+      </div>
 
-    <audio id="notification" src="/assets/notification.mp3"></audio>
+      <audio id="notification" src="/assets/notification.mp3"></audio>
+    </div>
 
     <script type="module" src="in-text.js"></script>
   </body>
