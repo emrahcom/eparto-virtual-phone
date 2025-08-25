@@ -6,11 +6,11 @@ import { DEBUG, DEFAULT_BASE_URL } from "../lib/config.js";
 // -----------------------------------------------------------------------------
 // Event listeners
 // -----------------------------------------------------------------------------
+const form = globalThis.document.querySelector("form");
+form.addEventListener("submit", saveOptions);
+
 const cancelButton = globalThis.document.getElementById("cancel");
 cancelButton.addEventListener("click", cancelOptions);
-
-const saveButton = globalThis.document.getElementById("save");
-saveButton.addEventListener("click", saveOptions);
 
 const inputPrivateKey = globalThis.document.getElementById("private-key");
 inputPrivateKey.addEventListener("focus", inputPrivateKey.select);
@@ -55,8 +55,11 @@ function cancelOptions() {
 // -----------------------------------------------------------------------------
 // saveOptions
 // -----------------------------------------------------------------------------
-async function saveOptions() {
+async function saveOptions(e) {
   try {
+    // Prevents the page from reloading on form submission
+    e.preventDefault();
+
     // The input box shows the shadowed value by default which is shorter than
     // 20 characters. If the user updates this box, the new value will be longer
     // than 20 characters. Save it if there is a new value or if it is an empty
