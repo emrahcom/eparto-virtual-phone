@@ -28,17 +28,20 @@ async function watchCall() {
     const call = await getCall();
 
     // If it doesn't exist, this means that it has been ended by the caller.
-    if (!call) throw "missing incoming call object";
+    if (!call) throw new Error("missing incoming call object");
 
     // Dont continue if another client has handled the call.
-    if (call.status !== "none") throw "already processed by another client";
+    if (call.status !== "none")
+      throw new Error("already processed by another client");
 
     // Dont continue if it is expired. Expiration happens when the call is not
     // terminated properly by the caller. For example, if she closes her
     // browser directly without cancelling the call...
     const expiredAt = new Date(call.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time for incoming call";
-    if (Date.now() > expiredAt.getTime()) throw "expired incoming call";
+    if (isNaN(expiredAt))
+      throw new Error("invalid expire time for incoming call");
+    if (Date.now() > expiredAt.getTime())
+      throw new Error("expired incoming call");
 
     // Check it again after a while.
     globalThis.setTimeout(watchCall, WATCH_PERIOD_INCALL);
@@ -83,7 +86,7 @@ async function initialize() {
     // Get the call object from the storage. The service worker saves it into
     // the storage before opening this popup.
     const call = await getSessionObject(`incall-${MSGID}`);
-    if (!call) throw "missing incoming call object (initializing)";
+    if (!call) throw new Error("missing incoming call object (initializing)");
 
     // Initialize UI depending on the call type.
     if (call.message_type === "call") {
@@ -91,7 +94,7 @@ async function initialize() {
     } else if (call.message_type === "phone") {
       initializePhone(call);
     } else {
-      throw "unknown call type";
+      throw new Error("unknown call type");
     }
 
     // Start ringing.
@@ -110,11 +113,11 @@ async function initialize() {
 function initializeCall(call) {
   // URL of the conference room with member token (if needed).
   CALL_URL = call?.intercom_attr?.url;
-  if (!CALL_URL) throw "missing call url";
+  if (!CALL_URL) throw new Error("missing call url");
 
   // Name of the contact (caller).
   const contactName = call?.contact_name;
-  if (!contactName) throw "missing contact name";
+  if (!contactName) throw new Error("missing contact name");
 
   // Update the window title, show the name of the contact as title.
   globalThis.document.title = safeText(contactName);
@@ -138,11 +141,11 @@ function initializeCall(call) {
 function initializePhone(call) {
   // URL of the conference room with moderator token (if needed).
   CALL_URL = call?.intercom_attr?.owner_url;
-  if (!CALL_URL) throw "missing call url";
+  if (!CALL_URL) throw new Error("missing call url");
 
   // Name of ringing public phone.
   const phoneName = call?.intercom_attr?.phone_name;
-  if (!phoneName) throw "missing phone name";
+  if (!phoneName) throw new Error("missing phone name");
 
   // Update the window title, show the name of the public phone as title.
   globalThis.document.title = safeText(phoneName);

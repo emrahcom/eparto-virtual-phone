@@ -51,7 +51,7 @@ async function getContactList() {
 async function showSetupGuide() {
   try {
     const container = globalThis.document.getElementById("setup-guide");
-    if (!container) throw "missing setup-guide container";
+    if (!container) throw new Error("missing setup-guide container");
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
@@ -75,7 +75,7 @@ async function showSetupGuide() {
 function showFailedRequest() {
   try {
     const container = globalThis.document.getElementById("failed-request");
-    if (!container) throw "missing failed-request container";
+    if (!container) throw new Error("missing failed-request container");
     container.style.display = "block";
   } catch (e) {
     if (DEBUG) console.error(e);
@@ -95,7 +95,7 @@ function showUnexpectedResponse() {
 async function showEmptyContactList() {
   try {
     const container = globalThis.document.getElementById("empty-list");
-    if (!container) throw "missing empty-list container";
+    if (!container) throw new Error("missing empty-list container");
 
     const storedBaseUrls = await chrome.storage.local.get("base-url");
     const baseUrl = storedBaseUrls["base-url"] || DEFAULT_BASE_URL;
@@ -119,7 +119,7 @@ async function showEmptyContactList() {
 async function showContactList(contacts) {
   try {
     const container = globalThis.document.getElementById("contact-list");
-    if (!container) throw "missing contact-list container";
+    if (!container) throw new Error("missing contact-list container");
 
     const contactListHeaderDiv = await generateContactListHeaderDiv();
     if (contactListHeaderDiv) container.appendChild(contactListHeaderDiv);
@@ -285,7 +285,7 @@ async function onPhoneClick(contact, phoneButton, callSpinner) {
     };
     const calls = await getByKey("/api/pub/contact/call/bykey", payload);
     const call = calls[0];
-    if (!call) throw "failed to initiate outgoing call";
+    if (!call) throw new Error("failed to initiate outgoing call");
 
     // The call process will be processed by the service worker.
     call.action = "outcall-start";

@@ -65,7 +65,7 @@ async function saveOptions(e) {
     // than 20 characters. Save it if there is a new value or if it is an empty
     // string.
     const privateKey = globalThis.document.getElementById("private-key");
-    if (!privateKey) throw "missing input box, private-key";
+    if (!privateKey) throw new Error("missing input box, private-key");
     if (privateKey.value.length === 0 || privateKey.value.length > 20) {
       const item = {
         "private-key": privateKey.value,
@@ -76,7 +76,7 @@ async function saveOptions(e) {
     // Allow to input an empty string for the base URL. This will reset the
     // value by using DEFAULT_BASE_URL. Dont save the trailing "/" character.
     const baseUrl = globalThis.document.getElementById("base-url");
-    if (!baseUrl) throw "missing input box, base-url";
+    if (!baseUrl) throw new Error("missing input box, base-url");
 
     // Remove the trailing "/" and space characters.
     let value = baseUrl.value;

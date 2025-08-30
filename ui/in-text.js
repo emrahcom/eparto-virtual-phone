@@ -1,11 +1,7 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import {
-  DEBUG,
-  WATCH_DELAY_INTEXT,
-  WATCH_PERIOD_INTEXT,
-} from "../lib/config.js";
+import { DEBUG, WATCH_PERIOD_INTEXT } from "../lib/config.js";
 import {
   displayLocalTime,
   getByKey,
@@ -19,13 +15,16 @@ const MSGID = qs.get("id") || globalThis.close();
 // -----------------------------------------------------------------------------
 // Alarms
 // -----------------------------------------------------------------------------
-globalThis.setTimeout(watchText, WATCH_DELAY_INTEXT);
+globalThis.setTimeout(() => watchText(1000), 1000);
 
 // -----------------------------------------------------------------------------
 // watchText
 // -----------------------------------------------------------------------------
-async function watchText() {
+async function watchText(delay = 1000) {
   try {
+    const nextDelay =
+      2 * delay > WATCH_PERIOD_INTEXT ? WATCH_PERIOD_INTEXT : 2 * delay;
+
     // Get the text object from the backend.
     // If this object is not available then the return value will be undefined.
     // If there is a network or config error then the return value will be null.
@@ -33,26 +32,29 @@ async function watchText() {
 
     // If there is a temporary network issue then try again after a while.
     if (text === null) {
-      globalThis.setTimeout(watchText, WATCH_PERIOD_INTEXT);
+      globalThis.setTimeout(() => watchText(nextDelay), nextDelay);
       return;
     }
 
     // If it doesn't exist (undefined), this means that it has been deleted on
     // the backend.
-    if (!text) throw "missing incoming text object";
+    if (!text) throw new Error("missing incoming text object");
 
     // Dont continue if another client has already handled the text.
-    if (text.status !== "none") throw "already processed by another client";
+    if (text.status !== "none")
+      throw new Error("already processed by another client");
 
     // Dont continue if it is expired. Expiration happens when the text is not
     // seen for a long time by any client.
     const expiredAt = new Date(text.expired_at);
-    if (isNaN(expiredAt)) throw "invalid expire time for incoming text";
-    if (Date.now() > expiredAt.getTime()) throw "expired incoming text";
+    if (isNaN(expiredAt))
+      throw new Error("invalid expire time for incoming text");
+    if (Date.now() > expiredAt.getTime())
+      throw new Error("expired incoming text");
 
     // Check it again after a while since the text is not seen yet by any
     // client.
-    globalThis.setTimeout(watchText, WATCH_PERIOD_INTEXT);
+    globalThis.setTimeout(() => watchText(_delay), _delay);
   } catch {
     globalThis.close();
   }
@@ -87,7 +89,7 @@ async function initialize() {
     // Get the text object from the storage. The service worker saved it into
     // the storage before opening this popup.
     const text = await getSessionObject(`intext-${MSGID}`);
-    if (!text) throw "missing incoming text object (initializing)";
+    if (!text) throw new Error("missing incoming text object (initializing)");
 
     // Initialize UI.
     initializeText(text);
@@ -108,7 +110,7 @@ async function initialize() {
 function initializeText(text) {
   // Name of the contact (sender).
   const contactName = text.contact_name;
-  if (!contactName) throw "missing contact name";
+  if (!contactName) throw new Error("missing contact name");
 
   // Update the window title, show the name of the contact as title.
   globalThis.document.title = safeText(contactName);
