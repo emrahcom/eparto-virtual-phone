@@ -20,7 +20,7 @@ globalThis.setTimeout(() => watchText(1000), 1000);
 // -----------------------------------------------------------------------------
 // watchText
 // -----------------------------------------------------------------------------
-async function watchText(delay = 1000) {
+async function watchText(delay) {
   try {
     const nextDelay =
       2 * delay > WATCH_PERIOD_INTEXT ? WATCH_PERIOD_INTEXT : 2 * delay;
@@ -54,7 +54,7 @@ async function watchText(delay = 1000) {
 
     // Check it again after a while since the text is not seen yet by any
     // client.
-    globalThis.setTimeout(() => watchText(_delay), _delay);
+    globalThis.setTimeout(() => watchText(nextDelay), nextDelay);
   } catch {
     globalThis.close();
   }
