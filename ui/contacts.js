@@ -172,6 +172,7 @@ function generateContactDiv(contact) {
   try {
     const contactInfoDiv = generateContactInfoDiv(contact);
 
+    const textButton = generateTextButton(contact);
     const callSpinner = generateSpinnerDiv();
     const phoneButton = generatePhoneButton(contact, callSpinner);
     callSpinner.onclick = function () {
@@ -181,6 +182,7 @@ function generateContactDiv(contact) {
     const contactDiv = globalThis.document.createElement("div");
     contactDiv.className = "contact";
     contactDiv.appendChild(contactInfoDiv);
+    contactDiv.appendChild(textButton);
     contactDiv.appendChild(phoneButton);
     contactDiv.appendChild(callSpinner);
 
@@ -216,6 +218,35 @@ function generateContactInfoDiv(contact) {
 }
 
 // -----------------------------------------------------------------------------
+// generateTextButton (will be placed in ContactDiv)
+// -----------------------------------------------------------------------------
+function generateTextButton(contact) {
+  const textIcon = globalThis.document.createElement("img");
+  textIcon.src = "/assets/chat.svg";
+  textIcon.alt = "send message";
+
+  const textButton = globalThis.document.createElement("button");
+  textButton.className = "text";
+  textButton.onclick = function () {
+    onTextClick(contact, textButton);
+  };
+  textButton.appendChild(textIcon);
+
+  return textButton;
+}
+
+// -----------------------------------------------------------------------------
+// onTextClick
+// -----------------------------------------------------------------------------
+async function onTextClick(contact, textButton) {
+  try {
+    console.log("text");
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // generateSpinnerDiv (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generateSpinnerDiv() {
@@ -243,7 +274,7 @@ function generatePhoneButton(contact, callSpinner) {
 
   const phoneIcon = globalThis.document.createElement("img");
   phoneIcon.src = "/assets/phone.svg";
-  phoneIcon.alt = `call ${contactStatus}`;
+  phoneIcon.alt = "call";
 
   const phoneButton = globalThis.document.createElement("button");
   phoneButton.className = `phone ${contactStatus}`;
