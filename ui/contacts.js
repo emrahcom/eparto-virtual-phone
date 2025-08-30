@@ -63,7 +63,7 @@ async function showSetupGuide() {
       globalThis.document.getElementById("private-key-link");
     privateKeyLink.href = `${baseUrl}/pri/identity/key`;
 
-    container.style.display = "block";
+    container.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -76,7 +76,7 @@ function showFailedRequest() {
   try {
     const container = globalThis.document.getElementById("failed-request");
     if (!container) throw new Error("missing failed-request container");
-    container.style.display = "block";
+    container.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -107,7 +107,7 @@ async function showEmptyContactList() {
       globalThis.document.getElementById("virtual-phone-link");
     virtualPhoneLink.href = `${baseUrl}/pri/phone`;
 
-    container.style.display = "block";
+    container.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -132,7 +132,7 @@ async function showContactList(contacts) {
       container.appendChild(contactDiv);
     }
 
-    container.style.display = "block";
+    container.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -343,7 +343,7 @@ async function onSpinnerClick(contactId, phoneButton, callSpinner) {
 
     // Update UI status.
     callSpinner.style.display = "none";
-    phoneButton.style.display = "block";
+    phoneButton.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -364,7 +364,7 @@ async function updateCallStatus(contactId, phoneButton, callSpinner) {
     } else {
       // Switch to the normal mode since there is no active call.
       callSpinner.style.display = "none";
-      phoneButton.style.display = "block";
+      phoneButton.style.display = "flex";
     }
   } catch (e) {
     if (DEBUG) console.error(e);
