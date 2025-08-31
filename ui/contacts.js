@@ -16,15 +16,29 @@ cancelButton.addEventListener("click", cancelTextMessage);
 // -----------------------------------------------------------------------------
 // sendTextMessage
 // -----------------------------------------------------------------------------
-function sendTextMessage(e) {
+async function sendTextMessage(e) {
   try {
     // Prevent the page from reloading on form submission
     e.preventDefault();
 
-    // Reset the message text after it is sent to allow a new message.
+    const contactId = globalThis.document.getElementById("contact-id");
+    if (!contactId) throw new Error("missing contact-id element");
+
     const message = globalThis.document.getElementById("message");
     if (!message) throw new Error("missing message box");
+
+    // Send the message.
+    const payload = {
+      contact_id: contactId.value,
+      message: message.value,
+    };
+    const texts = await getByKey("/api/pub/contact/text/bykey", payload);
+    const text = texts[0];
+    if (!text) throw new Error("failed to send the text message");
+
+    // Reset the values to allow a new message.
     message.value = "";
+    message.focus();
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -44,6 +58,16 @@ function cancelTextMessage() {
     // Hide the message form and display the contact list.
     contactList.style.display = "flex";
     messageForm.style.display = "none";
+
+    // Reset the contact-id
+    const contactId = globalThis.document.getElementById("contact-id");
+    if (!contactId) throw new Error("missing contact-id");
+    contactId.value = "";
+
+    // Reset the contact-name
+    const contactName = globalThis.document.getElementById("contact-name");
+    if (!contactName) throw new Error("missing contact-name");
+    contactName.value = "";
 
     // Reset the message text.
     const message = globalThis.document.getElementById("message");
@@ -278,7 +302,7 @@ function generateTextButton(contact) {
   const textButton = globalThis.document.createElement("button");
   textButton.className = "text";
   textButton.onclick = function () {
-    onTextClick(contact, textButton);
+    onTextClick(contact);
   };
   textButton.appendChild(textIcon);
 
@@ -288,13 +312,17 @@ function generateTextButton(contact) {
 // -----------------------------------------------------------------------------
 // onTextClick
 // -----------------------------------------------------------------------------
-async function onTextClick(contact, textButton) {
+function onTextClick(contact) {
   try {
     const contactList = globalThis.document.getElementById("contact-list");
     if (!contactList) throw new Error("missing contact-list container");
 
     const messageForm = globalThis.document.getElementById("message-form");
     if (!messageForm) throw new Error("missing message-form container");
+
+    const contactId = globalThis.document.getElementById("contact-id");
+    if (!contactId) throw new Error("missing contact-id element");
+    contactId.value = contact.id;
 
     const contactName = globalThis.document.getElementById("contact-name");
     if (!contactName) throw new Error("missing contact-name element");
