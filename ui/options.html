@@ -8,6 +8,7 @@
       :root {
         font-size: 16px;
       }
+
       body {
         display: flex;
         justify-content: center;
@@ -16,6 +17,7 @@
         background-color: #f9fafc;
         font-family: sans-serif;
       }
+
       .container {
         padding: 1.5rem;
         width: 100%;
@@ -24,11 +26,13 @@
         border-radius: 0.5rem;
         box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
       }
+
       h2 {
         margin-bottom: 1.25rem;
         font-size: 1.6rem;
         text-align: center;
       }
+
       label {
         display: flex;
         margin-top: 1rem;
@@ -36,6 +40,7 @@
         font-weight: 600;
         color: #333;
       }
+
       input {
         padding: 0.75rem;
         margin-top: 0.25rem;
@@ -45,21 +50,25 @@
         box-sizing: border-box;
         font-size: 1rem;
       }
+
       input:focus {
         border-color: #4caf50;
         outline: none;
       }
+
       .base-url {
         background-color: #f0f0f0;
         color: dimgray;
         opacity: 0.6;
       }
+
       .action {
         display: flex;
         justify-content: flex-end;
         margin-top: 1.5rem;
         gap: 1.25rem;
       }
+
       button {
         width: 5rem;
         padding: 0.625rem 1rem;
@@ -69,17 +78,21 @@
         border-radius: 0.25rem;
         cursor: pointer;
       }
+
       .cancel {
         background-color: #e53935;
         color: white;
       }
+
       .cancel:hover {
         background-color: #ff4d4d;
       }
+
       .save {
         background-color: #43a047;
         color: white;
       }
+
       .save:hover {
         background-color: #4caf50;
       }
@@ -88,6 +101,7 @@
   <body>
     <div class="container">
       <h2>Options</h2>
+
       <form>
         <label for="private-key">Private Key</label>
         <input
@@ -95,6 +109,7 @@
           type="text"
           placeholder="Enter your private key"
         />
+
         <label for="base-url">Server Address</label>
         <input
           id="base-url"
@@ -102,12 +117,14 @@
           type="text"
           placeholder="Enter the server address"
         />
+
         <div class="action">
           <button id="cancel" type="button" class="cancel">Cancel</button>
           <button id="save" type="submit" class="save">Save</button>
         </div>
       </form>
     </div>
+
     <script type="module" src="options.js"></script>
   </body>
 </html>
