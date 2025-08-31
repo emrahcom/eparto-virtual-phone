@@ -16,9 +16,15 @@ cancelButton.addEventListener("click", cancelTextMessage);
 // -----------------------------------------------------------------------------
 // sendTextMessage
 // -----------------------------------------------------------------------------
-function sendTextMessage (e) {
+function sendTextMessage(e) {
   try {
-    console.warn("sent");
+    // Prevent the page from reloading on form submission
+    e.preventDefault();
+
+    // Reset the message text after it is sent to allow a new message.
+    const message = globalThis.document.getElementById("message");
+    if (!message) throw new Error("missing message box");
+    message.value = "";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
@@ -289,6 +295,10 @@ async function onTextClick(contact, textButton) {
 
     const messageForm = globalThis.document.getElementById("message-form");
     if (!messageForm) throw new Error("missing message-form container");
+
+    const contactName = globalThis.document.getElementById("contact-name");
+    if (!contactName) throw new Error("missing contact-name element");
+    contactName.textContent = `To ${contact?.name || ""}`;
 
     // Update UI status.
     contactList.style.display = "none";

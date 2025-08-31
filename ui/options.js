@@ -50,7 +50,7 @@ async function initialize() {
 // -----------------------------------------------------------------------------
 async function saveOptions(e) {
   try {
-    // Prevents the page from reloading on form submission
+    // Prevent the page from reloading on form submission
     e.preventDefault();
 
     // The input box shows the shadowed value by default which is shorter than
