@@ -20,6 +20,9 @@ make and receive calls directly from the web browser.
   You can accept calls and communicate via audio or video, depending on your
   preference.
 
+- **SMS Messaging**\
+  Send and receive text messages with your contacts directly from the extension.
+
 Eparto Virtual Phone is designed to provide a simple and direct way to
 communicate with your contacts, all within your browser. No need for additional
 apps or devices, just open the extension and start calling.
