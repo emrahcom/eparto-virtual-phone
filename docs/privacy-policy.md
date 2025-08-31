@@ -22,7 +22,14 @@ outlines our data practices.
 - This data is also temporarily stored in the extension storage for a maximum of
   1 minute and is then automatically deleted.
 
-3. **Private Key:**
+3. **Text Messages:**
+- The extension accesses information about who is texting whom and the content
+  of the text message within this extension. This data is not related to text
+  messages sent and received through other applications or environments.
+- This text message is also temporarily stored in the extension storage until
+  the user closes the message popup and is then automatically deleted.
+
+4. **Private Key:**
 
 - Your private key is stored in the extension storage for long-term use.
 - You can delete your private key at any time through the extension's interface.
@@ -33,6 +40,9 @@ outlines our data practices.
 
 - Access to the contact list and call requests is necessary to provide the
   extension's core functionality.
+
+- Access to text messages is necessary to provide the extension's core
+  functionality.
 
 ### Third-Party Conferencing System
 
