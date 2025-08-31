@@ -8,9 +8,11 @@
   "host_permissions": [
     "https://*/api/pub/contact/call/bykey",
     "https://*/api/pub/contact/list/bykey",
+    "https://*/api/pub/contact/text/bykey",
     "https://*/api/pub/identity/ping/bykey",
     "https://*/api/pub/intercom/call/ring/bykey",
     "https://*/api/pub/intercom/del*",
+    "https://*/api/pub/intercom/get/bykey",
     "https://*/api/pub/intercom/list/bykey",
     "https://*/api/pub/intercom/set/*"
   ],
