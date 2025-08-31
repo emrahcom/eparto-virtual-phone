@@ -328,9 +328,13 @@ function onTextClick(contact) {
     if (!contactName) throw new Error("missing contact-name element");
     contactName.textContent = `To ${contact?.name || ""}`;
 
+    const message = globalThis.document.getElementById("message");
+    if (!message) throw new Error("missing message box");
+
     // Update UI status.
     contactList.style.display = "none";
     messageForm.style.display = "flex";
+    message.focus();
   } catch (e) {
     if (DEBUG) console.error(e);
   }
