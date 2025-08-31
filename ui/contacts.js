@@ -5,6 +5,50 @@ import { DEBUG, DEFAULT_BASE_URL } from "../lib/config.js";
 import { getByKey, getSessionObject } from "../lib/common.js";
 
 // -----------------------------------------------------------------------------
+// Event listeners
+// -----------------------------------------------------------------------------
+const form = globalThis.document.querySelector("form");
+form.addEventListener("submit", sendTextMessage);
+
+const cancelButton = globalThis.document.getElementById("cancel");
+cancelButton.addEventListener("click", cancelTextMessage);
+
+// -----------------------------------------------------------------------------
+// sendTextMessage
+// -----------------------------------------------------------------------------
+function sendTextMessage (e) {
+  try {
+    console.warn("sent");
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// cancelTextMessage
+// -----------------------------------------------------------------------------
+function cancelTextMessage() {
+  try {
+    const contactList = globalThis.document.getElementById("contact-list");
+    if (!contactList) throw new Error("missing contact-list container");
+
+    const messageForm = globalThis.document.getElementById("message-form");
+    if (!messageForm) throw new Error("missing message-form container");
+
+    // Hide the message form and display the contact list.
+    contactList.style.display = "flex";
+    messageForm.style.display = "none";
+
+    // Reset the message text.
+    const message = globalThis.document.getElementById("message");
+    if (!message) throw new Error("missing message box");
+    message.value = "";
+  } catch (e) {
+    if (DEBUG) console.error(e);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // main
 // -----------------------------------------------------------------------------
 initialize();
@@ -240,7 +284,15 @@ function generateTextButton(contact) {
 // -----------------------------------------------------------------------------
 async function onTextClick(contact, textButton) {
   try {
-    console.log("text");
+    const contactList = globalThis.document.getElementById("contact-list");
+    if (!contactList) throw new Error("missing contact-list container");
+
+    const messageForm = globalThis.document.getElementById("message-form");
+    if (!messageForm) throw new Error("missing message-form container");
+
+    // Update UI status.
+    contactList.style.display = "none";
+    messageForm.style.display = "flex";
   } catch (e) {
     if (DEBUG) console.error(e);
   }
