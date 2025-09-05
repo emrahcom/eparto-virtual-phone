@@ -23,6 +23,7 @@ outlines our data practices.
   1 minute and is then automatically deleted.
 
 3. **Text Messages:**
+
 - The extension accesses information about who is texting whom and the content
   of the text message within this extension. This data is not related to text
   messages sent and received through other applications or environments.
