@@ -1,7 +1,14 @@
 // -----------------------------------------------------------------------------
 // Imports and globals
 // -----------------------------------------------------------------------------
-import { DEBUG, DEFAULT_BASE_URL } from "../lib/config.js";
+import {
+  DEBUG,
+  DEFAULT_BASE_URL,
+  PHONE_STATUS_IDLE,
+  PHONE_STATUS_ONLINE,
+  TEXT_STATUS_IDLE,
+  TEXT_STATUS_ONLINE,
+} from "../lib/config.js";
 import { getByKey, getSessionObject } from "../lib/common.js";
 
 // -----------------------------------------------------------------------------
@@ -316,9 +323,9 @@ function generateTextButton(contact) {
 // -----------------------------------------------------------------------------
 function getTextStatus(second) {
   try {
-    if (second < 100) {
+    if (second < TEXT_STATUS_ONLINE) {
       return "online";
-    } else if (second < 3600) {
+    } else if (second < TEXT_STATUS_IDLE) {
       return "idle";
     } else {
       return "offline";
@@ -406,9 +413,9 @@ function generatePhoneButton(contact, callSpinner) {
 // -----------------------------------------------------------------------------
 function getPhoneStatus(second) {
   try {
-    if (second < 100) {
+    if (second < PHONE_STATUS_ONLINE) {
       return "online";
-    } else if (second < 3600) {
+    } else if (second < PHONE_STATUS_IDLE) {
       return "idle";
     } else {
       return "offline";
