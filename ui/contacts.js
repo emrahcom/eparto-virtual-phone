@@ -295,18 +295,39 @@ function generateContactInfoDiv(contact) {
 // generateTextButton (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generateTextButton(contact) {
+  const textStatus = getTextStatus(Number(contact?.seen_second_ago));
+
   const textIcon = globalThis.document.createElement("img");
   textIcon.src = "/assets/chat.svg";
   textIcon.alt = "send message";
 
   const textButton = globalThis.document.createElement("button");
-  textButton.className = "text";
+  textButton.className = `text ${textStatus}`;
   textButton.onclick = function () {
     onTextClick(contact);
   };
   textButton.appendChild(textIcon);
 
   return textButton;
+}
+
+// -----------------------------------------------------------------------------
+// getTextStatus
+// -----------------------------------------------------------------------------
+function getTextStatus(second) {
+  try {
+    if (second < 100) {
+      return "online";
+    } else if (second < 3600) {
+      return "idle";
+    } else {
+      return "offline";
+    }
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    return "offline";
+  }
 }
 
 // -----------------------------------------------------------------------------
