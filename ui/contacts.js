@@ -364,14 +364,14 @@ function generateSpinnerDiv() {
 // generatePhoneButton (will be placed in ContactDiv)
 // -----------------------------------------------------------------------------
 function generatePhoneButton(contact, callSpinner) {
-  const contactStatus = getContactStatus(Number(contact?.seen_second_ago));
+  const phoneStatus = getPhoneStatus(Number(contact?.seen_second_ago));
 
   const phoneIcon = globalThis.document.createElement("img");
   phoneIcon.src = "/assets/phone.svg";
   phoneIcon.alt = "call";
 
   const phoneButton = globalThis.document.createElement("button");
-  phoneButton.className = `phone ${contactStatus}`;
+  phoneButton.className = `phone ${phoneStatus}`;
   phoneButton.onclick = function () {
     onPhoneClick(contact, phoneButton, callSpinner);
   };
@@ -381,9 +381,9 @@ function generatePhoneButton(contact, callSpinner) {
 }
 
 // -----------------------------------------------------------------------------
-// getContactStatus
+// getPhoneStatus
 // -----------------------------------------------------------------------------
-function getContactStatus(second) {
+function getPhoneStatus(second) {
   try {
     if (second < 100) {
       return "online";
