@@ -14,7 +14,7 @@
         font-family: sans-serif;
         margin: 0;
         padding: 1rem;
-        position: relative;
+        #position: relative;
       }
 
       .notification-container {
@@ -68,28 +68,27 @@
         color: #696969;
       }
 
-      .reply-icon-container {
-        position: absolute;
-        bottom: 0.5rem;
-        right: 0.5rem;
+      .toggle-container {
+        display: flex;
       }
 
-      .reply-icon-container button {
+      .toggle-container button {
         background: none;
         border: none;
         cursor: pointer;
         padding: 0;
+        margin-left: auto;
         display: flex;
       }
 
-      .reply-icon-container img {
+      .toggle-container img {
         width: 1.5rem;
         height: 1.5rem;
         opacity: 0.6;
         transition: opacity 0.2s;
       }
 
-      .reply-icon-container button:hover img {
+      .toggle-container button:hover img {
         opacity: 1;
       }
 
@@ -145,6 +144,12 @@
         <pre class="message" id="message"></pre>
       </div>
 
+      <div class="toggle-container">
+        <button id="toggle" aria-label="Show reply">
+          <img src="/assets/icon-down.svg" alt="Show reply icon" />
+        </button>
+      </div>
+
       <div class="reply-container">
         <textarea
           id="reply-text"
@@ -152,12 +157,6 @@
           aria-label="Reply message"
         ></textarea>
         <button id="reply-send-btn">Reply</button>
-      </div>
-
-      <div class="reply-icon-container">
-        <button id="reply-toggle-btn" aria-label="Show reply section">
-          <img src="/assets/icon-reply.svg" alt="Reply icon" />
-        </button>
       </div>
 
       <audio id="notification" src="/assets/notification.mp3"></audio>
