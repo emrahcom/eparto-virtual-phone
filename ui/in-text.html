@@ -14,7 +14,6 @@
         font-family: sans-serif;
         margin: 0;
         padding: 1rem;
-        #position: relative;
       }
 
       .notification-container {
@@ -82,8 +81,8 @@
       }
 
       .toggle-container img {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1rem;
+        height: 1rem;
         opacity: 0.6;
         transition: opacity 0.2s;
       }
@@ -93,7 +92,7 @@
       }
 
       .reply-container {
-        display: flex; /* Initially hidden */
+        display: none;
         flex-direction: column;
         gap: 0.5rem;
         margin-top: 1rem;
@@ -109,14 +108,14 @@
         padding: 0.5rem;
         border: 1px solid #ccc;
         border-radius: 5px;
-        box-sizing: border-box; /* Include padding in width */
+        box-sizing: border-box;
         resize: vertical;
         font-family: inherit;
         font-size: 0.9rem;
       }
 
       .reply-container button {
-        align-self: flex-end; /* Align the button to the right */
+        align-self: flex-end;
         padding: 0.5rem 1rem;
         background-color: #007bff;
         color: white;
