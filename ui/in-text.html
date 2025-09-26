@@ -19,8 +19,7 @@
       .notification-container {
         display: flex;
         flex-direction: column;
-        gap: 0.1rem;
-        height: 100%;
+        gap: 0.5rem;
       }
 
       .header {
@@ -65,7 +64,9 @@
         overflow-x: auto;
         font-family: inherit;
         font-size: 1rem;
-        color: #696969;
+        font-weight: 400;
+        color: #333;
+        padding-top: 0.25rem;
       }
 
       .toggle-container {
@@ -94,7 +95,7 @@
       }
 
       .reply-container {
-        display: none;
+        display: flex;
         flex-direction: column;
         gap: 0.5rem;
         margin-top: 1rem;
@@ -114,6 +115,13 @@
         resize: vertical;
         font-family: inherit;
         font-size: 0.9rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .reply-container textarea:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 1px #007bff;
       }
 
       .reply-container button {
@@ -134,9 +142,9 @@
     </style>
   </head>
   <body>
-    <div role="alert" aria-live="polite" class="notification-container">
+    <div role="status" aria-live="polite" class="notification-container">
       <header class="header">
-        <img src="/assets/icon-chat.svg" alt="Incoming text message" />
+        <img src="/assets/icon-chat.svg" alt="Chat icon" />
         <h1 class="sender" id="contact">Contact</h1>
         <span class="desc" id="desc"></span>
       </header>
@@ -146,18 +154,22 @@
       </div>
 
       <div class="toggle-container">
-        <button id="toggle" aria-label="Show reply">
-          <img src="/assets/icon-down.svg" alt="Show reply icon" />
+        <button
+          id="toggle"
+          aria-label="Show reply form"
+          aria-controls="reply-form"
+        >
+          <img src="/assets/icon-reply.svg" alt="Reply icon" />
         </button>
       </div>
 
-      <div class="reply-container">
+      <div class="reply-container" id="reply-form">
         <textarea
           id="reply-text"
           placeholder="Type your reply..."
           aria-label="Reply message"
         ></textarea>
-        <button id="reply-send-btn">Reply</button>
+        <button id="reply-send-btn" type="button">Reply</button>
       </div>
 
       <audio id="notification" src="/assets/notification.mp3"></audio>
