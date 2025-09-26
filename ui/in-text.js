@@ -94,6 +94,9 @@ async function initialize() {
     // Initialize UI.
     initializeText(text);
 
+    // Initialize listeners.
+    initializeListeners();
+
     // Play the notification sound.
     const notification = globalThis.document.getElementById("notification");
     if (notification) notification.play();
@@ -108,6 +111,7 @@ async function initialize() {
 // initializeText
 // -----------------------------------------------------------------------------
 function initializeText(text) {
+  console.warn(text);
   // Name of the contact (sender).
   const contactName = text.contact_name;
   if (!contactName) throw new Error("missing contact name");
@@ -126,4 +130,51 @@ function initializeText(text) {
   // Update the message in UI.
   const elMessage = globalThis.document.getElementById("message");
   if (elMessage) elMessage.textContent = text.intercom_attr.message;
+}
+
+// -----------------------------------------------------------------------------
+// initializeListeners
+// -----------------------------------------------------------------------------
+function initializeListeners() {
+  const toggleButton = globalThis.document.getElementById("toggle");
+  const replyButton = globalThis.document.getElementById("reply-send-btn");
+
+  if (toggleButton) toggleButton.addEventListener("click", handleToggle);
+  if (replyButton) replyButton.addEventListener("click", handleReply);
+}
+
+// -----------------------------------------------------------------------------
+// handleToggle
+// -----------------------------------------------------------------------------
+function handleToggle() {
+  const replyForm = globalThis.document.getElementById("reply-form");
+  const replyTextarea = globalThis.document.getElementById("reply-text");
+  const toggleButton = globalThis.document.getElementById("toggle");
+
+  if (replyForm) replyForm.classList.add("visible");
+  if (toggleButton) toggleButton.remove();
+  if (replyTextarea) replyTextarea.focus();
+}
+
+// -----------------------------------------------------------------------------
+// handleReply
+// -----------------------------------------------------------------------------
+function handleReply() {
+  const sendButton = globalThis.document.getElementById("reply-send-btn");
+  const replyTextarea = globalThis.document.getElementById("reply-text");
+  const replyMessage = replyTextarea ? replyTextarea.value.trim() : "";
+
+  if (replyMessage.length === 0) return;
+  if (sendButton) sendButton.disabled = true;
+
+  try {
+    // send message
+
+    setTimeout(() => {
+      sendButton.disabled = false;
+    }, 10000);
+    //globalThis.close();
+  } catch {
+    if (sendButton) sendButton.disabled = false;
+  }
 }
