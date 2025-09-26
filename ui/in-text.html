@@ -5,140 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Incoming text message</title>
     <style>
-      :root {
-        font-size: 16px;
-      }
+            :root {
+              font-size: 16px;
+            }
 
-      body {
-        background-color: #fafafa;
-        font-family: sans-serif;
-        margin: 0;
-        padding: 1rem;
-      }
+            body {
+              background-color: #fafafa;
+              font-family: sans-serif;
+              margin: 0;
+              padding: 1rem;
+            }
 
-      .notification-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
+            .notification-container {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
 
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: dimgray;
-      }
+            .header {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              color: dimgray;
+            }
 
-      .header img {
-        width: 1.2rem;
-        height: 1.2rem;
-      }
+            .header img {
+              width: 1.2rem;
+              height: 1.2rem;
+            }
 
-      .sender {
-        font-weight: 600;
-        font-size: 1rem;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin: 0;
-      }
+            .sender {
+              font-weight: 600;
+              font-size: 1rem;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              margin: 0;
+            }
 
-      .desc {
-        font-weight: 600;
-        font-size: 0.8rem;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin-left: auto;
-      }
+            .desc {
+              font-weight: 600;
+              font-size: 0.8rem;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              margin-left: auto;
+            }
 
-      .details {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
+            .details {
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              flex-wrap: wrap;
+            }
 
-      .message {
-        white-space: pre-wrap;
-        overflow-x: auto;
-        font-family: inherit;
-        font-size: 1rem;
-        font-weight: 400;
-        color: #333;
-        padding-top: 0.25rem;
-      }
+            .message {
+              white-space: pre-wrap;
+              overflow-x: auto;
+              font-family: inherit;
+              font-size: 1rem;
+              font-weight: 400;
+              color: #333;
+              padding-top: 0.25rem;
+            }
 
-      .toggle-container {
-        display: flex;
-        margin-top: auto;
-        justify-content: flex-end;
-      }
+            .toggle-container {
+              display: flex;
+              margin-top: auto;
+              justify-content: flex-end;
+            }
 
-      .toggle-container button {
-        display: flex;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-      }
+            .toggle-container button {
+              display: flex;
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+            }
 
-      .toggle-container img {
-        width: 1rem;
-        height: 1rem;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-      }
+            .toggle-container img {
+              width: 1rem;
+              height: 1rem;
+              opacity: 0.6;
+              transition: opacity 0.2s;
+            }
 
-      .toggle-container button:hover img {
-        opacity: 1;
-      }
+            .toggle-container button:hover img {
+              opacity: 1;
+            }
 
-      .reply-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-top: 1rem;
-      }
+            .reply-container {
+              display: none;
+              flex-direction: column;
+              gap: 0.5rem;
+              margin-top: 1rem;
+            }
 
-      .reply-container.visible {
-        display: flex;
-      }
+            .reply-container.visible {
+              display: flex;
+            }
 
-      .reply-container textarea {
-        width: 100%;
-        min-height: 2.5rem;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        resize: vertical;
-        font-family: inherit;
-        font-size: 0.9rem;
-        transition: border-color 0.2s, box-shadow 0.2s;
-      }
+            .reply-container textarea {
+              width: 100%;
+              min-height: 2.5rem;
+              padding: 0.5rem;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              box-sizing: border-box;
+              resize: vertical;
+              font-family: inherit;
+              font-size: 0.9rem;
+              transition: border-color 0.2s, box-shadow 0.2s;
+            }
 
-      .reply-container textarea:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 1px #007bff;
-      }
+            .reply-container textarea:focus {
+              outline: none;
+              border-color: #007bff;
+              box-shadow: 0 0 0 1px #007bff;
+            }
 
-      .reply-container button {
-        align-self: flex-end;
-        padding: 0.5rem 1rem;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
+            .reply-container button {
+              align-self: flex-end;
+              padding: 0.5rem 1rem;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 0.9rem;
+              font-weight: 600;
+            }
 
-      .reply-container button:hover {
-        background-color: #0056b3;
-      }
+            .reply-container button:hover {
+              background-color: #0056b3;
+            }
+
+            .reply-container button:disabled {
+              background-color: #B0C4DE !important;
+              color: #777 !important;
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
     </style>
   </head>
   <body>
