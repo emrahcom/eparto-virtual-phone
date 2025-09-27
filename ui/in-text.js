@@ -111,7 +111,10 @@ async function initialize() {
 // initializeText
 // -----------------------------------------------------------------------------
 function initializeText(text) {
-  console.warn(text);
+  // Id of the contact (sender).
+  const contactId = text.contact_id;
+  if (!contactId) throw new Error("missing contact id");
+
   // Name of the contact (sender).
   const contactName = text.contact_name;
   if (!contactName) throw new Error("missing contact name");
@@ -121,7 +124,10 @@ function initializeText(text) {
 
   // Update the contact name in UI.
   const elContact = globalThis.document.getElementById("contact");
-  if (elContact) elContact.textContent = contactName;
+  if (elContact) {
+    elContact.textContent = contactName;
+    elContact.dataset.contactId = safeText(contactId);
+  }
 
   // Update the description in UI, display the time.
   const elDesc = globalThis.document.getElementById("desc");
@@ -170,11 +176,12 @@ function handleReply() {
   try {
     // send message
 
-    setTimeout(() => {
-      sendButton.disabled = false;
-    }, 10000);
-    //globalThis.close();
-  } catch {
-    if (sendButton) sendButton.disabled = false;
+    globalThis.close();
+  } catch (e) {
+    if (DEBUG) console.error(e);
+
+    globalThis.setTimeout(() => {
+      if (sendButton) sendButton.disabled = false;
+    }, 500);
   }
 }
