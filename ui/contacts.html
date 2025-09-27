@@ -285,6 +285,11 @@
       .send:hover {
         background-color: #4caf50;
       }
+
+      .send:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     </style>
   </head>
 
@@ -401,8 +406,8 @@
         ></textarea>
 
         <div class="actions">
-          <button id="cancel" type="button" class="cancel">Cancel</button>
-          <button id="send" type="submit" class="send">Send</button>
+          <button id="cancel-btn" type="button" class="cancel">Cancel</button>
+          <button id="send-btn" type="submit" class="send">Send</button>
         </div>
       </form>
     </section>
