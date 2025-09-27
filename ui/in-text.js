@@ -165,7 +165,7 @@ function handleToggle() {
 // -----------------------------------------------------------------------------
 // handleReply
 // -----------------------------------------------------------------------------
-function handleReply() {
+async function handleReply() {
   const sendButton = globalThis.document.getElementById("reply-send-btn");
   const replyTextarea = globalThis.document.getElementById("reply-text");
   const replyMessage = replyTextarea ? replyTextarea.value.trim() : "";
@@ -174,7 +174,19 @@ function handleReply() {
   if (sendButton) sendButton.disabled = true;
 
   try {
-    // send message
+    const elContact = globalThis.document.getElementById("contact");
+    const contactId = elContact.dataset.contactId;
+    if (!contactId) throw new Error("missing contact id");
+
+    // Send the message.
+    const payload = {
+      contact_id: contactId,
+      message: replyMessage,
+    };
+
+    const texts = await getByKey("/api/pub/contact/text/bykey", payload);
+    const text = texts[0];
+    if (!text) throw new Error("failed to reply");
 
     globalThis.close();
   } catch (e) {
