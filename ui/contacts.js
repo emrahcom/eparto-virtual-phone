@@ -17,13 +17,16 @@ import { getByKey, getSessionObject } from "../lib/common.js";
 const form = globalThis.document.querySelector("form");
 form.addEventListener("submit", sendTextMessage);
 
-const cancelButton = globalThis.document.getElementById("cancel");
+const cancelButton = globalThis.document.getElementById("cancel-btn");
 cancelButton.addEventListener("click", cancelTextMessage);
 
 // -----------------------------------------------------------------------------
 // sendTextMessage
 // -----------------------------------------------------------------------------
 async function sendTextMessage(e) {
+  const sendButton = globalThis.document.getElementById("send-btn");
+  if (sendButton) sendButton.disabled = true;
+
   try {
     // Prevent the page from reloading on form submission
     e.preventDefault();
@@ -49,6 +52,10 @@ async function sendTextMessage(e) {
   } catch (e) {
     if (DEBUG) console.error(e);
   }
+
+  globalThis.setTimeout(() => {
+    if (sendButton) sendButton.disabled = false;
+  }, 500);
 }
 
 // -----------------------------------------------------------------------------
