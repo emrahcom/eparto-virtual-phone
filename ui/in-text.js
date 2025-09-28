@@ -158,6 +158,8 @@ function handleToggle() {
   const replyButton = globalThis.document.getElementById("reply-btn");
   const toggleButton = globalThis.document.getElementById("toggle");
 
+  globalThis.resizeBy(0, 100);
+
   if (replyForm) replyForm.classList.add("visible");
   if (toggleButton) toggleButton.remove();
   if (replyButton) replyButton.focus();
