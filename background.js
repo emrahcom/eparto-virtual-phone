@@ -23,7 +23,7 @@ import {
   INTERVAL_INTERCOM_PULLING,
   INTERVAL_PING,
 } from "./lib/config.js";
-import { ping, getSessionObject, setStatus } from "./lib/common.js";
+import { getSessionObject, ping, setStatus } from "./lib/common.js";
 import { getIntercomMessages, messageHandler } from "./lib/intercom.js";
 import { cleanupInCall } from "./lib/incoming-call.js";
 import { cleanupInText, popupHandler } from "./lib/incoming-text.js";
