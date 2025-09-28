@@ -143,7 +143,7 @@ function initializeText(text) {
 // -----------------------------------------------------------------------------
 function initializeListeners() {
   const toggleButton = globalThis.document.getElementById("toggle");
-  const replyButton = globalThis.document.getElementById("reply-send-btn");
+  const replyButton = globalThis.document.getElementById("reply-btn");
 
   if (toggleButton) toggleButton.addEventListener("click", handleToggle);
   if (replyButton) replyButton.addEventListener("click", handleReply);
@@ -155,10 +155,12 @@ function initializeListeners() {
 function handleToggle() {
   const replyForm = globalThis.document.getElementById("reply-form");
   const replyTextarea = globalThis.document.getElementById("reply-text");
+  const replyButton = globalThis.document.getElementById("reply-btn");
   const toggleButton = globalThis.document.getElementById("toggle");
 
   if (replyForm) replyForm.classList.add("visible");
   if (toggleButton) toggleButton.remove();
+  if (replyButton) replyButton.focus();
   if (replyTextarea) replyTextarea.focus();
 }
 
@@ -166,7 +168,7 @@ function handleToggle() {
 // handleReply
 // -----------------------------------------------------------------------------
 async function handleReply() {
-  const sendButton = globalThis.document.getElementById("reply-send-btn");
+  const sendButton = globalThis.document.getElementById("reply-btn");
   const replyTextarea = globalThis.document.getElementById("reply-text");
   const replyMessage = replyTextarea ? replyTextarea.value.trim() : "";
 
